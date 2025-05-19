@@ -38,7 +38,7 @@
 
     <div class="container">
         <div class="card p-4 rounded-4">
-            <h3 class="mb-4 fw-bold text-primary text-center">Data Perusahaan</h3>
+            <h3 class="mb-4 fw-bold text-primary text-center">Data instansi</h3>
             @if (session('success'))
                 <div id="success-message" class="alert alert-success">
                     {{ session('success') }}
@@ -57,21 +57,26 @@
                 @csrf
 
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Nama Perusahaan</label>
-                    <input type="text" class="form-control rounded-3" name="nama_perusahaan"
-                        value="{{ old('nama_perusahaan') }}" required>
+                    <label class="form-label fw-semibold">Nama instansi</label>
+                    <input type="text" class="form-control rounded-3" name="nama_instansi"
+                        value="{{ old('nama_instansi') }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Kategori</label>
+                    <select class="form-select rounded-3" name="kategori">
+                        <option selected disabled>Pilih Kategori Mitra</option>
+                        <option value="kampus">Kampus</option>
+                        <option value="sekolah">Sekolah</option>
+                        <option value="instansi Pemerintah">Instansi Pemerintah</option>
+                        <option value="swasta">Swasta</option>
+                    </select>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Penanggung Jawab</label>
                     <input type="text" class="form-control rounded-3" name="penanggung_jawab"
                         value="{{ old('penanggung_jawab') }}" required>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">NPWP</label>
-                    <input type="text" class="form-control rounded-3" name="NPWP" value="{{ old('NPWP') }}"
-                        required>
                 </div>
 
                 <div class="mb-3">

@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\MitraProfile;
 use App\Models\AlumniSiswaProfile;
+use App\Models\Sertifikasi;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -58,4 +59,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(AlumniSIswaProfile::class);
     }
+
+    public function sertifikasi()
+    {
+        return $this->hasMany(Sertifikasi::class);
+    }
+
 }

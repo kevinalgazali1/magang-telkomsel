@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('sertifikasis', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('judul_sertifikasi');
             $table->string('deskripsi');
-            $table->string('wilayah');
             $table->string('tanggal_mulai');
             $table->string('tanggal_selesai');
-            $table->string('nomor_lisensi');
-            $table->string('sertifikat')->nullable();
+            $table->integer('biaya');
+            $table->string('kota');
+            $table->string('tempat');
+            $table->text('foto_sertifikasi');
             $table->timestamps();
         });
     }

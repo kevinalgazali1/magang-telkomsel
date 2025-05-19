@@ -47,7 +47,7 @@ class LoginRequest extends FormRequest
         // Tentukan field yang dipakai: email atau no_hp
         $field = filter_var($identifier, FILTER_VALIDATE_EMAIL) ? 'email' : 'no_hp';
 
-        if (!Auth::attempt([$field => $identifier, 'password' => $password], $this->boolean('remember'))) {
+        if (!Auth::attempt([$field => $identifier, 'password' => $password], false)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

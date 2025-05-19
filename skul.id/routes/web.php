@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\MitraController;
 use App\Http\Controllers\AlumniSiswaController;
+use App\Http\Controllers\SertifikasiController;
 use App\Models\AlumniSiswaProfile;
 
 /**
@@ -46,17 +47,20 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
     Route::post('/mitra/storeProfile', [MitraController::class, 'storeProfile'])->name('mitra.storeProfile');
     Route::middleware('profile')->group(function () {
         Route::get('/mitra', [MitraController::class, 'index'])->name('mitra.index');
-        Route::get('/mitra/sertifikasi', [MitraController::class, 'sertifikasi'])->name('mitra.sertifikasi');
+        Route::get('/mitra/sertifikasi', [SertifikasiController::class, 'index'])->name('mitra.sertifikasi');
+        Route::post('/mitra/store-sertifikasi', [SertifikasiController::class, 'store'])->name('mitra.sertifikasi.store');
+        Route::put('/mitra/update-sertifikasi/{id}', [SertifikasiController::class, 'update'])->name('mitra.sertifikasi.update');
+        Route::delete('/mitra/delete-sertifikasi/{id}', [SertifikasiController::class, 'destroy'])->name('mitra.sertifikasi.destroy');
+        // Route::get('/mitra/profile', [MitraController::class, 'profile'])->name('mitra.profile');
         Route::get('/mitra/loker', [MitraController::class, 'loker'])->name('mitra.loker');
         Route::get('/mitra/pelatihan', [MitraController::class, 'pelatihan'])->name('mitra.pelatihan');
-        Route::post('/mitra/sertifikasi', [MitraController::class, 'store'])->name('mitra.sertifikasi.store');
     });
 });
 
 /**
  * ✅ Route setelah login, role ALUMNI
  */
-Route::middleware(['auth', 'role:alumni'])->group(function () {
+Route::middleware(['auth', 'role:alumnisiswa'])->group(function () {
     Route::get('/alumni-siswa/addProfile', [AlumniSiswaController::class, 'addProfile'])->name('alumni-siswa.addProfile');
     Route::post('/alumni-siswa/storeProfile', [AlumniSiswaController::class, 'storeProfile'])->name('alumni-siswa.storeProfile');
     Route::middleware('profile')->group(function () {

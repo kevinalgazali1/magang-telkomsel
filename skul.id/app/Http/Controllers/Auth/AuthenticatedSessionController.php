@@ -29,13 +29,20 @@ class AuthenticatedSessionController extends Controller
             $request->authenticate();
             $request->session()->regenerate();
 
-            if ($request->user()->role === "admin") {
+            $user = $request->user();
+
+            if ($user->role === "admin") {
                 return redirect()->route('admin.dashboard');
-            } else if ($request->user()->role === "mitra") {
-                return redirect()->route('mitra.addProfile');
-            } else if ($request->user()->role === "alumnisiswa") {
-                return redirect()->route('alumni-siswa.addProfile');
+            } elseif ($user->role === "mitra") {
+                return $user->profile_complete
+                    ? redirect()->route('mitra.index')
+                    : redirect()->route('mitra.addProfile');
+            } elseif ($user->role === "alumnisiswa") {
+                return $user->profile_complete
+                    ? redirect()->route('alumni-siswa.index')
+                    : redirect()->route('alumni-siswa.addProfile');
             }
+
 
             return redirect()->back();
         } catch (ValidationException $e) {

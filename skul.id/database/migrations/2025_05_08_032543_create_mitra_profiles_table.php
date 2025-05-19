@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('mitra_profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('nama_perusahaan');
+            $table->string('nama_instansi');
             $table->string('penanggung_jawab');
-            $table->string('NPWP');
-            $table->string('alamat');
+            $table->string('bidang_industri');
+            $table->string('kategori');
             $table->string('provinsi');
             $table->string('kota');
-            $table->string('bidang_industri');
+            $table->string('alamat');
             $table->timestamps();
         });
     }

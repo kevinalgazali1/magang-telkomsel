@@ -33,9 +33,9 @@ class MitraController extends Controller
     public function storeProfile(Request $request)
     {
         $validated = $request->validate([
-            'nama_perusahaan'     => 'required|string|max:255',
+            'nama_instansi'     => 'required|string|max:255',
             'penanggung_jawab'    => 'required|string|max:255',
-            'NPWP'                => 'required|string|max:30',
+            'kategori'            => 'required|string',
             'alamat'              => 'required|string',
             'provinsi'            => 'required|string',
             'kota'                => 'required|string',
@@ -67,12 +67,6 @@ class MitraController extends Controller
     {
         $User = User::all();
         return view('mitra.beranda', compact('User'));
-    }
-
-    public function sertifikasi()
-    {
-        $User = User::all();
-        return view('mitra.sertifikasi', compact('User'));
     }
 
     public function loker()

@@ -117,7 +117,7 @@
     <div class="register-container">
         <div class="text">
             <h1>Daftar Alumni</h1>
-            <p>Sudah memiliki akun? <a href="{{ route('login.mitra') }}" class="text-danger">Masuk di sini</a></p>
+            <p>Sudah memiliki akun? <a href="{{ route('login.alumni') }}" class="text-danger">Masuk di sini</a></p>
         </div>
 
         <form method="POST" action="{{ route('register.store') }}">

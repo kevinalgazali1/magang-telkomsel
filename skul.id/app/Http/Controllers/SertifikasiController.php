@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\User;
 use App\Models\Sertifikasi;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\SertifikasiStoreRequest;
 
 class SertifikasiController extends Controller
 {
@@ -14,7 +17,10 @@ class SertifikasiController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $sertifikasiMitraSendiri = Sertifikasi::where('user_id', $user->id)->get();
+        $sertifikasiMitraLain = Sertifikasi::where('user_id', '!=', $user->id)->get();
+        return view('mitra.sertifikasi', compact('sertifikasiMitraSendiri', 'sertifikasiMitraLain'));
     }
 
     /**
@@ -28,39 +34,19 @@ class SertifikasiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SertifikasiStoreRequest $request)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'perusahaan' => 'required|string|max:255',
-            'wilayah' => 'required|string',
-            'tanggal_mulai' => 'required|date',
-            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'lisensi' => 'required|string|max:100',
-            'file_sertifikat' => 'nullable|file|mimes:pdf,jpg,png|max:2048',
-        ]);
+        try {
+            if ($request->validated()) {
+                $user_id = $request->user()->id;
+                $foto_sertifikasi = $request->file('foto_sertifikasi')->store('assets/sertifikasi', 'public');
+                Sertifikasi::create($request->except('foto_sertifikasi') + ['foto_sertifikasi' => $foto_sertifikasi, 'user_id' => $user_id]);
+            }
 
-        // Proses upload file sertifikat jika ada
-        $sertifikatPath = null;
-        if ($request->hasFile('file_sertifikat')) {
-            $sertifikatPath = $request->file('file_sertifikat')->store('sertifikat', 'public');
+            return redirect()->route('mitra.sertifikasi')->with('success', 'Sertifikasi Berhasil Dibuat');
+        } catch (\Exception $e) {
+            return redirect()->route('mitra.sertifikasi')->with('danger', 'Sertifikasi Gagal Dibuat');
         }
-
-        // Simpan ke database
-        Sertifikasi::create([
-            'judul_sertifikasi' => $validated['judul'],
-            'deskripsi' => $validated['deskripsi'],
-            'wilayah' => $validated['wilayah'],
-            'tanggal_mulai' => $validated['tanggal_mulai'],
-            'tanggal_selesai' => $validated['tanggal_selesai'],
-            'nomor_lisensi' => $validated['lisensi'],
-            'sertifikat' => $sertifikatPath,
-        ]);
-
-        // Redirect dengan pesan sukses
-        return redirect()->back()->with('success', 'Sertifikasi berhasil ditambahkan.');
     }
 
     /**
@@ -82,16 +68,38 @@ class SertifikasiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $sertif = Sertifikasi::findOrFail($id);
+        $sertif->judul_sertifikasi = $request->judul_sertifikasi;
+        $sertif->deskripsi = $request->deskripsi;
+        $sertif->tanggal_mulai = $request->tanggal_mulai;
+        $sertif->tanggal_selesai = $request->tanggal_selesai;
+        $sertif->kota = $request->kota;
+        $sertif->tempat = $request->tempat;
+        $sertif->biaya = $request->biaya;
+
+        if ($request->hasFile('foto_sertifikasi')) {
+            $path = $request->file('foto_sertifikasi')->store('sertifikasi', 'public');
+            $sertif->foto_sertifikasi = $path;
+        }
+
+        $sertif->save();
+
+        return redirect()->back()->with('success', 'Sertifikasi berhasil diperbarui.');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $sertif = Sertifikasi::findOrFail($id);
+        if ($sertif->user_id != Auth::id()) {
+            abort(403);
+        }
+        $sertif->delete();
+        return redirect()->route('mitra.sertifikasi')->with('success', 'Sertifikasi berhasil dihapus.');
     }
 }
