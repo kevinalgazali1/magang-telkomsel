@@ -57,7 +57,6 @@ class RegisteredUserController extends Controller
 
         // Simpan ke tabel users
         $user = User::create([
-            'name' => $request->input('nama_perusahaan') ?? null,
             'email' => $request->input('email'),
             'no_hp' => $request->input('no_hp'),
             'role' => $role,
@@ -70,7 +69,7 @@ class RegisteredUserController extends Controller
         // Redirect berdasarkan role
         if ($role === 'mitra') {
             return redirect()->route('mitra.addProfile')->with('success', 'Registrasi berhasil sebagai Mitra!');
-        } elseif ($role === 'alumni') {
+        } elseif ($role === 'alumnisiswa') {
             return redirect()->route('alumni-siswa.addProfile')->with('success', 'Registrasi berhasil sebagai Alumni / Siswa!');
         }
 

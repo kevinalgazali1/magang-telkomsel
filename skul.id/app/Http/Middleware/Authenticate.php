@@ -25,12 +25,16 @@ class Authenticate extends Middleware
             }
 
             if ($request->is('siswa/*')) {
-                return '/login/siswa'; // Jika punya login siswa
+                return '/login/alumni';
             }
 
             if ($request->is('admin/*')) {
-                return '/login/admin'; // Jika punya login admin
+                return '/login/admin';
             }
+
+            // if ($request->is('alumni-siswa/*')) {
+            //     return '/login/alumni';
+            // }
 
             // Fallback ke login default
             return '/login/alumni';

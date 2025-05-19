@@ -305,12 +305,44 @@
 <body>
     <!-- Navbar -->
     <div class="navbar">
-        <img src="{{ url('img/logo.png') }}" alt="Logo" class="logo" width="" />
+        <div class="col-lg-6 d-flex gap-4">
+            <div class="col-lg-2">
+                <img src="{{ url('img/logo.png') }}" alt="Logo" class="logo" width="" />
+            </div>
+            <div class="col-lg-2">
+                <img src="{{ url('img/pu.jpeg') }}" alt="Logo" class="logo" width="" />
+            </div>
+        </div>
         <div class="user-info">
             <span>Halo User</span>
-            <a href="#">
-                <img src="{{ url('img/profile.jpg') }}" alt="Profile" class="profile-picture" />
-            </a>
+            <img src="{{ url('img/user.png') }}" alt="Profile" class="profile-picture" />
+        </div>
+        <button class="btn d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+            <i class="bi bi-list fs-3"></i>
+        </button>
+    </div>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Menu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.index') }}"><i
+                    class="bi bi-house-door-fill me-2"></i>Beranda</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.sertifikasi') }}"><i
+                    class="bi bi-patch-check-fill me-2"></i>Sertifikasi</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.loker') }}"><i
+                    class="bi bi-briefcase-fill me-2"></i>Loker</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.pelatihan') }}"><i
+                    class="bi bi-journal-text me-2"></i>Pelatihan</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.profile') }}"><i
+                    class="bi bi-person-fill me-2"></i>Profil</a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <a href="#" class="logout"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+            </form>
         </div>
     </div>
 
@@ -324,7 +356,7 @@
                     class="bi bi-briefcase-fill me-2"></i>Loker</a>
             <a class="text-secondary" href="{{ route('alumni-siswa.pelatihan') }}"><i
                     class="bi bi-journal-text me-2"></i>Pelatihan</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.profil') }}"><i
+            <a class="text-secondary" href="{{ route('alumni-siswa.profile') }}"><i
                     class="bi bi-person-fill me-2"></i>Profil</a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
@@ -344,234 +376,10 @@
                 <img src="{{ url('img/main-dashboard.png') }}" alt="Ilustrasi" class="illustration" />
             </div>
 
-            <div class="container-fluid mt-5">
-                <div id="fitur">
-                    <h5 class="mb-4 fw-semibold">Fitur Utama :</h5>
-                    <div class="row gx-4 gy-4 mb-4">
-                        <div class="col-md-4">
-                            <a href="{{ route('alumni-siswa.sertifikasi') }}">
-                                <div class="feature-card sertifikasi h-100">
-                                    <div class="feature-content">
-                                        <div class="feature-title">Sertifikasi</div>
-                                        <p>Perkuat kredensialmu dengan sertifikasi profesional.</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="{{ route('alumni-siswa.loker') }}">
-                                <div class="feature-card loker h-100">
-                                    <div class="feature-content">
-                                        <div class="feature-title">Loker</div>
-                                        <p>Temukan pekerjaan yang sesuai dengan minat dan keahlianmu.</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a href="{{ route('alumni-siswa.pelatihan') }}">
-                                <div class="feature-card pelatihan h-100">
-                                    <div class="feature-content">
-                                        <div class="feature-title">Pelatihan</div>
-                                        <p>Ikuti pelatihan untuk meningkatkan kompetensimu.</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="row gx-4 gy-4">
-                        <div class="col-md-6">
-                            <a href="{{ route('alumni-siswa.ikatan') }}">
-                                <div class="feature-card alumni h-100">
-                                    <div class="feature-content">
-                                        <div class="feature-title">Ikatan Alumni</div>
-                                        <p>Bangun koneksi dengan sesama alumni dari sekolahmu.</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a href="{{ route('alumni-siswa.kuliah') }}">
-                                <div class="feature-card magang h-100">
-                                    <div class="feature-content">
-                                        <div class="feature-title">Kuliah</div>
-                                        <p>Informasi dan panduan kuliah di berbagai universitas Indonesia.</p>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <h5 class="mb-4 mt-5 fw-semibold">Fitur Add-On :</h5>
-                    <div class="row gx-4 gy-4 mb-4 text-center">
-                        <div class="col-6 col-md-2">
-                            <a href="{{ route('alumni-siswa.artikel') }}" class="text-decoration-none text-dark">
-                                <div>
-                                    <i class="bi bi-file-earmark-text-fill fs-1 text-danger"></i>
-                                    <div class="mt-2 fw-semibold">Artikel</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-2">
-                            <a href="{{ route('alumni-siswa.ebook') }}" class="text-decoration-none text-dark">
-                                <div>
-                                    <i class="bi bi-book-half fs-1 text-primary"></i>
-                                    <div class="mt-2 fw-semibold">E-Book</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-2">
-                            <a href="{{ route('alumni-siswa.jelajah') }}" class="text-decoration-none text-dark">
-                                <div>
-                                    <i class="bi bi-globe-americas fs-1 text-warning"></i>
-                                    <div class="mt-2 fw-semibold">Jelajah Skul.id</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-2">
-                            <a href="https://www.telkomsel.com/shops/digital-product/package?utm_source=wec&utm_medium=skulbanner&utm_campaign=EPskul&utm_id=EPskul&embed=on&msisdn=&type=Kamu%20Banget&category=&roaming=&service=&sort=lowest-price&minPrice=&maxPrice=&quota="
-                                class="text-decoration-none text-dark" target="_blank">
-                                <div>
-                                    <i class="bi bi-wifi fs-1 text-info"></i>
-                                    <div class="mt-2 fw-semibold">Pulsa & Internet</div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="col-6 col-md-2">
-                            <a href="https://account.schoters.com/en/login?redirect_url=https%3A%2F%2Facademy.schoters.com%2Fdemo%2Fclaim%3Fcode%3Dschotersskulid&client_id=schoters&view=login"
-                                class="text-decoration-none text-dark" target="_blank">
-                                <div>
-                                    <i class="bi bi-mortarboard-fill fs-1 text-success"></i>
-                                    <div class="mt-2 fw-semibold">Beasiswaku</div>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Voucher Games Section -->
-                    <div class="container-fluid my-5">
-                        <h5 class="text-danger fw-semibold py-1 mt-10">
-                            <i class="bi bi-controller me-2"></i>VOUCHER GAMES
-                        </h5>
-                        <p class="text-muted">Upgrade karakter game kamu dengan beli vouchernya!</p>
-                        <div class="d-flex flex-wrap align-items-center gap-4 mt-3 mb-5">
-                            <a href="https://duniagames.co.id/top-up/item/mobile-legends" target="_blank">
-                                <img src="img/mlbb.png" alt="Mobile Legends" class="rounded-circle"
-                                    style="width: 80px; height: 80px;">
-                            </a>
-                            <a href="https://duniagames.co.id/top-up/item/call-of-duty-mobile" target="_blank">
-                                <img src="img/codm.png" alt="COD Mobile" class="rounded-circle"
-                                    style="width: 80px; height: 80px;">
-                            </a>
-                            <a href="https://duniagames.co.id/top-up/item/razer-gold" target="_blank">
-                                <img src="img/zepeto.png" alt="Zepeto Gold" class="rounded-circle"
-                                    style="width: 80px; height: 80px;">
-                            </a>
-                            <a href="https://duniagames.co.id/top-up/item/google-play" target="_blank">
-                                <img src="img/googleplay.png" alt="Google Play" class="rounded-circle"
-                                    style="width: 80px; height: 80px;">
-                            </a>
-                            <a href="https://duniagames.co.id/top-up/item/aov" target="_blank">
-                                <img src="img/aov.png" alt="AOV" class="rounded-circle"
-                                    style="width: 80px; height: 80px;">
-                            </a>
-                            <a href="https://duniagames.co.id/top-up/item/freefire" target="_blank">
-                                <img src="img/freefire.png" alt="Free Fire" class="rounded-circle"
-                                    style="width: 80px; height: 80px;">
-                            </a>
-                        </div>
-                    </div>
-
-
-                    <!-- Artikel Section -->
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="text-danger fw-semibold">
-                            <i class="bi bi-journal-richtext me-2 py-1 mt-10"></i>ARTIKEL
-                        </h5>
-                        <a href="{{ route('alumni-siswa.artikel') }}"
-                            class="text-danger text-decoration-none fw-semibold">Lihat Semua</a>
-                    </div>
-
-                    <div class="row g-3 mb-10">
-                        <!-- Artikel 1 -->
-                        <div class="col-md-6">
-                            <div class="artikel-card">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    alt="Thumbnail">
-                                <div class="artikel-content">
-                                    <div class="fw-semibold mb-1">Code Redeem Roblox: Blox Fruits Mei 2025</div>
-                                    <div class="text-muted small">Oleh Duniagames</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Artikel 2 -->
-                        <div class="col-md-6">
-                            <div class="artikel-card">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    alt="Thumbnail">
-                                <div class="artikel-content">
-                                    <div class="fw-semibold mb-1">PS5 Bakal Memperkenalkan Cara Baru untuk Beli Game
-                                        Mereka</div>
-                                    <div class="text-muted small">Oleh Duniagames</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Artikel 3 -->
-                        <div class="col-md-6">
-                            <div class="artikel-card">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    alt="Thumbnail">
-                                <div class="artikel-content">
-                                    <div class="fw-semibold mb-1">Rilis Teaser Perdana, Ini Beragam Hal Menarik
-                                        Godzilla X Kong: Supernova</div>
-                                    <div class="text-muted small">Oleh Duniagames</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Artikel 4 -->
-                        <div class="col-md-6">
-                            <div class="artikel-card">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    alt="Thumbnail">
-                                <div class="artikel-content">
-                                    <div class="fw-semibold mb-1">Alliance Insight: Set Terbaru Yu-Gi-Oh! AE yang
-                                        Hadirkan Kartu-kartu Lama!</div>
-                                    <div class="text-muted small">Oleh Duniagames</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Footer -->
-
-                </div>
-
-            </div>
-            <footer class="footer bg-light py-4">
-                <div class="container">
-                    <div class="row align-items-start">
-                        <div class="col-md-5 mb-3">
-                            <h5 class="text-primary fw-bold">Skul.Id</h5>
-                            <p class="text-muted mb-0">Skul.Id adalah platform yang menghubungkan alumni dengan
-                                sekolah, dunia industri, dan peluang karier.</p>
-                        </div>
-                        <div class="col-md-3 ms-auto text-start mb-3">
-                            <h5 class="fw-bold">Kontak</h5>
-                            <p class="mb-0 text-muted">Email: info@skul.id</p>
-                            <p class="mb-0 text-muted">Telp/WA: +62 852-2584-5253</p>
-                        </div>
-                    </div>
-                    <div class="text-center text-muted small mt-4">
-                        © 2025 Skul.Id. All rights reserved.
-                    </div>
-                </div>
-            </footer>
-
 
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 

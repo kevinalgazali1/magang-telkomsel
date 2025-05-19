@@ -14,14 +14,24 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Halaman login
-Route::get('/login/alumni', function () {
-    return view('login.loginAlumni');
-})->name('login.alumni');
+Route::middleware('prevent-back-history')->group(function () {
+    Route::get('/login/alumni', function () {
+        return view('login.loginAlumni');
+    })->name('login.alumni');
 
-Route::get('/login/mitra', function () {
-    return view('login.loginMitra');
-})->name('login.mitra');
+    Route::get('/login/mitra', function () {
+        return view('login.loginMitra');
+    })->name('login.mitra');
+});
+
+// // Halaman login
+// Route::get('/login/alumni', function () {
+//     return view('login.loginAlumni');
+// })->name('login.alumni');
+
+// Route::get('/login/mitra', function () {
+//     return view('login.loginMitra');
+// })->name('login.mitra');
 
 // Halaman register
 Route::get('/register/mitra', [RegisteredUserController::class, 'showMitraForm'])->name('register.mitra');
@@ -32,11 +42,15 @@ Route::post('/registrasi', [RegisteredUserController::class, 'register'])->name(
  * ✅ Route setelah login, role MITRA
  */
 Route::middleware(['auth', 'role:mitra'])->group(function () {
-    Route::get('/mitra', [MitraController::class, 'index'])->name('mitra.index');
-    Route::get('/mitra/sertifikasi', [MitraController::class, 'sertifikasi'])->name('mitra.sertifikasi');
-    Route::get('/mitra/loker', [MitraController::class, 'loker'])->name('mitra.loker');
-    Route::get('/mitra/pelatihan', [MitraController::class, 'pelatihan'])->name('mitra.pelatihan');
-    Route::post('/mitra/sertifikasi', [MitraController::class, 'store'])->name('mitra.sertifikasi.store');
+    Route::get('/mitra/addProfile', [MitraController::class, 'addProfile'])->name('mitra.addProfile');
+    Route::post('/mitra/storeProfile', [MitraController::class, 'storeProfile'])->name('mitra.storeProfile');
+    Route::middleware('profile')->group(function () {
+        Route::get('/mitra', [MitraController::class, 'index'])->name('mitra.index');
+        Route::get('/mitra/sertifikasi', [MitraController::class, 'sertifikasi'])->name('mitra.sertifikasi');
+        Route::get('/mitra/loker', [MitraController::class, 'loker'])->name('mitra.loker');
+        Route::get('/mitra/pelatihan', [MitraController::class, 'pelatihan'])->name('mitra.pelatihan');
+        Route::post('/mitra/sertifikasi', [MitraController::class, 'store'])->name('mitra.sertifikasi.store');
+    });
 });
 
 /**

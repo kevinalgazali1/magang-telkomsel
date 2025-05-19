@@ -117,7 +117,7 @@
     <div class="register-container">
         <div class="text">
             <h1>Daftar Alumni</h1>
-            <p>Sudah memiliki akun? <a href="{{ route('login.alumni') }}" class="text-danger">Masuk di sini</a></p>
+            <p>Sudah memiliki akun? <a href="{{ route('login.mitra') }}" class="text-danger">Masuk di sini</a></p>
         </div>
 
         <form method="POST" action="{{ route('register.store') }}">
@@ -141,7 +141,7 @@
                 <input type="password" class="form-control" placeholder="Konfirmasi Password" minlength="8"
                     name="password_confirmation" required>
             </div>
-            <input type="hidden" name="role" value="alumni">
+            <input type="hidden" name="role" value="alumnisiswa">
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" id="termsCheck" required>
                 <label class="form-check-label" for="termsCheck">

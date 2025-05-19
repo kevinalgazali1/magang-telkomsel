@@ -32,14 +32,28 @@ class AuthenticatedSessionController extends Controller
             if ($request->user()->role === "admin") {
                 return redirect()->route('admin.dashboard');
             } else if ($request->user()->role === "mitra") {
-                return redirect()->route('mitra.index');
-            } else if ($request->user()->role === "alumni") {
+                return redirect()->route('mitra.addProfile');
+            } else if ($request->user()->role === "alumnisiswa") {
                 return redirect()->route('alumni-siswa.addProfile');
             }
 
             return redirect()->back();
         } catch (ValidationException $e) {
-            return back()->withInput()->with('login_error', 'Nomor HP atau Password salah.');
+            $loginType = $request->input('login_type');
+
+            if ($loginType === 'mitra') {
+                return redirect()->route('login.mitra')
+                    ->withInput()
+                    ->with('login_error', 'Nomor HP atau Password salah.');
+            } elseif ($loginType === 'alumnisiswa') {
+                return redirect()->route('login.alumni')
+                    ->withInput()
+                    ->with('login_error', 'Nomor HP atau Password salah.');
+            }
+
+            // Fallback jika tidak diketahui
+            return redirect('/')
+                ->with('login_error', 'Login gagal.');
         }
     }
 

@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => App\Http\Middleware\Role::class,
             'auth' => App\Http\Middleware\Authenticate::class,
             'profile' => App\Http\Middleware\ProfileComplete::class,
+            'prevent-back-history' => App\Http\Middleware\PreventBackHistory::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

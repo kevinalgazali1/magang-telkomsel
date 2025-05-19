@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,8 +15,10 @@
             font-family: "Poppins", sans-serif;
             color: #252f35;
             font-size: 13px;
+            background-color: #fff;
             min-height: 100vh;
-            position: relative;
+            margin: 0;
+            padding: 0;
         }
 
         .btn-back {
@@ -23,17 +26,48 @@
             top: 20px;
             left: 20px;
             z-index: 999;
-            transition: transform 0.2s ease;
         }
 
-        .btn-back:hover {
-            transform: scale(1.1);
-        }
-
-        .register-container {
-            max-width: 480px;
-            margin: 80px auto;
+        .container-box {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 100px auto;
             padding: 30px;
+            position: relative;
+        }
+
+        .logo-skulid {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            height: 40px;
+        }
+
+        .inner-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .icon-besar {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .icon-besar img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .login-form {
+            flex: 1;
+            min-width: 250px;
         }
 
         input {
@@ -83,58 +117,125 @@
             border-color: #ff3c6a;
         }
 
-        .register-btn {
+        .login-btn {
             background: #00FFE1;
             color: white;
             font-weight: 600;
             height: 60px;
         }
+
+        @media (max-width: 768px) {
+            .inner-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .logo-skulid {
+                position: static;
+                margin-bottom: 20px;
+            }
+        }
     </style>
 </head>
+
 <body>
 
-<a href="{{ url()->previous() }}" class="btn-back">
-    <img src="{{ url('img/back.png') }}" alt="Back" width="30">
-</a>
+    <!-- Tombol Back -->
+    <a href="{{ url()->previous() }}" class="btn-back">
+        <img src="{{ url('img/back.png') }}" alt="Back" width="30" />
+    </a>
 
-<div class="register-container">
-    <div class="text">
-        <h1>Daftar Mitra</h1>
-        <p>Sudah memiliki akun? <a href="{{ url('/login') }}" class="text-danger">Masuk di sini</a></p>
+    <!-- Kontainer Utama -->
+    <div class="container-box">
+
+        <!-- Logo Skul.id -->
+        <img src="{{ url('img/logo.png') }}" alt="Logo Skul.id" class="logo-skulid" />
+
+        <div class="inner-content">
+
+            <!-- Icon besar -->
+            <div class="icon-besar">
+                <img src="{{ url('img/login-mitra.png') }}" alt="Icon Besar" style="width: 350px;">
+            </div>
+
+            <!-- Form Login -->
+            <div class="login-form">
+                <div class="text">
+                    <h1>Register Mitra</h1>
+                    <p>Sudah memiliki akun? <a href="{{ route('login.mitra') }}" class="text-danger">Login
+                            Sekarang</a></p>
+                </div>
+
+        <form method="POST" action="{{ route('register.store') }}">
+            @csrf
+            <div class="mb-3 position-relative">
+                <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                <input type="text" class="form-control" placeholder="Nomor HP Telkomsel" name="no_hp" required>
+                @if ($errors->has('no_hp'))
+                    <div class="alert alert-danger mt-2">
+                        {{ $errors->first('no_hp') }}
+                    </div>
+                @endif
+            </div>
+            <div class="mb-3 position-relative">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input type="password" placeholder="Password" class="form-control" name="password" minlength="8"
+                    required>
+            </div>
+            <div class="mb-3 position-relative">
+                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                <input type="password" class="form-control" placeholder="Konfirmasi Password" minlength="8"
+                    name="password_confirmation" required>
+            </div>
+            <input type="hidden" name="role" value="mitra">
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                <label class="form-check-label" for="termsCheck">
+                    Dengan mendaftar, saya menyetujui <a href="#">Ketentuan Pengguna</a> & <a
+                        href="#">Kebijakan Privasi</a>
+                </label>
+            </div>
+            <button type="submit" class="btn register-btn w-100">DAFTAR</button>
+        </form>
+            </div>
+        </div>
     </div>
 
-    <form method="POST" action="{{ route('register.store') }}">
-        @csrf
-        <div class="mb-3 position-relative">
-            <span class="input-group-text"><i class="bi bi-building"></i></span>
-            <input type="text" class="form-control" placeholder="Nama Perusahaan" name="nama_perusahaan" required>
-        </div>
-        <div class="mb-3 position-relative">
-            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-            <input type="email" class="form-control" placeholder="Email" name="email" required>
-        </div>
-        <div class="mb-3 position-relative">
-            <span class="input-group-text"><i class="bi bi-phone"></i></span>
-            <input type="text" class="form-control" placeholder="Nomor HP" name="no_hp" required>
-        </div>
-        <div class="mb-3 position-relative">
-            <span class="input-group-text"><i class="bi bi-lock"></i></span>
-            <input type="password" class="form-control" placeholder="Password" name="password" required>
-        </div>
-        <div class="mb-3 position-relative">
-            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-            <input type="password" class="form-control" placeholder="Konfirmasi Password" name="password_confirmation" required>
-        </div>
-        <input type="hidden" name="role" value="mitra">
-        <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="termsCheck" required>
-            <label class="form-check-label" for="termsCheck">
-                Dengan mendaftar, saya menyetujui <a href="#">Ketentuan Pengguna</a> & <a href="#">Kebijakan Privasi</a>
-            </label>
-        </div>
-        <button type="submit" class="btn register-btn w-100">DAFTAR</button>
-    </form>
-</div>
+    <script>
+        document.querySelector("form").addEventListener("submit", function(e) {
+            const phoneInput = document.querySelector('input[name="no_hp"]');
+            const passwordInput = document.querySelector('input[name="password"]');
+
+            const phonePattern = /^08(11|12|13|21|22|51|52|53)[0-9]{5,8}$/;
+            const passwordValue = passwordInput.value;
+            const phoneValue = phoneInput.value;
+
+            let errorMessages = [];
+
+            if (!phonePattern.test(phoneValue)) {
+                errorMessages.push(
+                    "Nomor HP harus nomor Telkomsel.");
+            }
+
+            if (passwordValue.length < 8) {
+                errorMessages.push("Password minimal 8 karakter.");
+            }
+
+            if (errorMessages.length > 0) {
+                e.preventDefault(); // Mencegah form dikirim
+                alert(errorMessages.join("\n"));
+            }
+        });
+
+        setTimeout(() => {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.classList.add('fade');
+                setTimeout(() => alert.remove(), 500); // Hapus dari DOM setelah animasi selesai
+            });
+        }, 2000);
+    </script>
 
 </body>
+
 </html>

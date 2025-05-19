@@ -19,9 +19,12 @@ class ProfileComplete
     {
         $user = Auth::user();
 
-        // Cek apakah pengguna sudah memiliki profil
         if (!$user->profile_complete) {
-            return redirect()->route('alumni-siswa.addProfile');
+            if ($user->role === 'alumnisiswa') {
+                return redirect()->route('alumni-siswa.addProfile');
+            } elseif ($user->role === 'mitra') {
+                return redirect()->route('mitra.addProfile');
+            }
         }
 
         return $next($request);

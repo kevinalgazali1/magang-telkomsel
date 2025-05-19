@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class MitraProfile extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'penanggung_jawab',
-        'alamat',
+    protected $guarded = [
+        'id'
     ];
 
     public function user()
