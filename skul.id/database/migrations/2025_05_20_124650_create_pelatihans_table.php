@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sertifikasis', function (Blueprint $table) {
+        Schema::create('pelatihans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('judul_sertifikasi');
+            $table->string('nama_pelatihan');
+            $table->string('tempat_pelatihan');
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_selesai');
             $table->text('deskripsi');
-            $table->string('tanggal_mulai');
-            $table->string('tanggal_selesai');
             $table->string('biaya')->nullable();
             $table->string('kota');
-            $table->string('tempat');
             $table->string('status');
-            $table->text('foto_sertifikasi');
+            $table->string('foto_pelatihan');
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sertifikasis');
+        Schema::dropIfExists('pelatihans');
     }
 };

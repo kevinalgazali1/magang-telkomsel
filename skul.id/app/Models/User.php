@@ -73,6 +73,11 @@ class User extends Authenticatable
         return $this->hasMany(Loker::class);
     }
 
+    public function pelatihan()
+    {
+        return $this->hasMany(Pelatihan::class);
+    }
+
     public function daftarSertifikasi()
     {
         return $this->hasMany(DaftarSertifikasi::class);

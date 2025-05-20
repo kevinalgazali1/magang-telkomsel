@@ -7,6 +7,7 @@ use App\Http\Controllers\MitraController;
 use App\Http\Controllers\AlumniSiswaController;
 use App\Http\Controllers\DaftarController;
 use App\Http\Controllers\LokerController;
+use App\Http\Controllers\PelatihanController;
 use App\Http\Controllers\SertifikasiController;
 use App\Models\AlumniSiswaProfile;
 
@@ -58,7 +59,10 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
         Route::post('/mitra/store-loker', [LokerController::class, 'store'])->name('mitra.loker.store');
         Route::put('/mitra/update-loker/{id}', [LokerController::class, 'update'])->name('mitra.loker.update');
         Route::delete('/mitra/delete-loker/{id}', [LokerController::class, 'destroy'])->name('mitra.loker.destroy');
-        Route::get('/mitra/pelatihan', [MitraController::class, 'pelatihan'])->name('mitra.pelatihan');
+        Route::get('/mitra/pelatihan', [PelatihanController::class, 'index'])->name('mitra.pelatihan');
+        Route::post('/mitra/store-pelatihan', [PelatihanController::class, 'store'])->name('mitra.pelatihan.store');
+        Route::put('/mitra/update-pelatihan/{id}', [PelatihanController::class, 'update'])->name('mitra.pelatihan.update');
+        Route::delete('/mitra/delete-pelatihan/{id}', [PelatihanController::class, 'destroy'])->name('mitra.pelatihan.destroy');
     });
 });
 

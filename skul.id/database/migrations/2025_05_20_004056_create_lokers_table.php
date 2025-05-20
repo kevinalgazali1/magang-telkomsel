@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('tipe');
             $table->string('pendidikan');
             $table->text('deskripsi');
-            $table->integer('gaji');
+            $table->string('gaji');
             $table->timestamps();
         });
     }

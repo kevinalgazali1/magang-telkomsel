@@ -478,8 +478,9 @@
                     class="bi bi-patch-check-fill me-2"></i>Sertifikasi</a>
             <a class="text-secondary" href="{{ route('mitra.loker') }}"><i
                     class="bi bi-briefcase-fill me-2"></i>Loker</a>
-            {{-- <a class="text-secondary" href="{{ route('mitra.pelatihan') }}"><i class="bi bi-journal-text me-2"></i>Pelatihan</a> --}}
-            <a class="text-secondary" href="#"><i class="bi bi-person-fill me-2"></i>Profile Alumni</a>
+            <a class="text-secondary" href="{{ route('mitra.pelatihan') }}"><i
+                    class="bi bi-journal-text me-2"></i>Pelatihan</a>
+            {{-- <a class="text-secondary" href="#"><i class="bi bi-person-fill me-2"></i>Profile Alumni</a> --}}
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
                 <a href="#" class="logout"
@@ -504,7 +505,7 @@
                     <h5 class="mb-4 text-primary">Fitur Utama :</h5>
 
                     <div class="row gx-4 gy-4 mb-4">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <a href="{{ route('mitra.sertifikasi') }}" class="card-role">
                                 <div class="fitur-box sertifikasi h-100">
                                     <div class="fitur-title">Sertifikasi</div>
@@ -512,7 +513,7 @@
                                 </div>
                             </a>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <a href="{{ route('mitra.loker') }}" class="card-role">
                                 <div class="fitur-box loker h-100">
                                     <div class="fitur-title">Loker</div>
@@ -520,14 +521,14 @@
                                 </div>
                             </a>
                         </div>
-                        {{-- <div class="col-md-4">
-          <a href="{{ route('mitra.pelatihan') }}" class="card-role">
-            <div class="fitur-box pelatihan h-100">
-              <div class="fitur-title">Pelatihan</div>
-              <p>Ikuti pelatihan untuk meningkatkan skill anda</p>
-            </div>
-          </a>
-        </div> --}}
+                        <div class="col-md-4">
+                            <a href="{{ route('mitra.pelatihan') }}" class="card-role">
+                                <div class="fitur-box pelatihan h-100">
+                                    <div class="fitur-title">Pelatihan</div>
+                                    <p>Ikuti pelatihan untuk meningkatkan skill anda</p>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
