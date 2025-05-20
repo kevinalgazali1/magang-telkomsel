@@ -419,9 +419,9 @@
                     class="bi bi-patch-check-fill me-2"></i>Sertifikasi</a>
             <a class="text-secondary" href="{{ route('mitra.loker') }}"><i
                     class="bi bi-briefcase-fill me-2"></i>Loker</a>
-            <a class="text-secondary" href="{{ route('mitra.pelatihan') }}"><i
-                    class="bi bi-journal-text me-2"></i>Pelatihan</a>
-            <a class="text-secondary" href="#"><i class="bi bi-person-fill me-2"></i>Profil</a>
+            {{-- <a class="text-secondary" href="{{ route('mitra.pelatihan') }}"><i
+                    class="bi bi-journal-text me-2"></i>Pelatihan</a> --}}
+            <a class="text-secondary" href="#"><i class="bi bi-person-fill me-2"></i>Profile Alumni</a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
                 <a href="#" class="logout"
@@ -609,6 +609,7 @@
                         </div>
                     </div>
 
+                    <!-- Modal Form Tambah Sertifikasi -->
                     <div class="modal fade" id="editSertifikasiModal" tabindex="-1"
                         aria-labelledby="editSertifikasiModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg">
@@ -659,7 +660,7 @@
                                         <div class="mb-3">
                                             <label for="edit_biaya" class="form-label">Biaya (Rp)</label>
                                             <input type="number" class="form-control" id="edit_biaya"
-                                                name="biaya" required>
+                                                name="biaya" required oninput="formatRupiah(this)">
                                         </div>
                                         <div class="mb-3">
                                             <label for="edit_foto_sertifikasi" class="form-label">Upload Foto Baru
@@ -707,6 +708,12 @@
                             // Set form action URL
                             const form = document.getElementById('editForm');
                             form.action = `/mitra/update-sertifikasi/${id}`;
+                        }
+
+                        function formatRupiah(input) {
+                            let value = input.value.replace(/\D/g, ''); // Hapus semua karakter non-digit
+                            let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambah titik setiap 3 digit dari belakang
+                            input.value = formatted;
                         }
                     </script>
 </body>

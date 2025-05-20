@@ -299,18 +299,76 @@
                 display: none;
             }
         }
-    </style>
 
-    @php
-  $filteredJobs = [
-    ['title' => 'Web Developer', 'location' => 'Indonesia', 'type' => 'Full Time', 'mode' => 'Remote', 'company' => 'Tech Innovators'],
-    ['title' => 'Data Analyst', 'location' => 'USA', 'type' => 'Part Time', 'mode' => 'Onsite', 'company' => 'Data Corp'],
-    ['title' => 'UI/UX Designer', 'location' => 'Germany', 'type' => 'Project', 'mode' => 'Remote', 'company' => 'Design Studio'],
-    ['title' => 'Backend Engineer', 'location' => 'Indonesia', 'type' => 'Project', 'mode' => 'Onsite', 'company' => 'Code Masters'],
-    ['title' => 'Mobile App Developer', 'location' => 'Singapore', 'type' => 'Full Time', 'mode' => 'Remote', 'company' => 'App Solutions'],
-    ['title' => 'DevOps Engineer', 'location' => 'Netherlands', 'type' => 'Full Time', 'mode' => 'Onsite', 'company' => 'DevOps Experts']
-  ];
-  @endphp
+        .certificate-card {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 360px;
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .certificate-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            padding-top: 10px;
+        }
+
+        .certificate-content {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .certificate-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 0.5rem;
+        }
+
+        .certificate-provider {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+
+        .certificate-date {
+            font-size: 0.8rem;
+            color: #adb5bd;
+            margin-bottom: 1rem;
+        }
+
+        .btn-view {
+            align-self: start;
+            background-color: #0a66c2;
+            color: #fff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: none !important;
+        }
+
+        .btn-view:hover {
+            background-color: #0a66c2;
+            color: #fff;
+            text-decoration: none;
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -352,7 +410,8 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
                 <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
             </form>
         </div>
     </div>
@@ -387,63 +446,173 @@
                 <img src="{{ url('img/main-dashboard.png') }}" alt="Ilustrasi" class="illustration" />
             </div>
 
-            <div class="container my-5">
+            <div class="main-content px-5 py-3">
                 <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="filter-box">
-                            <form method="GET">
-                                <label class="fw-semibold">Lokasi:</label><br /><br />
-                                <button type="submit" name="location" value=""
-                                    class="btn btn-outline-secondary btn-filter">Semua</button>
-                                <button type="submit" name="location" value="Indonesia"
-                                    class="btn btn-outline-secondary btn-filter">Dalam Negeri</button>
-                                <button type="submit" name="location" value="Luar"
-                                    class="btn btn-outline-secondary btn-filter">Luar Negeri</button>
-                                <hr>
-                                <label class="fw-semibold">Tipe:</label><br /><br />
-                                <button type="submit" name="type" value="Full Time"
-                                    class="btn btn-outline-secondary btn-filter">Full Time</button>
-                                <button type="submit" name="type" value="Part Time"
-                                    class="btn btn-outline-secondary btn-filter">Part Time</button>
-                                <button type="submit" name="type" value="Project"
-                                    class="btn btn-outline-secondary btn-filter">Project</button>
-                            </form>
-                        </div>
-                    </div>
 
-                    <div class="col-md-8">
-                        <div class="row">
-                            @forelse($filteredJobs as $job)
-                                <div class="col-md-6 mb-4">
-                                    <div class="job-card">
-                                        <h5 class="job-title">{{ $job['title'] }}</h5>
-                                        <p class="company-name">{{ $job['company'] }}</p>
-                                        <div class="mb-2">
-                                            <span class="badge badge-custom me-1">
-                                                <i class="bi bi-geo-alt-fill"></i> {{ $job['location'] }}
-                                            </span>
-                                            <span class="badge badge-custom me-1">{{ $job['type'] }}</span>
-                                            <span class="badge badge-custom">{{ $job['mode'] }}</span>
+                    <div class="col-lg-12">
+                        {{-- Alert Message --}}
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if (session('message'))
+                            <div class="alert alert-{{ session('alert-type') ?? 'info' }} alert-dismissible fade show"
+                                role="alert">
+                                {{ session('message') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        <input type="text" class="form-control search-bar" placeholder="Cari Tipe" />
+
+                        <div class="row g-4">
+                            @foreach ($loker as $item)
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <div class="certificate-card">
+                                        <img src="{{ asset('storage/' . $item->gambar) }}" alt="Foto Lowongan"
+                                            class="certificate-img">
+
+                                        <div class="certificate-content">
+                                            <h3 class="certificate-title">{{ $item->posisi }}</h3>
+
+                                            <p class="certificate-provider">
+                                                <strong>Perusahaan:</strong> {{ $item->nama_perusahaan }}
+                                            </p>
+
+                                            <p class="certificate-provider">
+                                                <strong>Lokasi:</strong> {{ $item->lokasi }}
+                                            </p>
+
+                                            <p class="certificate-provider">
+                                                <strong>Jenis Pekerjaan:</strong> {{ $item->tipe }}
+                                            </p>
+
+                                            <p class="certificate-provider">
+                                                <strong>Pendidikan:</strong> {{ $item->pendidikan }}
+                                            </p>
+
+                                            <p class="certificate-provider">
+                                                <strong>Gaji:</strong> Rp{{ number_format($item->gaji, 0, ',', '.') }}
+                                            </p>
+
+                                            {{-- Tombol Detail dan Daftar --}}
+                                            <div class="d-flex gap-2 mt-3 justify-content-between">
+                                                <a href="#" class="btn-view" data-bs-toggle="modal"
+                                                    data-bs-target="#detailModal{{ $item->id }}">Detail</a>
+                                                <button type="button" class="btn-view" data-bs-toggle="modal"
+                                                    data-bs-target="#daftarModal{{ $item->id }}">Daftar</button>
+                                            </div>
                                         </div>
-                                        <a href="#" class="btn btn-sm btn-outline-primary mt-3 w-100">Lamar
-                                            Sekarang</a>
                                     </div>
                                 </div>
-                            @empty
-                                <div class="col-12 text-center">
-                                    <div class="alert alert-warning">⚠ Tidak ada lowongan yang sesuai filter.</div>
+
+
+                                {{-- Modal Detail --}}
+                                <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
+                                    aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content p-4">
+                                            <h5 class="modal-title mb-3">{{ $item->posisi }} -
+                                                {{ $item->nama_perusahaan }}</h5>
+                                            <p><strong>Deskripsi:</strong></p>
+                                            <p>{{ $item->deskripsi }}</p>
+                                            <p><strong>Lokasi:</strong> {{ $item->lokasi }}</p>
+                                            <p><strong>Jenis Pekerjaan:</strong> {{ $item->tipe }}</p>
+                                            <p><strong>Pendidikan:</strong> {{ $item->pendidikan }}</p>
+                                            <p><strong>Gaji:</strong> Rp{{ number_format($item->gaji, 0, ',', '.') }}
+                                            </p>
+                                            <button type="button" class="btn btn-secondary mt-3"
+                                                data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
                                 </div>
-                            @endforelse
+
+                                <!-- Modal Daftar dengan Upload CV -->
+                                <div class="modal fade" id="daftarModal{{ $item->id }}" tabindex="-1"
+                                    aria-labelledby="daftarModalLabel{{ $item->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content p-4">
+                                            <h5 class="modal-title" id="daftarModalLabel{{ $item->id }}">Unggah
+                                                CV - {{ $item->nama_perusahaan }}</h5>
+                                            <form action="{{ route('alumni-siswa.loker.store', $item->id) }}"
+                                                method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name="sertifikasi_id"
+                                                    value="{{ $item->id }}">
+
+                                                <div class="mb-3">
+                                                    <label for="cv{{ $item->id }}" class="form-label">Upload CV
+                                                        (PDF)
+                                                    </label>
+                                                    <input type="file" name="cv" id="cv{{ $item->id }}"
+                                                        class="form-control" accept=".pdf" required>
+                                                </div>
+
+                                                <div class="d-flex justify-content-end gap-2">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary">Kirim</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
+
                     </div>
                 </div>
             </div>
-
-
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('message'))
+            Swal.fire({
+                icon: '{{ session('alert-type') == 'warning' ? 'warning' : 'info' }}',
+                title: '{{ ucfirst(session('alert-type') ?? 'Info') }}',
+                text: '{{ session('message') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+    </script>
+
 </body>
 
 </html>

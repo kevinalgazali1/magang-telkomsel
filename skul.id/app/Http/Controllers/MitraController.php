@@ -69,13 +69,14 @@ class MitraController extends Controller
         return view('mitra.beranda', compact('User'));
     }
 
-    public function loker()
-    {
-        return view('mitra.loker');
-    }
-
     public function pelatihan()
     {
         return view('mitra.pelatihan');
+    }
+
+    public function profile()
+    {
+        $user = Auth::user();
+        return view('mitra.profile', compact('user'));
     }
 }

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Loker;
+use App\Models\Sertifikasi;
 use Illuminate\Http\Request;
 use App\Models\AlumniSiswaProfile;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
 
 class AlumniSiswaController extends Controller
 {
@@ -138,13 +140,15 @@ class AlumniSiswaController extends Controller
     public function sertifikasi()
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
-        return view('alumni-siswa.sertifikasi', compact('user'));
+        $sertifikasi = Sertifikasi::all();
+        return view('alumni-siswa.sertifikasi', compact('user', 'sertifikasi'));
     }
 
     public function loker()
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
-        return view('alumni-siswa.loker', compact('user'));
+        $loker = Loker::all();
+        return view('alumni-siswa.loker', compact('user', 'loker'));
     }
 
     public function pelatihan()

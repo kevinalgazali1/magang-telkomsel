@@ -300,36 +300,73 @@
             }
         }
 
-        .card-jurusan {
+        .certificate-card {
+            display: flex;
+            flex-direction: column;
             background: #fff;
-            border-radius: 15px;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 360px;
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .certificate-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            padding-top: 10px;
+        }
+
+        .certificate-content {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
             height: 100%;
         }
 
-        .card-jurusan:hover {
-            transform: scale(1.03);
-        }
-
-        .card-jurusan img {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-
-        .card-jurusan h6 {
-            font-size: 14px;
+        .certificate-title {
+            font-size: 1rem;
             font-weight: 600;
+            color: #212529;
+            margin-bottom: 0.5rem;
         }
 
-        .sertif-item {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
+        .certificate-provider {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+
+        .certificate-date {
+            font-size: 0.8rem;
+            color: #adb5bd;
+            margin-bottom: 1rem;
+        }
+
+        .btn-view {
+            align-self: start;
+            background-color: #0a66c2;
+            color: #fff;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: none !important;
+        }
+
+        .btn-view:hover {
+            background-color: #0a66c2;
+            color: #fff;
+            text-decoration: none;
+            transform: none;
+            box-shadow: none;
         }
     </style>
 </head>
@@ -373,7 +410,8 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
                 <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
             </form>
         </div>
     </div>
@@ -411,70 +449,136 @@
             <div class="main-content px-5 py-3">
                 <div class="row">
 
-                    <div class="col-lg-9">
+                    <div class="col-lg-12">
+                        {{-- Alert Message --}}
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if (session('message'))
+                            <div class="alert alert-{{ session('alert-type') ?? 'info' }} alert-dismissible fade show"
+                                role="alert">
+                                {{ session('message') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         <input type="text" class="form-control search-bar" placeholder="Cari jurusan" />
 
                         <div class="row g-4">
-                            <div class="col-md-4 col-sm-6">
-                                <div class="card-jurusan">
-                                    <img src="https://img.icons8.com/color/64/000000/architect.png" alt="Gedung" />
-                                    <h6>Arsitektur Bangunan</h6>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-6">
-                                <div class="card-jurusan">
-                                    <img src="https://img.icons8.com/color/64/000000/computer-support.png"
-                                        alt="RPL" />
-                                    <h6>Rekayasa Perangkat Lunak</h6>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-6">
-                                <div class="card-jurusan">
-                                    <img src="https://img.icons8.com/color/64/000000/chef-hat.png" alt="Tata Boga" />
-                                    <h6>Tata Boga</h6>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-6">
-                                <div class="card-jurusan">
-                                    <img src="https://img.icons8.com/color/64/000000/hair-dryer.png"
-                                        alt="Tata Rias" />
-                                    <h6>Tata Rias</h6>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-6">
-                                <div class="card-jurusan">
-                                    <img src="https://img.icons8.com/color/64/000000/electrical.png" alt="Listrik" />
-                                    <h6>Teknik Listrik</h6>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-sm-6">
-                                <div class="card-jurusan">
-                                    <img src="https://img.icons8.com/color/64/000000/car-service.png"
-                                        alt="TKRO" />
-                                    <h6>Teknik Kendaraan Ringan</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            @foreach ($sertifikasi as $item)
+                                <div class="col-md-4 d-flex justify-content-center">
+                                    <div class="certificate-card">
+                                        <img src="{{ asset('storage/' . $item->foto_sertifikasi) }}"
+                                            alt="Foto Sertifikasi" class="certificate-img">
 
-                    <div class="col-lg-3 mt-4 mt-lg-0">
-                        <div class="right-section">
-                            <h6>Sertifikasi Terbaru</h6>
-                            <div class="sertif-item">Sertifikasi Microsoft Office</div>
-                            <div class="sertif-item">Sertifikasi Desain Grafis</div>
-                            <div class="sertif-item">Sertifikasi Jaringan Komputer</div>
-                            <div class="sertif-item">Sertifikasi Teknik Otomotif</div>
-                            <div class="sertif-item">Sertifikasi Arsitektur Gedung</div>
-                            <div class="sertif-item">Sertifikasi Mekanik Roda Dua</div>
+                                        <div class="certificate-content">
+                                            <h3 class="certificate-title">{{ $item->judul_sertifikasi }}</h3>
+
+                                            <p class="certificate-provider">
+                                                {{ $item->tempat }}, {{ $item->kota }}
+                                            </p>
+
+                                            <p class="certificate-date">
+                                                {{ $item->tanggal_mulai }} s/d {{ $item->tanggal_selesai }}
+                                            </p>
+
+                                            <p class="certificate-provider">
+                                                Biaya: Rp{{ number_format($item->biaya, 0, ',', '.') }}
+                                            </p>
+
+                                            {{-- Tombol Detail dan Daftar sejajar --}}
+                                            <div class="d-flex gap-2 mt-3 justify-content-between">
+                                                <a href="#" class="btn-view" data-bs-toggle="modal"
+                                                    data-bs-target="#detailModal{{ $item->id }}">Detail</a>
+
+                                                <form action="{{ route('alumni-siswa.sertifikasi.store',$item->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="sertifikasi_id"
+                                                        value="{{ $item->id }}">
+                                                    <button type="submit" class="btn-view">Daftar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                {{-- Modal Detail --}}
+                                <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
+                                    aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content p-4">
+                                            <h5 class="modal-title mb-3">{{ $item->judul_sertifikasi }}</h5>
+                                            <p><strong>Deskripsi:</strong></p>
+                                            <p>{{ $item->deskripsi }}</p>
+                                            <p><strong>Tanggal:</strong> {{ $item->tanggal_mulai }} s/d
+                                                {{ $item->tanggal_selesai }}</p>
+                                            <p><strong>Tempat:</strong> {{ $item->tempat }}, {{ $item->kota }}</p>
+                                            <p><strong>Biaya:</strong> Rp{{ number_format($item->biaya, 0, ',', '.') }}
+                                            </p>
+                                            <button type="button" class="btn btn-secondary mt-3"
+                                                data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('message'))
+            Swal.fire({
+                icon: '{{ session('alert-type') == 'warning' ? 'warning' : 'info' }}',
+                title: '{{ ucfirst(session('alert-type') ?? 'Info') }}',
+                text: '{{ session('message') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+    </script>
+
 </body>
 
 </html>

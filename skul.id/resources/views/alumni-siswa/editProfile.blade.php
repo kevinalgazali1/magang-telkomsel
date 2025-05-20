@@ -255,11 +255,11 @@
     <div class="main-wrapper">
         <!-- Sidebar -->
         <div class="sidebar">
-            <a class="text-secondary" href="#">Beranda</a>
-            <a class="text-secondary" href="#">Sertifikasi</a>
-            <a class="text-secondary" href="#">Loker</a>
-            <a class="text-secondary" href="#">Pelatihan</a>
-            <a class="text-secondary" href="#">Profil</a>
+            <a class="text-secondary" href="{{ route('alumni-siswa.index') }}">Beranda</a>
+            <a class="text-secondary" href="{{ route('alumni-siswa.sertifikasi') }}">Sertifikasi</a>
+            <a class="text-secondary" href="{{ route('alumni-siswa.loker') }}">Loker</a>
+            {{-- <a class="text-secondary" href="#">Pelatihan</a> --}}
+            <a class="text-secondary" href="{{ route('alumni-siswa.profile') }}">Profil</a>
             <a href="#" class="logout">Logout</a>
         </div>
 

@@ -5,6 +5,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\MitraController;
 use App\Http\Controllers\AlumniSiswaController;
+use App\Http\Controllers\DaftarController;
+use App\Http\Controllers\LokerController;
 use App\Http\Controllers\SertifikasiController;
 use App\Models\AlumniSiswaProfile;
 
@@ -51,8 +53,11 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
         Route::post('/mitra/store-sertifikasi', [SertifikasiController::class, 'store'])->name('mitra.sertifikasi.store');
         Route::put('/mitra/update-sertifikasi/{id}', [SertifikasiController::class, 'update'])->name('mitra.sertifikasi.update');
         Route::delete('/mitra/delete-sertifikasi/{id}', [SertifikasiController::class, 'destroy'])->name('mitra.sertifikasi.destroy');
-        // Route::get('/mitra/profile', [MitraController::class, 'profile'])->name('mitra.profile');
-        Route::get('/mitra/loker', [MitraController::class, 'loker'])->name('mitra.loker');
+        Route::get('/mitra/profile', [MitraController::class, 'profile'])->name('mitra.profile');
+        Route::get('/mitra/loker', [LokerController::class, 'index'])->name('mitra.loker');
+        Route::post('/mitra/store-loker', [LokerController::class, 'store'])->name('mitra.loker.store');
+        Route::put('/mitra/update-loker/{id}', [LokerController::class, 'update'])->name('mitra.loker.update');
+        Route::delete('/mitra/delete-loker/{id}', [LokerController::class, 'destroy'])->name('mitra.loker.destroy');
         Route::get('/mitra/pelatihan', [MitraController::class, 'pelatihan'])->name('mitra.pelatihan');
     });
 });
@@ -67,6 +72,8 @@ Route::middleware(['auth', 'role:alumnisiswa'])->group(function () {
         Route::get('/alumni-siswa', [AlumniSiswaController::class, 'index'])->name('alumni-siswa.index');
         Route::get('/alumni-siswa/profile', [AlumniSiswaController::class, 'profile'])->name('alumni-siswa.profile');
         Route::get('/alumni-siswa/sertifikasi', [AlumniSiswaController::class, 'sertifikasi'])->name('alumni-siswa.sertifikasi');
+        Route::post('/alumni-siswa/store-sertifikasi/{sertifikasi}', [DaftarController::class, 'storeDaftarSertifikasi'])->name('alumni-siswa.sertifikasi.store');
+        Route::post('/alumni-siswa/store-loker/{loker}', [DaftarController::class, 'storeDaftarLoker'])->name('alumni-siswa.loker.store');
         Route::get('/alumni-siswa/loker', [AlumniSiswaController::class, 'loker'])->name('alumni-siswa.loker');
         Route::get('/alumni-siswa/pelatihan', [AlumniSiswaController::class, 'pelatihan'])->name('alumni-siswa.pelatihan');
         Route::get('/alumni-siswa/ikatan', [AlumniSiswaController::class, 'ikatan'])->name('alumni-siswa.ikatan');

@@ -6,6 +6,9 @@ namespace App\Models;
 use App\Models\MitraProfile;
 use App\Models\AlumniSiswaProfile;
 use App\Models\Sertifikasi;
+use App\Models\Loker;
+use App\Models\DaftarSertifikasi;
+use App\Models\DaftarLoker;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -63,6 +66,21 @@ class User extends Authenticatable
     public function sertifikasi()
     {
         return $this->hasMany(Sertifikasi::class);
+    }
+
+    public function loker()
+    {
+        return $this->hasMany(Loker::class);
+    }
+
+    public function daftarSertifikasi()
+    {
+        return $this->hasMany(DaftarSertifikasi::class);
+    }
+
+    public function daftarLoker()
+    {
+        return $this->hasMany(DaftarLoker::class);
     }
 
 }

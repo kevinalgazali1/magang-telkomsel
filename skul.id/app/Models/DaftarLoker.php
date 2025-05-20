@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use App\Models\DaftarSertifikasi;
+use App\Models\Loker;
 
-class Sertifikasi extends Model
+class DaftarLoker extends Model
 {
     protected $guarded = ['id'];
 
@@ -15,8 +15,8 @@ class Sertifikasi extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function daftar_sertifikasis()
+    public function loker()
     {
-        return $this->hasMany(DaftarSertifikasi::class);
+        return $this->belongsTo(Loker::class);
     }
 }
