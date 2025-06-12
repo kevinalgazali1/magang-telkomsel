@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\User;
 use App\Models\MitraProfile;
 use Illuminate\Http\Request;
@@ -65,13 +66,53 @@ class MitraController extends Controller
 
     public function index()
     {
-        $User = User::all();
-        return view('mitra.beranda', compact('User'));
+        $user = User::with('mitraProfile')->find(Auth::id());
+        return view('mitra.beranda', compact('user'));
     }
 
     public function profile()
     {
+        // Ambil daftar provinsi dari API
+        $provinsi = Http::get('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')->json();
+
+        // Default: ambil kabupaten dari provinsi Sulawesi Selatan (id 73)
+        $kota = Http::get('https://www.emsifa.com/api-wilayah-indonesia/api/regencies/73.json')->json();
+
         $user = Auth::user();
-        return view('mitra.profile', compact('user'));
+        return view('mitra.profile', compact('user', 'provinsi', 'kota'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        try {
+            $data = $request->all();
+
+            // Ambil daftar provinsi dari API
+            $provinsiList = Http::get('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')->json();
+
+            // Cari nama provinsi berdasarkan ID
+            $provinsiName = collect($provinsiList)->firstWhere('id', $request->provinsi)['name'] ?? null;
+
+            if (!$provinsiName) {
+                return redirect()->back()->with('error', 'Gagal memperbarui: Provinsi tidak valid.');
+            }
+
+            // Update profil
+            $user = Auth::user();
+            $user->mitraProfile->update([
+                'provinsi' => $provinsiName,
+                'kota' => $request->kota,
+                'alamat' => $request->alamat,
+                'nama_instansi' => $request->nama_instansi,
+                'penanggung_jawab' => $request->penanggung_jawab,
+                'bidang_industri' => $request->bidang_industri,
+                'kategori' => $request->kategori,
+            ]);
+
+            return redirect()->back()->with('success', 'Profil mitra berhasil diperbarui');
+        } catch (Exception $e) {
+            // Log error jika perlu: Log::error($e);
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data');
+        }
     }
 }

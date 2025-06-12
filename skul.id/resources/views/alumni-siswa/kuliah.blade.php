@@ -254,8 +254,9 @@
                 display: none;
             }
 
-            .content {
-                padding: 1rem;
+            .user-info {
+                display: none;
+                ;
             }
 
             .banner-images {
@@ -309,13 +310,14 @@
             <div class="col-lg-2">
                 <img src="{{ url('img/logo.png') }}" alt="Logo" class="logo" width="" />
             </div>
-            <div class="col-lg-2">
+            {{-- <div class="col-lg-2">
                 <img src="{{ url('img/pu.jpeg') }}" alt="Logo" class="logo" width="" />
-            </div>
+            </div> --}}
         </div>
         <div class="user-info">
-            <span>Halo User</span>
-            <img src="{{ url('img/user.png') }}" alt="Profile" class="profile-picture" />
+            <span>Halo, {{ $user->alumniSiswaProfile->nama_lengkap }}</span>
+            <img src="{{ asset('storage/' . $user->alumniSiswaProfile->foto_profil) }}" alt="Profile"
+                class="profile-picture" />
         </div>
         <button class="btn d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
             <i class="bi bi-list fs-3"></i>

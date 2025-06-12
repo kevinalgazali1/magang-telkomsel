@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Loker;
 use App\Models\DaftarLoker;
+use App\Models\DaftarPelatihan;
 use App\Models\Sertifikasi;
 use Illuminate\Http\Request;
 use App\Models\DaftarSertifikasi;
+use App\Models\Pelatihan;
 use Illuminate\Support\Facades\Auth;
 
 class DaftarController extends Controller
@@ -24,7 +26,7 @@ class DaftarController extends Controller
 
             // Cek jika sudah pernah mendaftar sertifikasi (opsional)
             $alreadyRegistered = DaftarSertifikasi::where('user_id', $user->id)
-                ->where('nama_lengkap', $profile->nama_lengkap)
+                ->where('sertifikasi_id', $sertifikasi->id)
                 ->exists();
 
             if ($alreadyRegistered) {
@@ -43,9 +45,21 @@ class DaftarController extends Controller
                 'no_hp'             => $user->no_hp,
                 'nama_lengkap'      => $profile->nama_lengkap,
                 'asal_sekolah'      => $profile->asal_sekolah,
-                'jurusan'           => $profile->jurusan,
+                'jurusan'           => $profile->jurusan_sekolah,
                 'jenis_kelamin'     => $profile->jenis_kelamin,
                 'tanggal_lahir'     => $profile->tanggal_lahir,
+                'nik'               => $profile->nik,
+                'tahun_kelulusan'   => $profile->tahun_kelulusan,
+                'npsn'              => $profile->npsn,
+                'provinsi'          => $profile->provinsi,
+                'kota'              => $profile->kota,
+                'alamat'            => $profile->alamat,
+                'status_saat_ini'   => $profile->status_saat_ini,
+                'bidang_pekerjaan'  => $profile->bidang_pekerjaan,
+                'sertifikasi_terakhir' => $profile->sertifikasi_terakhir,
+                'kesesuaian_sertifikasi' => $profile->kesesuaian_sertifikasi,
+                'nama_universitas' => $profile->nama_universitas,
+                'jurusan_universitas' => $profile->jurusan_universitas,
             ]);
 
             return redirect()->back()->with('success', 'Pendaftaran sertifikasi berhasil.');
@@ -69,7 +83,7 @@ class DaftarController extends Controller
 
             // Cek jika sudah pernah mendaftar sertifikasi (opsional)
             $alreadyRegistered = DaftarLoker::where('user_id', $user->id)
-                ->where('nama_lengkap', $profile->nama_lengkap)
+                ->where('loker_id', $loker->id)
                 ->exists();
 
             if ($alreadyRegistered) {
@@ -82,7 +96,10 @@ class DaftarController extends Controller
             $request->validate([
                 'cv' => 'required|mimes:pdf|max:2048', // Max 2MB
             ]);
-            $cv = $request->file('cv')->store('assets/cv', 'public');
+            // Upload CV
+            $cv = $request->file('cv');
+            $cv_name = $cv->hashName();
+            $cv->move(public_path('storage/assets/cv'), $cv_name);
 
             // Simpan data ke daftar_sertifikasis
             DaftarLoker::create([
@@ -92,16 +109,85 @@ class DaftarController extends Controller
                 'no_hp'             => $user->no_hp,
                 'nama_lengkap'      => $profile->nama_lengkap,
                 'asal_sekolah'      => $profile->asal_sekolah,
-                'jurusan'           => $profile->jurusan,
+                'jurusan'           => $profile->jurusan_sekolah,
                 'jenis_kelamin'     => $profile->jenis_kelamin,
                 'tanggal_lahir'     => $profile->tanggal_lahir,
                 'cv'                => $cv,
+                'nik'               => $profile->nik,
+                'tahun_kelulusan'   => $profile->tahun_kelulusan,
+                'npsn'              => $profile->npsn,
+                'provinsi'          => $profile->provinsi,
+                'kota'              => $profile->kota,
+                'alamat'            => $profile->alamat,
+                'status_saat_ini'   => $profile->status_saat_ini,
+                'bidang_pekerjaan'  => $profile->bidang_pekerjaan,
+                'sertifikasi_terakhir' => $profile->sertifikasi_terakhir,
+                'kesesuaian_sertifikasi' => $profile->kesesuaian_sertifikasi,
+                'nama_universitas' => $profile->nama_universitas,
+                'jurusan_universitas' => $profile->jurusan_universitas,
             ]);
 
             return redirect()->back()->with('success', 'Pendaftaran lowongan kerja berhasil.');
         } catch (\Exception $e) {
             return redirect()->route('alumni-siswa.loker')->with([
                 'message' => 'Gagal mendaftar lowongan kerja. Error: ' . $e->getMessage(),
+                'alert-type' => 'danger',
+            ]);
+        }
+    }
+
+    public function storeDaftarPelatihan(Request $request, Pelatihan $pelatihan)
+    {
+        try {
+            $user = Auth::user(); // user yang sedang login
+            $profile = $user->alumniSiswaProfile;
+
+            if (!$profile) {
+                return redirect()->back()->with('error', 'Data profil alumni belum lengkap.');
+            }
+
+            // Cek jika sudah pernah mendaftar sertifikasi (opsional)
+            $alreadyRegistered = DaftarPelatihan::where('user_id', $user->id)
+                ->where('pelatihan_id', $pelatihan->id)
+                ->exists();
+
+            if ($alreadyRegistered) {
+                return redirect()->back()->with([
+                    'message' => 'Anda sudah pernah mendaftar Pelatihan.',
+                    'alert-type' => 'warning',
+                ]);
+            }
+
+
+            // Simpan data ke daftar_sertifikasis
+            DaftarPelatihan::create([
+                'user_id'           => $user->id,
+                'pelatihan_id'      => $pelatihan->id,
+                'email'             => $user->email,
+                'no_hp'             => $user->no_hp,
+                'nama_lengkap'      => $profile->nama_lengkap,
+                'asal_sekolah'      => $profile->asal_sekolah,
+                'jurusan'           => $profile->jurusan_sekolah,
+                'jenis_kelamin'     => $profile->jenis_kelamin,
+                'tanggal_lahir'     => $profile->tanggal_lahir,
+                'nik'               => $profile->nik,
+                'tahun_kelulusan'   => $profile->tahun_kelulusan,
+                'npsn'              => $profile->npsn,
+                'provinsi'          => $profile->provinsi,
+                'kota'              => $profile->kota,
+                'alamat'            => $profile->alamat,
+                'status_saat_ini'   => $profile->status_saat_ini,
+                'bidang_pekerjaan'  => $profile->bidang_pekerjaan,
+                'sertifikasi_terakhir' => $profile->sertifikasi_terakhir,
+                'kesesuaian_sertifikasi' => $profile->kesesuaian_sertifikasi,
+                'nama_universitas' => $profile->nama_universitas,
+                'jurusan_universitas' => $profile->jurusan_universitas,
+            ]);
+
+            return redirect()->back()->with('success', 'Pendaftaran pelatihan berhasil.');
+        } catch (\Exception $e) {
+            return redirect()->route('alumni-siswa.pelatihan')->with([
+                'message' => 'Gagal mendaftar pelatihan. Error: ' . $e->getMessage(),
                 'alert-type' => 'danger',
             ]);
         }

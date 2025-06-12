@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class AlumniSiswaProfile extends Model
 {
+    protected $table = 'alumni_siswa_profiles';
+    
     protected $guarded = ['id'];
 
     public function user()

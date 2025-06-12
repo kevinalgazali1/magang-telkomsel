@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('pelatihans', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('mitra_id')->constrained('users')->onDelete('cascade');
             $table->string('nama_pelatihan');
             $table->string('tempat_pelatihan');
             $table->date('tanggal_mulai');

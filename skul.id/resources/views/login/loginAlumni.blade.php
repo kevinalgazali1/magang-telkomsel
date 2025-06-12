@@ -2,23 +2,35 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Skul.Id</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mitraskul.id</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
     <style>
+        html,
         body {
-            font-family: "Poppins", sans-serif;
-            color: #252f35;
-            font-size: 13px;
-            background-color: #fff;
-            min-height: 100vh;
+            height: 100%;
             margin: 0;
             padding: 0;
+            font-family: "Poppins", sans-serif;
+            background-color: #fff;
+            color: #252f35;
+            font-size: 16px;
+            /* Dibuat lebih besar */
+        }
+
+        .full-page-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 40px;
+            position: relative;
         }
 
         .btn-back {
@@ -28,35 +40,30 @@
             z-index: 999;
         }
 
-        .container-box {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            max-width: 900px;
-            margin: 100px auto;
-            padding: 30px;
-            position: relative;
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
         }
 
-        .logo-skulid {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            height: 40px;
+        .logo-wrapper img {
+            height: 50px;
         }
 
         .inner-content {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            gap: 30px;
-            margin-top: 50px;
+            gap: 100px;
             flex-wrap: wrap;
+            width: 100%;
+            max-width: 1000px;
         }
 
         .icon-besar {
             flex: 1;
-            min-width: 250px;
+            min-width: 300px;
             text-align: center;
         }
 
@@ -67,27 +74,25 @@
 
         .login-form {
             flex: 1;
-            min-width: 250px;
-        }
-
-        input {
-            height: 60px;
+            min-width: 300px;
         }
 
         h1 {
             font-weight: 600;
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: 36px;
+            margin-bottom: 15px;
         }
 
         p {
-            font-size: 14px;
+            font-size: 18px;
         }
 
         .form-control {
             background-color: #f1f8f7;
             border: none;
-            padding-left: 40px;
+            padding-left: 55px;
+            height: 70px;
+            font-size: 18px;
         }
 
         .form-control:focus {
@@ -98,18 +103,27 @@
             background: none;
             border: none;
             position: absolute;
-            left: 5px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
             color: #999;
+            font-size: 22px;
+            z-index: 2;
+        }
+
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin-top: 5px;
         }
 
         .form-check-label {
-            font-size: 13px;
+            font-size: 16px;
         }
 
         .form-check a {
             text-decoration: underline;
+            font-weight: 500;
         }
 
         .form-check-input:checked {
@@ -118,10 +132,19 @@
         }
 
         .login-btn {
-            background: #00FFE1;
+            background: #00ffe1;
             color: white;
             font-weight: 600;
-            height: 60px;
+            font-size: 20px;
+            height: 70px;
+        }
+
+        .text-danger {
+            font-size: 14px;
+        }
+
+        .alert {
+            font-size: 16px;
         }
 
         @media (max-width: 768px) {
@@ -130,27 +153,100 @@
                 text-align: center;
             }
 
-            .logo-skulid {
-                position: static;
-                margin-bottom: 20px;
+            .logo-wrapper {
+                justify-content: center;
+            }
+
+            .icon-besar img {
+                width: 300px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            p,
+            .form-check-label {
+                font-size: 16px;
+            }
+
+            .form-control,
+            .login-btn {
+                font-size: 16px;
+                height: 60px;
+            }
+        }
+
+        .login-btn:hover {
+            background-color: #00FFE1 !important;
+            color: white !important;
+            box-shadow: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+
+        @media (max-width: 768px) {
+            .inner-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .icon-besar img {
+                width: 300px;
+            }
+
+            h1 {
+                font-size: 30px;
+            }
+
+            p,
+            .form-check-label {
+                font-size: 16px;
+            }
+
+            .form-control,
+            .login-btn {
+                font-size: 16px;
+                height: 60px;
+            }
+
+            .full-page-container {
+                padding: 20px;
+            }
+
+            .logo-wrapper {
+                justify-content: center;
+                padding: 0 20px;
+                /* jarak sisi kiri/kanan */
+                margin-bottom: 30px;
+            }
+
+            .btn-back {
+                top: 15px;
+                left: 15px;
+                /* lebih menjauh dari tepi layar */
+            }
+
+            button {
+                margin-bottom: 80px;
+            }
+
+            .log-logo {
+                margin-top: 50px;
             }
         }
     </style>
 </head>
 
 <body>
-
     <!-- Tombol Back -->
     <a href="{{ url()->previous() }}" class="btn-back">
         <img src="{{ url('img/back.png') }}" alt="Back" width="30" />
     </a>
 
-    <!-- Kontainer Utama -->
-    <div class="container-box">
-
-        <!-- Logo Skul.id -->
-        <img src="{{ url('img/logo.png') }}" alt="Logo Skul.id" class="logo-skulid" />
-
+    <div class="full-page-container">
+        <!-- Error Handling -->
         @if ($errors->any())
             <div class="alert alert-danger" id="error-message">
                 <ul class="mb-0">
@@ -167,51 +263,53 @@
             </div>
         @endif
 
-
         <div class="inner-content">
-
-            <!-- Icon besar -->
+            <!-- Icon -->
             <div class="icon-besar">
-                <img src="{{ url('img/login-mitra.png') }}" alt="Icon Besar" style="width: 350px;">
+                <img src="{{ url('img/login-alumni.png') }}" alt="Icon Besar" class="log-logo" />
             </div>
 
-            <!-- Form Login -->
+            <!-- Login Form -->
             <div class="login-form">
-                <div class="text">
+                <div class="text mb-3">
                     <h1>Login Alumni / Siswa</h1>
-                    <p>Belum memiliki akun? <a href="{{ route('register.alumni') }}" class="text-danger">Daftar
-                            Sekarang</a></p>
+                    <p>Belum memiliki akun?
+                        <a href="{{ route('register.alumni') }}" class="text-danger">Daftar Sekarang</a>
+                    </p>
                 </div>
 
                 <form action="{{ route('login') }}" method="POST">
                     @csrf
-                    <input type="hidden" name="login_type" value="alumnisiswa">
-                    <!-- Input Nomor HP -->
+                    <input type="hidden" name="login_type" value="alumnisiswa" />
+
+                    <!-- Nomor HP -->
                     <div class="mb-3 position-relative">
                         <span class="input-group-text"><i class="bi bi-phone"></i></span>
                         <input type="text" class="form-control" placeholder="Nomor HP Telkomsel" name="identifier"
-                            required>
+                            required />
                         <div class="text-danger mt-1 small" id="phoneError"></div>
                     </div>
 
-                    <!-- Input Password -->
+                    <!-- Password -->
                     <div class="mb-3 position-relative">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" placeholder="Password" class="form-control" name="password"
-                            minlength="8" required>
+                        <input type="password" placeholder="Password" class="form-control" name="password" minlength="8"
+                            required />
                         <div class="text-danger mt-1 small" id="passwordError"></div>
                     </div>
 
                     <div class="mb-3 text-end">
                         <a href="#" class="text-danger small-link">Lupa Password?</a>
                     </div>
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="termsCheck" required>
+
+                    <div class="form-check mb-3 text-start">
+                        <input class="form-check-input" type="checkbox" id="termsCheck" required />
                         <label class="form-check-label" for="termsCheck">
-                            Dengan login menggunakan nomor atau metode lain, saya setuju dengan
+                            Dengan login, saya setuju dengan
                             <a href="#">Ketentuan Pengguna</a> & <a href="#">Kebijakan Privasi</a>
                         </label>
                     </div>
+
                     <button type="submit" class="btn login-btn w-100">LOGIN</button>
                 </form>
             </div>
@@ -219,20 +317,19 @@
     </div>
 
     <script>
-        document.querySelector("form").addEventListener("submit", function(e) {
+        document.querySelector("form").addEventListener("submit", function (e) {
             const phoneInput = document.querySelector('input[name="identifier"]');
             const passwordInput = document.querySelector('input[name="password"]');
 
             const phoneError = document.getElementById("phoneError");
             const passwordError = document.getElementById("passwordError");
 
-            // Reset pesan error
             phoneError.textContent = "";
             passwordError.textContent = "";
 
             const phonePattern = /^08(11|12|13|21|22|51|52|53)[0-9]{5,8}$/;
+            const phoneValue = phoneInput.value.trim();
             const passwordValue = passwordInput.value;
-            const phoneValue = phoneInput.value;
 
             let hasError = false;
 
@@ -246,13 +343,10 @@
                 hasError = true;
             }
 
-            if (hasError) {
-                e.preventDefault(); // Mencegah form dikirim
-            }
+            if (hasError) e.preventDefault();
         });
 
-        // Hilangkan alert server-side setelah 3 detik
-        window.addEventListener("DOMContentLoaded", function() {
+        window.addEventListener("DOMContentLoaded", function () {
             const alerts = document.querySelectorAll(".alert");
             alerts.forEach(alert => {
                 setTimeout(() => {

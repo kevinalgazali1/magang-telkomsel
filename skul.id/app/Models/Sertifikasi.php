@@ -15,8 +15,13 @@ class Sertifikasi extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function daftar_sertifikasis()
+    public function daftarSertifikasis()
     {
         return $this->hasMany(DaftarSertifikasi::class);
+    }
+
+    public function mitra()
+    {
+        return $this->belongsTo(User::class, 'mitra_id');
     }
 }

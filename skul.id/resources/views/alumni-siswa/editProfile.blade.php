@@ -8,11 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <style>
-        /* ============ Base ============ */
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            background-color: #f8f9fa;
+            background-color: #fff;
+            overflow: hidden;
         }
 
         a {
@@ -27,7 +27,6 @@
         /* ============ Navbar ============ */
         .navbar {
             background-color: #ffffff;
-            padding: 1rem 2rem;
             border-bottom: 1px solid #ddd;
             display: flex;
             justify-content: space-between;
@@ -35,12 +34,14 @@
         }
 
         .navbar .logo {
-            width: 100px;
+            width: 150px;
+            margin-left: 30px;
         }
 
         .user-info {
             display: flex;
             align-items: center;
+            margin-right: 30px;
         }
 
         .user-info span {
@@ -63,26 +64,38 @@
         }
 
         .sidebar {
-            width: 220px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            height: 100%;
             background-color: #eff9ff;
-            padding: 2rem 1rem;
+            position: relative;
             flex-shrink: 0;
         }
 
-        .sidebar a {
-            display: block;
-            color: #000;
-            padding: 0.75rem 0;
+        .nav-link {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: #495057;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-link.active {
+            background-color: #e7f1ff;
+            color: #0d6efd;
             font-weight: 600;
         }
 
-        .sidebar a:hover {
-            color: #d24c62;
+        .nav-link i {
+            font-size: 1.1rem;
         }
 
-        .sidebar .logout {
-            margin-top: 2rem;
-            color: #d24c62;
+        .sidebar h5 {
+            letter-spacing: 0.5px;
+        }
+
+        .logout {
+            cursor: pointer;
         }
 
         .content {
@@ -91,125 +104,6 @@
             background-color: #fff;
         }
 
-        /* ============ Banner ============ */
-        .banner {
-            background: url('{{ url('img/background.jpg') }}') no-repeat center center;
-            padding: 2rem;
-            position: relative;
-            margin-bottom: 2rem;
-            min-height: 350px;
-        }
-
-        .banner h2 {
-            color: #c04055;
-            font-weight: 700;
-        }
-
-        .banner p {
-            max-width: 500px;
-        }
-
-        .banner .illustration {
-            position: absolute;
-            bottom: 0;
-            right: 2rem;
-            width: 350px;
-        }
-
-        /* ============ Fitur Section ============ */
-        #fitur {
-            max-width: 1000px;
-            margin: 2rem auto;
-        }
-
-        .feature-card {
-            background-color: #f1f1f1;
-            border-radius: 15px;
-            padding: 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s ease;
-        }
-
-        .feature-card:hover {
-            transform: scale(1.03);
-        }
-
-        .feature-content {
-            flex: 1;
-        }
-
-        .feature-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-card p {
-            font-size: 0.95rem;
-        }
-
-        /* ============ Custom Feature Colors ============ */
-        .sertifikasi {
-            background-color: #DAF2FF;
-        }
-
-        .sertifikasi .feature-title {
-            color: #196BE7;
-        }
-
-        .sertifikasi p {
-            color: #428EFF;
-        }
-
-        .loker {
-            background-color: #9BFFB9;
-        }
-
-        .loker .feature-title {
-            color: #00924E;
-        }
-
-        .loker p {
-            color: #00C569;
-        }
-
-        .pelatihan {
-            background-color: #81F082;
-        }
-
-        .pelatihan .feature-title {
-            color: #007B1F;
-        }
-
-        .pelatihan p {
-            color: #00A92A;
-        }
-
-        .alumni {
-            background-color: #F6C371;
-        }
-
-        .alumni .feature-title {
-            color: #91641B;
-        }
-
-        .alumni p {
-            color: #B98128;
-        }
-
-        .magang {
-            background-color: #D9D9D9;
-        }
-
-        .magang .feature-title {
-            color: #7D7D7D;
-        }
-
-        .magang p {
-            color: #8E8E8E;
-        }
 
         /* ============ Responsive ============ */
         @media (max-width: 768px) {
@@ -221,8 +115,9 @@
                 display: none;
             }
 
-            .content {
-                padding: 1rem;
+            .user-info {
+                display: none;
+                ;
             }
 
             .banner-images {
@@ -238,29 +133,109 @@
                 display: none;
             }
         }
+
+        .partner-footer-logo {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .footer ul {
+            padding-left: 0;
+        }
+
+        .footer li {
+            margin-bottom: 8px;
+        }
+
+        .footer .bg-opacity-50 {
+            background-color: rgba(255, 255, 255, 0.75) !important;
+            /* semi-transparent white for readability */
+        }
+
+        .container-footer {
+            width: 100%;
+            height: 100%;
+            ;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
     <div class="navbar">
-        <img src="{{ url('img/logo.png') }}" alt="Logo" class="logo" />
+        <div class="col-lg-6 d-flex">
+            <div class="col-lg-2">
+                <img src="{{ url('img/logo.png') }}" alt="Logo" class="logo" width="" />
+            </div>
+        </div>
         <div class="user-info">
-            <span>Halo {{ $user->alumniSiswaProfile->nama_lengkap }}</span>
-            <img src="{{ url('img/profile.jpg') }}" alt="Profile" class="profile-picture" />
+            <span>Halo, {{ $user->alumniSiswaProfile->nama_lengkap }}</span>
+            <img src="{{ asset('storage/' . $user->alumniSiswaProfile->foto_profil) }}" alt="Profile" class="profile-picture" />
+        </div>
+        <button class="btn d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+            <i class="bi bi-list fs-3"></i>
+        </button>
+    </div>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Menu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.index') }}"><i
+                    class="bi bi-house-door-fill me-2"></i>Beranda</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.sertifikasi') }}"><i
+                    class="bi bi-patch-check-fill me-2"></i>Sertifikasi</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.loker') }}"><i
+                    class="bi bi-briefcase-fill me-2"></i>Loker</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.pelatihan') }}"><i
+                    class="bi bi-journal-text me-2"></i>Pelatihan</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.profile') }}"><i
+                    class="bi bi-person-fill me-2"></i>Profil</a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <a href="#" class="logout"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+            </form>
         </div>
     </div>
 
     <!-- Sidebar + Content -->
     <div class="main-wrapper">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <a class="text-secondary" href="{{ route('alumni-siswa.index') }}">Beranda</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.sertifikasi') }}">Sertifikasi</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.loker') }}">Loker</a>
-            {{-- <a class="text-secondary" href="#">Pelatihan</a> --}}
-            <a class="text-secondary" href="{{ route('alumni-siswa.profile') }}">Profil</a>
-            <a href="#" class="logout">Logout</a>
+        <div class="sidebar sidebar-main d-flex flex-column p-3" style="width: 250px;">
+
+
+            <!-- Navigation Links -->
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.index') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.index') }}">
+                <i class="bi bi-house-door-fill me-2"></i> Beranda
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.sertifikasi') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.sertifikasi') }}">
+                <i class="bi bi-patch-check-fill me-2"></i> Sertifikasi
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.loker') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.loker') }}">
+                <i class="bi bi-briefcase-fill me-2"></i> Loker
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.pelatihan') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.pelatihan') }}">
+                <i class="bi bi-journal-text me-2"></i> Pelatihan
+            </a>
+            <a class="nav-link d-flex align-items-center mb-4 {{ request()->routeIs('alumni-siswa.profile') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.profile') }}">
+                <i class="bi bi-person-fill me-2"></i> Profil
+            </a>
+
+            <!-- Logout -->
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
+                @csrf
+                <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </a>
+            </form>
         </div>
 
         <!-- Content -->
@@ -278,40 +253,46 @@
                                 value="{{ old('nama_lengkap', $user->alumniSiswaProfile->nama_lengkap ?? '') }}">
                         </div>
 
-                        @if (($user->alumniSiswaProfile->status ?? '') !== 'alumni')
-                            <!-- Input NISN -->
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">NISN</label>
-                                <input type="text" name="nisn" class="form-control rounded-3"
-                                    value="{{ old('nisn', $user->alumniSiswaProfile->nisn ?? '') }}">
-                            </div>
-
-                            <!-- Input Kelas -->
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Kelas</label>
-                                <input type="text" name="kelas" class="form-control rounded-3"
-                                    value="{{ old('kelas', $user->alumniSiswaProfile->kelas ?? '') }}">
-                            </div>
-                        @endif
-
-                        @if (($user->alumniSiswaProfile->status ?? '') === 'alumni')
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Tahun Kelulusan</label>
-                                <input type="number" name="tahun_kelulusan" class="form-control rounded-3"
-                                    value="{{ old('tahun_kelulusan', $user->alumniSiswaProfile->tahun_kelulusan ?? '') }}">
-                            </div>
-                        @endif
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">NIK</label>
+                            <input type="text" name="nik" class="form-control rounded-3"
+                                value="{{ old('nik', $user->alumniSiswaProfile->nik ?? '') }}">
+                        </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Jurusan</label>
-                            <input type="text" name="jurusan" class="form-control rounded-3"
-                                value="{{ old('jurusan', $user->alumniSiswaProfile->jurusan ?? '') }}">
+                            <label class="form-label fw-semibold">Tahun Kelulusan</label>
+                            <input type="number" name="tahun_kelulusan" class="form-control rounded-3"
+                                value="{{ old('tahun_kelulusan', $user->alumniSiswaProfile->tahun_kelulusan ?? '') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Jurusan Sekolah</label>
+                            <input type="text" name="jurusan_sekolah" class="form-control rounded-3"
+                                value="{{ old('jurusan_sekolah', $user->alumniSiswaProfile->jurusan_sekolah ?? '') }}">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Asal Sekolah</label>
                             <input type="text" name="asal_sekolah" class="form-control rounded-3"
                                 value="{{ old('asal_sekolah', $user->alumniSiswaProfile->asal_sekolah ?? '') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">NPSN</label>
+                            <input type="text" name="npsn" class="form-control rounded-3"
+                                value="{{ old('npsn', $user->alumniSiswaProfile->npsn ?? '') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Provinsi</label>
+                            <input type="text" name="provinsi" class="form-control rounded-3"
+                                value="{{ old('provinsi', $user->alumniSiswaProfile->provinsi ?? '') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Kota/Kabupaten</label>
+                            <input type="text" name="kota" class="form-control rounded-3"
+                                value="{{ old('kota', $user->alumniSiswaProfile->kota ?? '') }}">
                         </div>
 
                         <div class="mb-3">
@@ -345,8 +326,77 @@
                         </div>
 
                         <div class="mb-3">
+                            <label class="form-label fw-semibold">Status Saat Ini</label>
+                            <select name="status_saat_ini" class="form-select rounded-3">
+                                <option disabled selected>Pilih Status</option>
+                                <option value="Bekerja"
+                                    {{ old('status_saat_ini', $user->alumniSiswaProfile->status_saat_ini ?? '') == 'Bekerja' ? 'selected' : '' }}>
+                                    Bekerja</option>
+                                <option value="Wirausaha"
+                                    {{ old('status_saat_ini', $user->alumniSiswaProfile->status_saat_ini ?? '') == 'Wirausaha' ? 'selected' : '' }}>
+                                    Wirausaha</option>
+                                <option value="Kuliah"
+                                    {{ old('status_saat_ini', $user->alumniSiswaProfile->status_saat_ini ?? '') == 'Kuliah' ? 'selected' : '' }}>
+                                    Kuliah</option>
+                                <option value="Tidak Bekerja"
+                                    {{ old('status_saat_ini', $user->alumniSiswaProfile->status_saat_ini ?? '') == 'Tidak Bekerja' ? 'selected' : '' }}>
+                                    Tidak Bekerja</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Bidang Pekerjaan</label>
+                            <input type="text" name="bidang_pekerjaan" class="form-control rounded-3"
+                                value="{{ old('bidang_pekerjaan', $user->alumniSiswaProfile->bidang_pekerjaan ?? '') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Sertifikasi Terakhir</label>
+                            <input type="text" name="sertifikasi_terakhir" class="form-control rounded-3"
+                                value="{{ old('sertifikasi_terakhir', $user->alumniSiswaProfile->sertifikasi_terakhir ?? '') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Kesesuaian Sertifikasi</label>
+                            <select name="kesesuaian_sertifikasi" class="form-select rounded-3">
+                                <option disabled selected>Pilih</option>
+                                <option value="Ya, sesuai"
+                                    {{ old('kesesuaian_sertifikasi', $user->alumniSiswaProfile->kesesuaian_sertifikasi ?? '') == 'Ya, sesuai' ? 'selected' : '' }}>
+                                    Ya, sesuai</option>
+                                <option value="Tidak sesuai"
+                                    {{ old('kesesuaian_sertifikasi', $user->alumniSiswaProfile->kesesuaian_sertifikasi ?? '') == 'Tidak sesuai' ? 'selected' : '' }}>
+                                    Tidak sesuai</option>
+                                <option value="Tidak relevan / Belum bekerja"
+                                    {{ old('kesesuaian_sertifikasi', $user->alumniSiswaProfile->kesesuaian_sertifikasi ?? '') == 'Tidak relevan / Belum bekerja' ? 'selected' : '' }}>
+                                    Tidak relevan / Belum bekerja</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nama Universitas</label>
+                            <input type="text" name="nama_universitas" class="form-control rounded-3"
+                                value="{{ old('nama_universitas', $user->alumniSiswaProfile->nama_universitas ?? '') }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Jurusan Universitas</label>
+                            <input type="text" name="jurusan_universitas" class="form-control rounded-3"
+                                value="{{ old('jurusan_universitas', $user->alumniSiswaProfile->jurusan_universitas ?? '') }}">
+                        </div>
+
+                        <div class="mb-3">
                             <label class="form-label fw-semibold">Alamat</label>
                             <textarea name="alamat" class="form-control rounded-3" rows="2">{{ old('alamat', $user->alumniSiswaProfile->alamat ?? '') }}</textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="edit_foto_profil" class="form-label">Upload
+                                Foto
+                                Baru
+                                (Opsional)</label>
+                            <input type="file" class="form-control" id="edit_foto_profil"
+                                name="foto_profil" accept=".jpg,.jpeg,.png">
+                            <img id="preview_foto_edit" class="img-fluid mt-2 rounded" style="max-height: 150px;">
                         </div>
 
                         <div class="text-end">
@@ -357,9 +407,51 @@
 
                 </div>
             </div>
+            <footer class="footer text-dark"
+                style="background: url('{{ url('img/footer.png') }}') no-repeat center center / cover;">
+                <div class="container-footer">
+                    <div class="row align-items-start bg-white bg-opacity-75 rounded-3 p-4 shadow-sm">
+                        <!-- Logo & Deskripsi -->
+                        <div class="col-md-4 mb-4">
+                            <img src="{{ url('img/logo.png') }}" alt="Logo Skul.Id" style="height: 65px;"
+                                class="mb-3">
+                            <p class="small">
+                                mitraskul.Id adalah platform yang menghubungkan alumni dengan sekolah, dunia industri,
+                                dan
+                                peluang karier.
+                            </p>
+                        </div>
+
+                        <!-- Kontak -->
+                        <div class="col-md-4 mb-4">
+                            <!-- <h6 class="fw-bold text-uppercase mb-3">Kontak</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="bi bi-envelope-fill me-2"></i>mitraskulid@gmail.com</li>
+                                <li><i class="bi bi-telephone-fill me-2"></i>+62 851-7959-2408</li>
+                            </ul> -->
+                        </div>
+
+                        <!-- Partner -->
+                        <div class="col-md-4 mb-4">
+                            <h6 class="fw-bold text-uppercase mb-3">Didukung Oleh</h6>
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <img src="{{ url('img/Telkomsel.png') }}" alt="Telkomsel"
+                                    class="partner-footer-logo">
+                                <img src="{{ url('img/pu.png') }}" alt="PUP Makassar" class="partner-footer-logo">
+                            </div>
+                        </div>
+                        <div class="text-center text-dark small mt-4">
+                            © 2025 mitraskul.Id. All rights reserved.
+                        </div>
+                    </div>
+
+                </div>
+            </footer>
+
         </div>
 
 
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

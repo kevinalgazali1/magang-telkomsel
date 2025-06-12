@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LokerPostRequest;
+use App\Models\User;
 use App\Models\Loker;
+use App\Models\DaftarLoker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\LokerPostRequest;
 
 class LokerController extends Controller
 {
@@ -14,10 +16,10 @@ class LokerController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        $lokerMitraSendiri = Loker::where('user_id', $user->id)->get();
+        $user = User::with('mitraProfile')->find(Auth::id());
+        $lokerMitraSendiri = Loker::with('daftarLoker')->where('user_id', $user->id)->get();
         $lokerMitraLain = Loker::where('user_id', '!=', $user->id)->get();
-        return view('mitra.loker', compact('lokerMitraSendiri', 'lokerMitraLain'));
+        return view('mitra.loker', compact('lokerMitraSendiri', 'lokerMitraLain', 'user'));
     }
 
     /**
@@ -34,24 +36,46 @@ class LokerController extends Controller
     public function store(LokerPostRequest $request)
     {
         try {
-            if ($request->validated()) {
-                $user_id = $request->user()->id;
-                $gambar = $request->file('gambar')->store('assets/loker', 'public');
-                Loker::create($request->except('gambar') + ['gambar' => $gambar, 'user_id' => $user_id]);
-            }
+            $user_id = $request->user()->id;
+            $mitra_id = $request->user()->id;
 
-            return redirect()->route('mitra.loker')->with('success', 'Lowongan Kerja Berhasil Dibuat');
+            // Format gaji jadi satu string
+            $gaji = 'Rp ' . number_format($request->gaji_min, 0, ',', '.') .
+                ' - Rp ' . number_format($request->gaji_max, 0, ',', '.');
+
+            // Upload gambar
+            $file = $request->file('gambar');
+            $file_name = $file->hashName();
+            $file->move(public_path('storage/assets/loker'), $file_name);
+
+            // Simpan data ke database
+            Loker::create([
+                'nama_perusahaan' => $request->nama_perusahaan,
+                'deskripsi' => $request->deskripsi,
+                'posisi' => $request->posisi,
+                'lokasi' => $request->lokasi,
+                'tipe' => $request->tipe,
+                'pendidikan' => $request->pendidikan,
+                'gaji' => $gaji,
+                'gambar' => 'assets/loker/' . $file_name,
+                'user_id' => $user_id,
+                'mitra_id' => $mitra_id
+            ]);
+
+            return redirect()->back()->with('success', 'Lowongan Kerja Berhasil Dibuat');
         } catch (\Exception $e) {
-            return redirect()->route('mitra.loker')->with('danger', 'Lowongan Kerja Gagal Dibuat');
+            return redirect()->back()->with('danger', 'Lowongan Kerja Gagal Dibuat');
         }
     }
+
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($loker_id)
     {
-        //
+        $loker = Loker::with('daftarLoker.user')->findOrFail($loker_id);
+        $pelamar = DaftarLoker::where('loker_id', $loker_id)->get();
     }
 
     /**
@@ -77,8 +101,19 @@ class LokerController extends Controller
         $loker->gaji = $request->gaji;
 
         if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('loker', 'public');
-            $loker->gambar = $path;
+            // 🔥 Hapus file lama jika ada
+            $oldPath = public_path('storage/' . $loker->gambar);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
+
+            // 📥 Upload file baru
+            $file = $request->file('gambar');
+            $file_name = $file->hashName();
+            $file->move(public_path('storage/assets/loker'), $file_name);
+
+            // 💾 Simpan path baru
+            $loker->gambar = 'assets/sertifikasi/' . $file_name;
         }
 
         $loker->save();
@@ -96,6 +131,6 @@ class LokerController extends Controller
             abort(403);
         }
         $loker->delete();
-        return redirect()->route('mitra.loker')->with('success', 'Lowongan Kerja berhasil dihapus.');
+        return redirect()->back()->with('success', 'Lowongan Kerja berhasil dihapus.');
     }
 }

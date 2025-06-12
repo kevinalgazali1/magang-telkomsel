@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('sertifikasis', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('mitra_id')->constrained('users')->onDelete('cascade');
             $table->string('judul_sertifikasi');
             $table->text('deskripsi');
             $table->string('tanggal_mulai');

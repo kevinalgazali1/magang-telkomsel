@@ -14,8 +14,11 @@
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
-            background-color: #f8f9fa;
-            overflow-x: hidden;
+            background-color: #fff;
+        }
+
+        body:not(.modal-open) {
+            overflow: hidden;
         }
 
         a {
@@ -27,22 +30,11 @@
             margin: 0;
         }
 
-        /* ============ Navbar ============ */
-        .navbar {
-            background-color: #ffffff;
-            padding: 1rem 2rem;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
         .main-content {
-            padding: 3rem 10%;
+            width: 100%;
         }
 
         .right-section {
-            background-color: white;
             border-radius: 15px;
             padding: 1.5rem;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -55,10 +47,8 @@
         }
 
         .sertif-container {
-            background-color: white;
             padding: 2rem;
             border-radius: 15px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             margin-top: 1.5rem;
         }
 
@@ -82,14 +72,9 @@
         }
 
         #konten {
-            background-color: #fff;
             border-radius: 20px;
             padding: 2rem;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .navbar .logo {
-            width: 120px;
         }
 
         .search-bar {
@@ -123,7 +108,6 @@
         }
 
         .right-section {
-            background-color: white;
             border-radius: 15px;
             padding: 1.5rem;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -140,81 +124,15 @@
             border-bottom: 1px solid #eee;
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-info span {
-            margin-right: 1rem;
-            font-weight: 600;
-        }
-
-        .user-info .profile-picture {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #c04055;
-        }
-
         /* ============ Layout ============ */
         .main-wrapper {
             display: flex;
             height: calc(100vh - 80px);
         }
 
-        .artikel-card {
-            display: flex;
-            gap: 1rem;
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-radius: 10px;
-            height: 100%;
-        }
-
-        .artikel-card img {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            object-fit: cover;
-            flex-shrink: 0;
-        }
-
-        .artikel-card .artikel-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-
-        .sidebar {
-            width: 220px;
-            background-color: #eff9ff;
-            padding: 2rem 2rem;
-            flex-shrink: 0;
-        }
-
-        .sidebar a {
-            display: block;
-            color: #000;
-            padding: 0.75rem 0;
-            font-weight: 600;
-        }
-
-        .sidebar a:hover {
-            color: #d24c62;
-        }
-
-        .sidebar .logout {
-            margin-top: 2rem;
-            color: #d24c62;
-        }
-
         .content {
             flex: 1;
-            overflow-y: auto;
+            overflow: auto;
             background-color: #fff;
             margin: 0;
         }
@@ -242,6 +160,71 @@
             bottom: 0;
             right: 2rem;
             width: 350px;
+        }
+
+        /* ============ Navbar ============ */
+        .navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            width: 150px;
+            margin-left: 30px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-right: 30px;
+        }
+
+        .user-info span {
+            margin-right: 1rem;
+            font-weight: 600;
+        }
+
+        .user-info .profile-picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #c04055;
+        }
+
+        /* ============ Sidebar ============ */
+        .sidebar {
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            height: 100%;
+            background-color: #eff9ff;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .nav-link {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: #495057;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-link.active {
+            background-color: #e7f1ff;
+            color: #0d6efd;
+            font-weight: 600;
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+        }
+
+        .logout {
+            cursor: pointer;
         }
 
         /* ============ Fitur Section ============ */
@@ -343,7 +326,28 @@
             margin-top: 200px;
         }
 
-        /* ============ Responsive ============ */
+        .partner-footer-logo {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .footer ul {
+            padding-left: 0;
+        }
+
+        .footer li {
+            margin-bottom: 8px;
+        }
+
+        .footer .bg-opacity-50 {
+            background-color: rgba(255, 255, 255, 0.75) !important;
+        }
+
+        .container-footer {
+            width: 100%;
+            height: 100%;
+        }
+
         @media (max-width: 768px) {
             .main-wrapper {
                 flex-direction: column;
@@ -353,8 +357,9 @@
                 display: none;
             }
 
-            .content {
-                padding: 1rem;
+            .user-info {
+                display: none;
+                ;
             }
 
             .banner-images {
@@ -369,6 +374,7 @@
             .banner .illustration {
                 display: none;
             }
+
         }
 
         @media (max-width: 1000px) {
@@ -398,292 +404,646 @@
                 display: none;
             }
         }
+
+        .card.loker-card {
+            transition: all 0.3s ease;
+            border-radius: 1rem;
+            overflow: hidden;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .card.loker-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card.loker-card img {
+            transition: transform 0.3s ease;
+        }
+
+        .card.loker-card:hover img {
+            transform: scale(1.03);
+        }
+
+        /* WebKit (Chrome, Safari, Edge) */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            /* Warna default semi-transparan */
+            border-radius: 4px;
+            border: none;
+        }
+
+        /* Hilangkan panah (scrollbar buttons) */
+        ::-webkit-scrollbar-button {
+            display: none;
+        }
+
+        /* Firefox */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        }
+
+        #success-message,
+        #error-message {
+            animation: fadeSlideDown 0.5s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes fadeSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content {
+            max-height: 90vh;
+            overflow: hidden;
+            animation: fadeInUp 0.3s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
     <div class="navbar">
-        <img src="{{ url('img/logo.png') }}" alt="Logo" class="logo" width="" />
+        <div class="col-lg-6 d-flex">
+            <div class="col-lg-2">
+                <img src="{{ url('img/logo.png') }}" alt="Logo" class="logo" width="" />
+            </div>
+        </div>
         <div class="user-info">
-            <span>Halo User</span>
-            <img src="{{ url('img/profile.jpg') }}" alt="Profile" class="profile-picture" />
+            <span>Halo, {{ $user->mitraProfile->nama_instansi }}</span>
+            <img src="{{ url('img/user.png') }}" alt="Profile" class="profile-picture" />
+        </div>
+        <button class="btn d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+            <i class="bi bi-list fs-3"></i>
+        </button>
+    </div>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasSidebar">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Menu</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('mitra.index') }}"><i
+                    class="bi bi-house-door-fill me-2"></i>Beranda</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('mitra.sertifikasi') }}"><i
+                    class="bi bi-patch-check-fill me-2"></i>Sertifikasi</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('mitra.loker') }}"><i
+                    class="bi bi-briefcase-fill me-2"></i>Loker</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('mitra.pelatihan') }}"><i
+                    class="bi bi-journal-text me-2"></i>Pelatihan</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('mitra.profile') }}"><i
+                    class="bi bi-person-fill me-2"></i>Profil</a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <a href="#" class="logout" onclick="event.preventDefault(); confirmLogout();">
+            </form>
         </div>
     </div>
 
     <div class="main-wrapper">
-        <div class="sidebar">
-            <a class="text-secondary" href="{{ route('mitra.index') }}"><i
-                    class="bi bi-house-door-fill me-2"></i>Beranda</a>
-            <a class="text-secondary" href="{{ route('mitra.sertifikasi') }}"><i
-                    class="bi bi-patch-check-fill me-2"></i>Sertifikasi</a>
-            <a class="text-secondary" href="{{ route('mitra.loker') }}"><i
-                    class="bi bi-briefcase-fill me-2"></i>Loker</a>
-            <a class="text-secondary" href="{{ route('mitra.pelatihan') }}"><i
-                    class="bi bi-journal-text me-2"></i>Pelatihan</a>
-            {{-- <a class="text-secondary" href="#"><i class="bi bi-person-fill me-2"></i>Profil</a> --}}
-            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        <div class="sidebar sidebar-main d-flex flex-column p-3" style="width: 250px;">
+
+
+            <!-- Navigation Links -->
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('mitra.index') ? 'active' : 'text-secondary' }}"
+                href="{{ route('mitra.index') }}">
+                <i class="bi bi-house-door-fill me-2"></i> Beranda
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('mitra.sertifikasi') ? 'active' : 'text-secondary' }}"
+                href="{{ route('mitra.sertifikasi') }}">
+                <i class="bi bi-patch-check-fill me-2"></i> Sertifikasi
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('mitra.loker') ? 'active' : 'text-secondary' }}"
+                href="{{ route('mitra.loker') }}">
+                <i class="bi bi-briefcase-fill me-2"></i> Loker
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('mitra.pelatihan') ? 'active' : 'text-secondary' }}"
+                href="{{ route('mitra.pelatihan') }}">
+                <i class="bi bi-journal-text me-2"></i> Pelatihan
+            </a>
+            <a class="nav-link d-flex align-items-center mb-4 {{ request()->routeIs('mitra.profile') ? 'active' : 'text-secondary' }}"
+                href="{{ route('mitra.profile') }}">
+                <i class="bi bi-person-fill me-2"></i> Profil
+            </a>
+
+            <!-- Logout -->
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                 @csrf
-                <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+                <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
+                    onclick="confirmLogout(event)">
+                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </a>
             </form>
         </div>
 
+
         <div class="content">
-            <div class="banner">
-                <div
-                    class="col-lg-7 d-flex flex-column justify-content-center text-lg-start text-center py-5 px-4 ml-5">
-                    <h2 class="fw-bold">Bangun Masa Depanmu Bersama Skul.Id</h2>
-                    <p class="text-secondary">Temukan peluang terbaik seperti pelatihan, sertifikasi, dan informasi
-                        kampus untuk membantumu meraih cita-cita karier.</p>
-                </div>
-                <img src="{{ url('img/main-dashboard.png') }}" alt="Ilustrasi" class="illustration" />
-            </div>
-
-            @if (session('success'))
-                <div id="success-message" class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if ($errors->any())
-                <div class="alert alert-danger" id="error-message">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             <div class="main-content">
                 <div class="row">
                     <!-- Konten Utama -->
-                    <div class="col-lg-9">
+                    <div class="col-lg-12">
                         <div id="konten">
-                            <h4 class="fw-bold mb-3">Info Lowongan Kerja</h4>
-                            <p>
-                                Temukan berbagai lowongan kerja dari mitra Skul.id untuk alumni SMK. Mitra dapat
-                                menambahkan lowongan baru dan alumni bisa langsung melamar melalui platform ini.
-                            </p>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div>
+                                    <h2 class="fw-bold mb-1">Kelola Lowongan Kerja</h2>
+                                    <p class="text-muted">Tambah dan kelola lowongan kerja untuk alumni dari mitra Anda.
+                                    </p>
+                                </div>
+                            </div>
 
-                            <!-- Tombol Tambah Sertifikasi -->
+                            <!-- Tombol Tambah Lowongan Kerja -->
                             <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#lokerModal">+
                                 Tambah Lowongan Kerja</button>
 
+                            <hr class="container my-5">
+
+                            <h5 class="mb-4 fw-bold">Lowongan Kerja Anda</h5>
                             <div class="sertif-container">
-                                <h5 class="mb-3 fw-semibold text-primary">Lowongan Kerja Anda</h5>
-                                <div class="sertif-list">
+                                <div class="row row-cols-1 row-cols-md-3 g-4">
                                     @forelse($lokerMitraSendiri as $loker)
-                                        <div class="item border rounded p-3 mb-3"> <img
-                                                src="{{ asset('storage/' . $loker->gambar) }}" alt="Foto Sertifikasi"
-                                                class="img-fluid mb-2 rounded" style="max-height: 150px;">
-                                            <h6 class="fw-bold">{{ $loker->nama_perusahaan }}</h6>
-                                            <p>{{ $loker->posisi }}</p>
-                                            <p>{{ $loker->tipe }}</p>
-                                            <p>Rp {{ number_format($loker->gaji, 0, ',', '.') }}</p>
-                                            <a href="#" class="btn btn-sm btn-warning" data-bs-toggle="modal"
-                                                data-bs-target="#editLokerModal" data-id="{{ $loker->id }}"
-                                                data-nama_perusahaan="{{ $loker->nama_perusahaan }}"
-                                                data-deskripsi="{{ $loker->deskripsi }}"
-                                                data-posisi="{{ $loker->posisi }}" data-lokasi="{{ $loker->lokasi }}"
-                                                data-tipe="{{ $loker->tipe }}"
-                                                data-pendidikan="{{ $loker->pendidikan }}"
-                                                data-gaji="{{ $loker->gaji }}"
-                                                data-gambar="{{ asset('storage/' . $loker->gambar) }}"
-                                                onclick="openEditModal(this)">Edit</a>
-                                            <form action="{{ route('mitra.loker.destroy', $loker->id) }}"
-                                                method="POST" class="d-inline"> @csrf
-                                                @method('DELETE') <button class="btn btn-sm btn-danger"
-                                                    onclick="return confirm('Yakin ingin menghapus Lowongan Kerja ini?')">Hapus</button>
-                                            </form>
-                                    </div> @empty <p class="text-muted">Belum ada Lowongan Kerja yang Anda buat.</p>
+                                        <div class="col">
+                                            <div class="card loker-card h-100 border-0 shadow-sm">
+                                                <img src="{{ asset('storage/' . $loker->gambar) }}"
+                                                    class="card-img-top object-fit-cover"
+                                                    alt="Foto Loker {{ $loker->nama_perusahaan }}"
+                                                    style="height: 200px; object-fit: cover;">
+
+                                                <div class="card-body d-flex flex-column">
+                                                    <h6 class="fw-semibold mb-1">{{ $loker->posisi }}</h6>
+
+                                                    <ul class="list-unstyled text-muted sertif-info mb-3 small">
+                                                        <li><i class="bi bi-building"></i>
+                                                            {{ $loker->nama_perusahaan }}
+                                                        </li>
+                                                        <li><i class="bi bi-cash-stack"></i> {{ $loker->gaji }}</li>
+                                                    </ul>
+
+                                                    <div
+                                                        class="mt-auto d-flex justify-content-between align-items-center">
+                                                        <button
+                                                            class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                                                            onclick="showLokerDetailModal(
+                                                                                                        '{{ asset('storage/' . $loker->gambar) }}',
+                                                                                                        '{{ $loker->posisi }}',
+                                                                                                        `{{ $loker->deskripsi }}`,
+                                                                                                        '{{ $loker->nama_perusahaan }}',
+                                                                                                        '{{ $loker->lokasi }}',
+                                                                                                        '{{ $loker->tipe }}',
+                                                                                                        '{{ $loker->pendidikan }}',
+                                                                                                        '{{ $loker->gaji }}'
+                                                                                                    )">
+                                                            Detail
+                                                        </button>
+
+                                                        <div class="d-flex gap-2">
+                                                            <button
+                                                                class="btn btn-sm btn-outline-warning rounded-circle btn-icon"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#editLokerModal"
+                                                                data-id="{{ $loker->id }}"
+                                                                data-nama_perusahaan="{{ $loker->nama_perusahaan }}"
+                                                                data-deskripsi="{{ $loker->deskripsi }}"
+                                                                data-posisi="{{ $loker->posisi }}"
+                                                                data-lokasi="{{ $loker->lokasi }}"
+                                                                data-tipe="{{ $loker->tipe }}"
+                                                                data-pendidikan="{{ $loker->pendidikan }}"
+                                                                data-gaji="{{ $loker->gaji }}"
+                                                                data-gambar="{{ asset('storage/' . $loker->gambar) }}"
+                                                                onclick="openEditModal(this)">
+                                                                <i class="bi bi-pencil-fill"></i>
+                                                            </button>
+
+                                                            <form id="deleteForm-{{ $loker->id }}"
+                                                                action="{{ route('mitra.loker.destroy', $loker->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="button" {{-- ubah type ke button, bukan submit --}}
+                                                                    onclick="confirmDelete({{ $loker->id }})"
+                                                                    class="btn btn-sm btn-outline-danger rounded-circle btn-icon">
+                                                                    <i class="bi bi-trash-fill"></i>
+                                                                </button>
+                                                            </form>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal fade" id="lokerDetailModal" tabindex="-1"
+                                            aria-labelledby="lokerDetailModalLabel" aria-hidden="true">
+                                            <div
+                                                class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                                <div class="modal-content shadow-lg rounded-4">
+                                                    <div class="modal-header border-0 pb-0">
+                                                        <h5 class="modal-title fw-bold text-primary-emphasis"
+                                                            id="lokerDetailModalLabel">
+                                                            <i class="bi bi-info-circle me-2"></i> Detail Lowongan
+                                                            Kerja
+                                                        </h5>
+                                                    </div>
+
+                                                    <div class="modal-body pt-2">
+                                                        <div class="row gy-4">
+                                                            <!-- Left: Detail Lowongan -->
+                                                            <div class="col-md-6">
+                                                                <img id="lokerDetailFoto" src=""
+                                                                    class="img-fluid rounded shadow-sm mb-3 w-100"
+                                                                    alt="Foto Perusahaan"
+                                                                    style="max-height: 240px; object-fit: cover;">
+                                                                <h4 id="lokerDetailPosisi" class="fw-semibold mb-2">
+                                                                </h4>
+                                                                <p id="lokerDetailDeskripsi" class="text-muted"></p>
+                                                                <ul class="list-unstyled text-sm">
+                                                                    <li class="mb-1">
+                                                                        <i
+                                                                            class="bi bi-building me-2 text-secondary"></i>
+                                                                        <strong>Perusahaan:</strong> <span
+                                                                            id="lokerDetailPerusahaan"></span>
+                                                                    </li>
+                                                                    <li class="mb-1">
+                                                                        <i
+                                                                            class="bi bi-geo-alt me-2 text-secondary"></i>
+                                                                        <strong>Lokasi:</strong> <span
+                                                                            id="lokerDetailLokasi"></span>
+                                                                    </li>
+                                                                    <li class="mb-1">
+                                                                        <i
+                                                                            class="bi bi-briefcase me-2 text-secondary"></i>
+                                                                        <strong>Tipe:</strong> <span
+                                                                            id="lokerDetailTipe"></span>
+                                                                    </li>
+                                                                    <li class="mb-1">
+                                                                        <i
+                                                                            class="bi bi-mortarboard me-2 text-secondary"></i>
+                                                                        <strong>Pendidikan:</strong> <span
+                                                                            id="lokerDetailPendidikan"></span>
+                                                                    </li>
+                                                                    <li class="mb-1">
+                                                                        <i
+                                                                            class="bi bi-cash-stack me-2 text-secondary"></i>
+                                                                        <strong>Gaji:</strong> <span
+                                                                            id="lokerDetailGaji"></span>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+
+                                                            <!-- Right: Placeholder Daftar Pelamar -->
+                                                            <div class="col-md-6">
+                                                                <h5 class="fw-semibold mb-2">Daftar Pelamar</h5>
+                                                                <p class="text-muted small mb-3">Data pelamar yang
+                                                                    telah mendaftar untuk
+                                                                    lowongan ini.</p>
+                                                                <div class="table-responsive">
+                                                                    <table
+                                                                        class="table table-sm table-hover table-striped align-middle mb-0">
+                                                                        <thead class="table-light text-center">
+                                                                            <tr>
+                                                                                <th>No</th>
+                                                                                <th>Nama</th>
+                                                                                <th>Email</th>
+                                                                                <th>CV</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @forelse ($loker->daftarLoker as $index => $pelamar)
+                                                                                <tr>
+                                                                                    <td>{{ $index + 1 }}</td>
+                                                                                    <td>{{ $pelamar->nama_lengkap }}
+                                                                                    </td>
+                                                                                    <td>{{ $pelamar->email }}</td>
+                                                                                    <td>
+                                                                                        <a href="{{ asset('storage/' . $pelamar->cv) }}"
+                                                                                            target="_blank"
+                                                                                            class="btn btn-sm btn-outline-primary">Lihat
+                                                                                            CV</a>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            @empty
+                                                                                <tr>
+                                                                                    <td colspan="4"
+                                                                                        class="text-muted fst-italic">
+                                                                                        Belum
+                                                                                        ada pelamar</td>
+                                                                                </tr>
+                                                                            @endforelse
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="modal-footer border-top-0 pt-3">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">
+                                                            <i class="bi bi-x-circle me-1"></i> Tutup
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="text-muted">Belum ada Lowongan Kerja yang Anda buat.</p>
                                     @endforelse
                                 </div>
                             </div>
-                            {{-- Sertifikasi Mitra Lain --}}
-
+                            {{-- Loker Mitra Lain --}}
+                            <hr class="container my-5">
+                            <h5 class="mb-4 fw-bold">Lowongan Kerja dari Mitra Lain</h5>
                             <div class="sertif-container mt-4">
-                                <h5 class="mb-3 text-primary fw-semibold">Lowongan Kerja dari Mitra Lain</h5>
-                                <div class="sertif-list">
+                                <div class="row row-cols-1 row-cols-md-3 g-4">
                                     @forelse($lokerMitraLain as $loker)
-                                        <div class="item border rounded p-3 mb-3"> <img
-                                                src="{{ asset('storage/' . $loker->gambar) }}" alt="Foto lokerikasi"
-                                                class="img-fluid mb-2 rounded" style="max-height: 150px;">
-                                            <h6 class="fw-bold">{{ $loker->nama_perusahaan }}</h6>
-                                            <p>{{ $loker->posisi }}</p>
-                                            <p>{{ $loker->tipe }}</p>
-                                            <p>{{ $loker->gaji }}</p>
-                                    </div> @empty <p class="text-muted">Belum ada Lowongan Kerja dari mitra lain.
-                                        </p>
+                                        <div class="col">
+                                            <div class="card loker-card h-100 border-0 shadow-sm">
+                                                <img src="{{ asset('storage/' . $loker->gambar) }}"
+                                                    class="card-img-top object-fit-cover"
+                                                    alt="Foto Loker {{ $loker->nama_perusahaan }}"
+                                                    style="height: 200px; object-fit: cover;">
+
+                                                <div class="card-body d-flex flex-column">
+                                                    <h6 class="fw-semibold mb-1">{{ $loker->posisi }}</h6>
+
+                                                    <ul class="list-unstyled text-muted sertif-info mb-3 small">
+                                                        <li><i class="bi bi-building"></i>
+                                                            {{ $loker->nama_perusahaan }}
+                                                        </li>
+                                                        <li><i class="bi bi-briefcase"></i> {{ $loker->tipe }}</li>
+                                                        <li><i class="bi bi-cash-stack"></i> {{ $loker->gaji }}</li>
+                                                    </ul>
+
+                                                    {{-- Bisa tambahkan tombol detail jika dibutuhkan --}}
+                                                    {{-- <button
+                                                        class="btn btn-sm btn-outline-primary rounded-pill mt-auto px-3">Lihat
+                                                        Detail</button> --}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="text-muted">Belum ada Lowongan Kerja dari mitra lain.</p>
                                     @endforelse
                                 </div>
                             </div>
 
-                            <!-- Sidebar -->
-                            <div class="col-lg-3 mt-4 mt-lg-0">
-                                <div class="right-section">
-                                    <h5>Sertifikasi Terbaru</h5>
-                                    <div class="sertif-item">Sertifikasi Microsoft Office</div>
-                                    <div class="sertif-item">Sertifikasi Desain Grafis</div>
-                                    <div class="sertif-item">Sertifikasi Jaringan Komputer</div>
-                                    <div class="sertif-item">Sertifikasi Teknik Otomotif</div>
-                                    <div class="sertif-item">Sertifikasi Arsitektur Gedung</div>
-                                    <div class="sertif-item">Sertifikasi Mekanik Roda Dua</div>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
-                    <!-- Modal Form Tambah Sertifikasi -->
+                    <!-- Modal Form Tambah Loker -->
                     <div class="modal fade" id="lokerModal" tabindex="-1" aria-labelledby="lokerModalLabel"
                         aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <form action="{{ route('mitra.loker.store') }}" method="POST"
-                                    enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="lokerModalLabel">Form Tambah Lowongan Kerja
-                                        </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Tutup"></button>
+                        <div class="modal-dialog modal-xl modal-dialog-centered">
+                            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden"
+                                style="max-height: 90vh;">
+                                <div class="row g-0 h-100">
+                                    <!-- Kolom Ilustrasi -->
+                                    <div class="col-md-5 d-none d-md-block bg-light position-relative">
+                                        <div
+                                            class="h-100 d-flex flex-column justify-content-center align-items-center p-4">
+                                            <h5 class="text-primary fw-bold">Tambah Lowongan Kerja</h5>
+                                            <p class="text-muted text-center px-3">
+                                                Posting lowongan kerja untuk menjangkau lebih banyak kandidat yang
+                                                berkualitas dan sesuai dengan kebutuhan perusahaan Anda.
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
-                                            <input type="text" class="form-control" id="nama_perusahaan"
-                                                name="nama_perusahaan" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="deskripsi" class="form-label">Deskripsi</label>
-                                            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="posisi" class="form-label">Posisi</label>
-                                                <input type="text" class="form-control" id="posisi"
-                                                    name="posisi" required>
+
+                                    <!-- Kolom Form -->
+                                    <div class="col-md-7 bg-white d-flex flex-column">
+                                        <form action="{{ route('mitra.loker.store') }}" method="POST"
+                                            enctype="multipart/form-data" class="d-flex flex-column h-100"
+                                            id="tambahLokerForm">
+                                            @csrf
+
+                                            <!-- Header -->
+                                            <div class="modal-header border-0">
+                                                <h5 class="modal-title fw-bold" id="lokerModalLabel">
+                                                    <i class="bi bi-briefcase-fill me-2 text-primary"></i>Tambah
+                                                    Lowongan
+                                                </h5>
                                             </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="lokasi" class="form-label">Lokasi</label>
-                                                <input type="text" class="form-control" id="lokasi"
-                                                    name="lokasi" required>
+
+                                            <!-- Body scrollable -->
+                                            <div class="modal-body overflow-auto" style="max-height: 65vh;">
+                                                <!-- 👇 Masukkan semua input form kamu di sini -->
+                                                <div class="mb-3">
+                                                    <label for="nama_perusahaan" class="form-label">Nama
+                                                        Perusahaan</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-text"><i
+                                                                class="bi bi-building"></i></span>
+                                                        <input type="text" class="form-control"
+                                                            id="nama_perusahaan" name="nama_perusahaan"
+                                                            value="{{ auth()->user()->mitraProfile->nama_instansi }}"
+                                                            required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="deskripsi" class="form-label">Deskripsi
+                                                        Pekerjaan</label>
+                                                    <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="posisi" class="form-label">Posisi</label>
+                                                        <input type="text" class="form-control" id="posisi"
+                                                            name="posisi" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label for="lokasi" class="form-label">Lokasi</label>
+                                                        <input type="text" class="form-control" id="lokasi"
+                                                            name="lokasi" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="tipe" class="form-label">Tipe Pekerjaan</label>
+                                                    <select class="form-select" name="tipe" required>
+                                                        <option value="">Pilih Tipe</option>
+                                                        <option value="freelance">Freelance</option>
+                                                        <option value="magang">Magang</option>
+                                                        <option value="part time">Part Time</option>
+                                                        <option value="full time">Full Time</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="pendidikan" class="form-label">Pendidikan
+                                                        Terakhir</label>
+                                                    <input type="text" class="form-control" id="pendidikan"
+                                                        name="pendidikan" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Rentang Gaji (Rp)</label>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <input type="text" class="form-control"
+                                                                id="gaji_min_view" placeholder="Minimum" required>
+                                                            <input type="hidden" name="gaji_min" id="gaji_min">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" class="form-control"
+                                                                id="gaji_max_view" placeholder="Maksimum" required>
+                                                            <input type="hidden" name="gaji_max" id="gaji_max">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label for="gambar" class="form-label">Upload Foto
+                                                        Perusahaan</label>
+                                                    <input type="file" class="form-control" id="gambar"
+                                                        name="gambar" accept=".jpg,.jpeg,.png" required>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="mb-3" id="tipe-group">
-                                            <label class="form-label fw-semibold">Tipe Pekerjaan</label>
-                                            <select class="form-select rounded-3" name="tipe" required>
-                                                <option value="freelance"
-                                                    {{ old('tipe') == 'freelance' ? 'selected' : '' }}>Freelance
-                                                </option>
-                                                <option value="magang"
-                                                    {{ old('tipe') == 'magang' ? 'selected' : '' }}>Magang
-                                                </option>
-                                                <option value="part time"
-                                                    {{ old('tipe') == 'part time' ? 'selected' : '' }}>Part Time
-                                                </option>
-                                                <option value="full time"
-                                                    {{ old('tipe') == 'full time' ? 'selected' : '' }}>Full Time
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="pendidikan" class="form-label">Pendidikan Terakhir</label>
-                                            <input type="text" class="form-control" id="pendidikan"
-                                                name="pendidikan" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="gaji" class="form-label">Gaji Sertifikasi (Rp)</label>
-                                            <input type="text" class="form-control" id="gaji" name="gaji"
-                                                required oninput="formatRupiah(this)">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="gambar" class="form-label">Upload Foto Perusahaan</label>
-                                            <input type="file" class="form-control" id="gambar" name="gambar"
-                                                accept=".jpg,.jpeg,.png" required>
-                                        </div>
+
+                                            <!-- Footer -->
+                                            <div class="modal-footer border-0">
+                                                <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">Batal</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    onclick="confirmTambahLoker()">Simpan Lowongan</button>
+                                            </div>
+                                        </form>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Batal</button>
-                                        <button type="submit" class="btn btn-primary">Simpan</button>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Modal Form Edit Sertifikasi -->
+
+                    <!-- Modal Form Edit loker -->
                     <div class="modal fade" id="editLokerModal" tabindex="-1" aria-labelledby="editLokerModalLabel"
                         aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <form id="editForm" method="POST" enctype="multipart/form-data">
+                        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content edit-modal-content">
+                                <form id="editForm" method="POST" enctype="multipart/form-data"
+                                    onsubmit="return validateGajiEdit()">
                                     @csrf
                                     @method('PUT')
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editLokerModalLabel">Edit Sertifikasi</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Tutup"></button>
+                                    <div class="modal-header border-0">
+                                        <h5 class="modal-title fw-semibold text-primary-emphasis">
+                                            <i class="bi bi-pencil-square me-2"></i>Edit Lowongan Kerja
+                                        </h5>
                                     </div>
+
                                     <div class="modal-body">
-                                        <input type="hidden" id="edit_id">
-                                        <div class="mb-3">
-                                            <label for="edit_nama_perusahaan" class="form-label">Nama
-                                                Perusahaan</label>
-                                            <input type="text" class="form-control" id="edit_nama_perusahaan"
-                                                name="nama_perusahaan" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="edit_deskripsi" class="form-label">Deskripsi</label>
-                                            <textarea class="form-control" id="edit_deskripsi" name="deskripsi" rows="3" required></textarea>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label for="edit_posisi" class="form-label">Posisi</label>
-                                                <input type="text" class="form-control" id="edit_posisi"
-                                                    name="posisi" required>
+                                        <div class="row gx-4 gy-3">
+                                            <!-- Left Section -->
+                                            <div class="col-lg-6">
+                                                <input type="hidden" id="edit_id">
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Nama Perusahaan</label>
+                                                    <input type="text" class="form-control"
+                                                        id="edit_nama_perusahaan" name="nama_perusahaan" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Deskripsi</label>
+                                                    <textarea class="form-control" id="edit_deskripsi" name="deskripsi" rows="4" required></textarea>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Pendidikan</label>
+                                                    <input type="text" class="form-control" id="edit_pendidikan"
+                                                        name="pendidikan" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Upload Gambar (Opsional)</label>
+                                                    <input type="file" class="form-control" id="edit_gambar"
+                                                        name="gambar" accept=".jpg,.jpeg,.png"
+                                                        onchange="previewImageEdit(this)">
+                                                </div>
                                             </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label for="edit_lokasi" class="form-label">Lokasi</label>
-                                                <input type="text" class="form-control" id="edit_lokasi"
-                                                    name="lokasi" required>
+
+                                            <!-- Right Section -->
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Posisi</label>
+                                                    <input type="text" class="form-control" id="edit_posisi"
+                                                        name="posisi" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Lokasi</label>
+                                                    <input type="text" class="form-control" id="edit_lokasi"
+                                                        name="lokasi" required>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Tipe Pekerjaan</label>
+                                                    <select class="form-select" name="tipe" id="edit_tipe"
+                                                        required>
+                                                        <option value="freelance">Freelance</option>
+                                                        <option value="magang">Magang</option>
+                                                        <option value="part time">Part Time</option>
+                                                        <option value="full time">Full Time</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <label class="form-label">Rentang Gaji (Rp)</label>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <input type="text" class="form-control"
+                                                                id="edit_gaji_min_view" placeholder="Minimum" required
+                                                                oninput="formatRupiah(this)">
+                                                            <input type="hidden" name="gaji_min" id="edit_gaji_min">
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="text" class="form-control"
+                                                                id="edit_gaji_max_view" placeholder="Maksimum"
+                                                                required oninput="formatRupiah(this)">
+                                                            <input type="hidden" name="gaji_max" id="edit_gaji_max">
+                                                        </div>
+                                                    </div>
+                                                    <small id="gajiErrorEdit" class="text-danger d-none">Gaji maksimum
+                                                        harus lebih besar dari minimum.</small>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="mb-3" id="tipe-group">
-                                            <label class="form-label fw-semibold">Tipe Pekerjaan</label>
-                                            <select class="form-select rounded-3" name="tipe" id="edit_tipe"
-                                                required>
-                                                <option value="freelance">Freelance</option>
-                                                <option value="magang">Magang</option>
-                                                <option value="part time">Part Time</option>
-                                                <option value="full time">Full Time</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="edit_pendidikan" class="form-label">Pendidikan</label>
-                                            <input type="text" class="form-control" id="edit_pendidikan"
-                                                name="pendidikan" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="edit_gaji" class="form-label">Gaji (Rp)</label>
-                                            <input type="text" class="form-control" id="edit_gaji" name="gaji"
-                                                required oninput="formatRupiah(this)">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="edit_gambar" class="form-label">Upload Foto Baru
-                                                (Opsional)</label>
-                                            <input type="file" class="form-control" id="edit_gambar"
-                                                name="gambar" accept=".jpg,.jpeg,.png">
-                                            <img id="preview_gambar_edit" class="img-fluid mt-2 rounded"
-                                                style="max-height: 150px;">
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
+
+                                    <div class="modal-footer border-top-0">
+                                        <button type="button" class="btn btn-light"
                                             data-bs-dismiss="modal">Batal</button>
-                                        <button type="submit" class="btn btn-primary">Perbarui</button>
+                                        <button type="submit" class="btn btn-primary"
+                                            onclick="confirmEdit()">Perbarui</button>
                                     </div>
                                 </form>
                             </div>
@@ -691,41 +1051,294 @@
                     </div>
 
 
+                </div>
+            </div>
+            <footer class="footer text-dark"
+                style="background: url('{{ url('img/footer.png') }}') no-repeat center center / cover;">
+                <div class="container-footer">
+                    <div class="row align-items-start bg-white bg-opacity-75 rounded-3 p-4 shadow-sm">
+                        <!-- Logo & Deskripsi -->
+                        <div class="col-md-4 mb-4">
+                            <img src="{{ url('img/logo.png') }}" alt="Logo Skul.Id" style="height: 65px;"
+                                class="mb-3">
+                            <p class="small">
+                                mitraskul.Id adalah platform yang menghubungkan alumni dengan sekolah, dunia industri,
+                                dan
+                                peluang karier.
+                            </p>
+                        </div>
 
-                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+                        <!-- Kontak -->
+                        <div class="col-md-4 mb-4">
+                            <!-- <h6 class="fw-bold text-uppercase mb-3">Kontak</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="bi bi-envelope-fill me-2"></i>mitraskulid@gmail.com</li>
+                                <li><i class="bi bi-telephone-fill me-2"></i>+62 851-7959-2408</li>
+                            </ul> -->
+                        </div>
 
-                    <script>
-                        function openEditModal(button) {
-                            const id = button.getAttribute('data-id');
-                            const nama_perusahaan = button.getAttribute('data-nama_perusahaan');
-                            const deskripsi = button.getAttribute('data-deskripsi');
-                            const posisi = button.getAttribute('data-posisi');
-                            const lokasi = button.getAttribute('data-lokasi');
-                            const tipe = button.getAttribute('data-tipe');
-                            const pendidikan = button.getAttribute('data-pendidikan');
-                            const gaji = button.getAttribute('data-gaji');
-                            const gambar = button.getAttribute('data-gambar');
+                        <!-- Partner -->
+                        <div class="col-md-4 mb-4">
+                            <h6 class="fw-bold text-uppercase mb-3">Didukung Oleh</h6>
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <img src="{{ url('img/Telkomsel.png') }}" alt="Telkomsel"
+                                    class="partner-footer-logo">
+                                <img src="{{ url('img/pu.png') }}" alt="PUP Makassar" class="partner-footer-logo">
+                            </div>
+                        </div>
+                        <div class="text-center text-dark small mt-4">
+                            © 2025 mitraskul.Id. All rights reserved.
+                        </div>
+                    </div>
 
-                            document.getElementById('edit_id').value = id;
-                            document.getElementById('edit_nama_perusahaan').value = nama_perusahaan;
-                            document.getElementById('edit_deskripsi').value = deskripsi;
-                            document.getElementById('edit_posisi').value = posisi;
-                            document.getElementById('edit_lokasi').value = lokasi;
-                            document.getElementById('edit_tipe').value = tipe;
-                            document.getElementById('edit_pendidikan').value = pendidikan;
-                            document.getElementById('edit_gaji').value = gaji;
-                            document.getElementById('preview_gambar_edit').src = gambar;
+                </div>
+            </footer>
+        </div>
 
-                            const form = document.getElementById('editForm');
-                            form.action = `/mitra/update-loker/${id}`;
-                        }
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-                        function formatRupiah(input) {
-                            let value = input.value.replace(/\D/g, ''); // Hapus semua karakter non-digit
-                            let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambah titik setiap 3 digit dari belakang
-                            input.value = formatted;
-                        }
-                    </script>
+        <script>
+            function parseRupiah(str) {
+                return parseInt(str.replace(/\D/g, ''), 10) || 0;
+            }
+
+            function formatToRupiahInput(input) {
+                let angka = parseRupiah(input.value);
+                input.value = angka ? 'Rp ' + new Intl.NumberFormat('id-ID').format(angka) : '';
+            }
+
+            function previewImageEdit(input) {
+                const preview = document.getElementById('preview_gambar_edit');
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = e => preview.src = e.target.result;
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            // VALIDASI UNTUK TAMBAH DAN EDIT
+            function validateGajiForm(minId, maxId, minHiddenId, maxHiddenId) {
+                const minInput = document.getElementById(minId);
+                const maxInput = document.getElementById(maxId);
+
+                const min = parseRupiah(minInput.value);
+                const max = parseRupiah(maxInput.value);
+
+                if (isNaN(min) || isNaN(max)) {
+                    minInput.setCustomValidity("Gaji harus berupa angka.");
+                    maxInput.setCustomValidity("Gaji harus berupa angka.");
+                    return;
+                } else {
+                    minInput.setCustomValidity("");
+                    maxInput.setCustomValidity("");
+                }
+
+                document.getElementById(minHiddenId).value = min;
+                document.getElementById(maxHiddenId).value = max;
+
+                if (max <= min) {
+                    maxInput.setCustomValidity("Gaji maksimum harus lebih besar dari minimum.");
+                } else {
+                    maxInput.setCustomValidity("");
+                }
+            }
+
+
+            // FORM TAMBAH
+            const tambahForm = document.getElementById("tambahLokerForm");
+            tambahForm?.addEventListener("submit", function(e) {
+                validateGajiForm('gaji_min_view', 'gaji_max_view', 'gaji_min', 'gaji_max');
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.add('was-validated');
+                }
+            });
+
+            // FORM EDIT
+            const editForm = document.getElementById("editForm");
+            editForm?.addEventListener("submit", function(e) {
+                validateGajiForm('edit_gaji_min_view', 'edit_gaji_max_view', 'edit_gaji_min', 'edit_gaji_max');
+                if (!this.checkValidity()) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.classList.add('was-validated');
+                }
+            });
+
+            // INPUT EVENT UNTUK TAMBAH
+            ['gaji_min_view', 'gaji_max_view'].forEach(id => {
+                const input = document.getElementById(id);
+                input?.addEventListener("input", () => {
+                    formatToRupiahInput(input);
+                    validateGajiForm('gaji_min_view', 'gaji_max_view', 'gaji_min', 'gaji_max');
+                });
+            });
+
+            // INPUT EVENT UNTUK EDIT
+            ['edit_gaji_min_view', 'edit_gaji_max_view'].forEach(id => {
+                const input = document.getElementById(id);
+                input?.addEventListener("input", () => {
+                    formatToRupiahInput(input);
+                    validateGajiForm('edit_gaji_min_view', 'edit_gaji_max_view', 'edit_gaji_min',
+                        'edit_gaji_max');
+                });
+            });
+
+            function confirmTambahLoker() {
+                Swal.fire({
+                    title: 'Simpan Lowongan?',
+                    text: "Pastikan semua informasi sudah benar.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Simpan',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#198754',
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        tambahForm.requestSubmit();
+                    }
+                });
+            }
+
+            function confirmDelete(id) {
+                Swal.fire({
+                    title: 'Yakin ingin menghapus?',
+                    text: "Lowongan kerja akan dihapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('deleteForm-' + id).submit();
+                    }
+                });
+            }
+
+            function confirmEdit() {
+                Swal.fire({
+                    title: 'Perbarui Lowongan Kerja?',
+                    text: "Pastikan semua data sudah benar.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0d6efd',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, perbarui!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('editForm').submit();
+                    }
+                });
+            }
+
+            function confirmLogout() {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Yakin ingin logout?',
+                    text: "Anda akan keluar dari akun ini.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, logout!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('logout-form').submit();
+                    }
+                });
+            }
+
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
+
+            @if (session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
+
+            @if (session('message'))
+                Swal.fire({
+                    icon: '{{ session('alert-type') == 'warning' ? 'warning' : 'info' }}',
+                    title: '{{ ucfirst(session('alert-type') ?? 'Info') }}',
+                    text: '{{ session('message') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
+
+            function showLokerDetailModal(foto, posisi, deskripsi, perusahaan, lokasi, tipe, pendidikan, gaji) {
+                document.getElementById('lokerDetailFoto').src = foto;
+                document.getElementById('lokerDetailPosisi').innerText = posisi;
+                document.getElementById('lokerDetailDeskripsi').innerText = deskripsi;
+                document.getElementById('lokerDetailPerusahaan').innerText = perusahaan;
+                document.getElementById('lokerDetailLokasi').innerText = lokasi;
+                document.getElementById('lokerDetailTipe').innerText = tipe;
+                document.getElementById('lokerDetailPendidikan').innerText = pendidikan;
+                document.getElementById('lokerDetailGaji').innerText = gaji;
+
+                new bootstrap.Modal(document.getElementById('lokerDetailModal')).show();
+            }
+
+            function openEditModal(button) {
+                const id = button.dataset.id;
+                const nama_perusahaan = button.dataset.nama_perusahaan;
+                const deskripsi = button.dataset.deskripsi;
+                const posisi = button.dataset.posisi;
+                const lokasi = button.dataset.lokasi;
+                const tipe = button.dataset.tipe;
+                const pendidikan = button.dataset.pendidikan;
+                const gaji_min = button.dataset.gaji_min;
+                const gaji_max = button.dataset.gaji_max;
+                const gambar = button.dataset.gambar;
+
+                document.getElementById('edit_id').value = id;
+                document.getElementById('edit_nama_perusahaan').value = nama_perusahaan;
+                document.getElementById('edit_deskripsi').value = deskripsi;
+                document.getElementById('edit_posisi').value = posisi;
+                document.getElementById('edit_lokasi').value = lokasi;
+                document.getElementById('edit_tipe').value = tipe;
+                document.getElementById('edit_pendidikan').value = pendidikan;
+
+                document.getElementById('edit_gaji_min').value = gaji_min;
+                document.getElementById('edit_gaji_max').value = gaji_max;
+                document.getElementById('edit_gaji_min_view').value = 'Rp ' + new Intl.NumberFormat('id-ID').format(gaji_min);
+                document.getElementById('edit_gaji_max_view').value = 'Rp ' + new Intl.NumberFormat('id-ID').format(gaji_max);
+
+                document.getElementById('preview_gambar_edit').src = gambar;
+
+                document.getElementById('editForm').action = `/public/mitra/update-loker/${id}`;
+            }
+
+            // Alert Timeout
+            setTimeout(() => {
+                const alert = document.querySelector('.alert');
+                if (alert) {
+                    alert.classList.remove('show');
+                    alert.classList.add('hide');
+                    setTimeout(() => alert.remove(), 300);
+                }
+            }, 5000);
+        </script>
+
 
 </body>
 

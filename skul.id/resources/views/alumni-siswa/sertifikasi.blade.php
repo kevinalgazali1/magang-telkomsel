@@ -15,7 +15,7 @@
             font-family: 'Poppins', sans-serif;
             margin: 0;
             background-color: #f8f9fa;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         a {
@@ -30,7 +30,6 @@
         /* ============ Navbar ============ */
         .navbar {
             background-color: #ffffff;
-            padding: 1rem 2rem;
             border-bottom: 1px solid #ddd;
             display: flex;
             justify-content: space-between;
@@ -38,12 +37,14 @@
         }
 
         .navbar .logo {
-            width: 120px;
+            width: 150px;
+            margin-left: 30px;
         }
 
         .user-info {
             display: flex;
             align-items: center;
+            margin-right: 30px;
         }
 
         .user-info span {
@@ -91,26 +92,38 @@
 
 
         .sidebar {
-            width: 220px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            height: 100%;
             background-color: #eff9ff;
-            padding: 2rem 2rem;
+            position: relative;
             flex-shrink: 0;
         }
 
-        .sidebar a {
-            display: block;
-            color: #000;
-            padding: 0.75rem 0;
+        .nav-link {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: #495057;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-link.active {
+            background-color: #e7f1ff;
+            color: #0d6efd;
             font-weight: 600;
         }
 
-        .sidebar a:hover {
-            color: #d24c62;
+        .nav-link i {
+            font-size: 1.1rem;
         }
 
-        .sidebar .logout {
-            margin-top: 2rem;
-            color: #d24c62;
+        .sidebar h5 {
+            letter-spacing: 0.5px;
+        }
+
+        .logout {
+            cursor: pointer;
         }
 
         .content {
@@ -118,31 +131,7 @@
             overflow-y: auto;
             background-color: #fff;
             margin: 0;
-        }
-
-        /* ============ Banner ============ */
-        .banner {
-            background: url('{{ url('img/background.jpg') }}') no-repeat center center;
-            padding: 2rem;
-            position: relative;
-            margin-bottom: 2rem;
-            min-height: 350px;
-        }
-
-        .banner h2 {
-            color: #c04055;
-            font-weight: 700;
-        }
-
-        .banner p {
-            max-width: 500px;
-        }
-
-        .banner .illustration {
-            position: absolute;
-            bottom: 0;
-            right: 2rem;
-            width: 350px;
+            overflow-x: hidden;
         }
 
         /* ============ Fitur Section ============ */
@@ -254,10 +243,6 @@
                 display: none;
             }
 
-            .content {
-                padding: 1rem;
-            }
-
             .banner-images {
                 flex-direction: column;
                 align-items: flex-start;
@@ -277,9 +262,6 @@
                 flex-direction: column;
             }
 
-            .sidebar {
-                display: none;
-            }
 
             #fitur {
                 margin-left: 20px;
@@ -298,75 +280,280 @@
             .banner .illustration {
                 display: none;
             }
+
+            .user-info {
+                display: none;
+                ;
+            }
+        }
+
+        /* ============ Certificate Card Redesigned ============ */
+        .certificate-grid {
+            gap: 1rem;
+            padding: 2rem;
+            overflow-x: hidden;
         }
 
         .certificate-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            background: #fff;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            max-width: 360px;
+            max-width: 100%;
+            height: 100%;
         }
 
         .certificate-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
         }
 
         .certificate-img {
             width: 100%;
-            height: 180px;
+            height: 160px;
             object-fit: cover;
-            padding-top: 10px;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .certificate-content {
-            padding: 1.25rem;
+            padding: 1.5rem;
+            flex: 1;
             display: flex;
             flex-direction: column;
-            height: 100%;
+            justify-content: space-between;
         }
 
         .certificate-title {
-            font-size: 1rem;
+            font-size: 1.125rem;
             font-weight: 600;
-            color: #212529;
+            color: #1f2937;
             margin-bottom: 0.5rem;
         }
 
-        .certificate-provider {
-            font-size: 0.875rem;
-            color: #6c757d;
+        .certificate-provider,
+        .certificate-date {
+            font-size: 0.9rem;
+            color: #6b7280;
             margin-bottom: 0.25rem;
         }
 
-        .certificate-date {
-            font-size: 0.8rem;
-            color: #adb5bd;
+        .biaya {
+            font-weight: 600;
+            color: #111827;
             margin-bottom: 1rem;
         }
 
+        .card-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
         .btn-view {
-            align-self: start;
-            background-color: #0a66c2;
-            color: #fff;
-            text-decoration: none;
             padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             font-weight: 500;
-            transition: none !important;
+            border-radius: 8px;
+            border: none;
+            background-color: #2563eb;
+            color: white;
+            transition: background-color 0.2s ease;
         }
 
         .btn-view:hover {
-            background-color: #0a66c2;
+            background-color: #1d4ed8;
+        }
+
+        .btn-view.secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-view.secondary:hover {
+            background-color: #e5e7eb;
+        }
+
+        /* Responsive Grid */
+        @media (min-width: 768px) {
+            .certificate-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 1rem;
+            }
+        }
+
+        /* Container base */
+        .container {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Typography & Utility */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            font-size: 1rem;
+            color: #6c757d;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .text-primary {
+            color: #007bff;
+        }
+
+        .text-success {
+            color: #28a745;
+        }
+
+        .text-warning {
+            color: #ffc107;
+        }
+
+        .text-white {
             color: #fff;
+        }
+
+        /* SECTION: Kenapa Sertifikasi Itu Penting */
+        .section-highlight {
+            background: url('{{ url('img/background.jpg') }}') no-repeat center center;
+            padding: 4rem 1rem;
+            width: 100%;
+            min-height: 350px;
+        }
+
+        .section-highlight h2 {
+            color: #c04055;
+            font-weight: 700;
+        }
+
+        /* SECTION: Statistik */
+        .section-stats {
+            background: #ffffff;
+            padding: 4rem 1rem;
+        }
+
+        .section-title {
+            color: #c04055;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .stat-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .stat-item {
+            flex: 1 1 200px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+
+        /* SECTION: CTA */
+        .section-cta {
+            background: #ffffff;
+            padding: 4rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .btn-cta {
+            background-color: #fff;
+            color: #007bff;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
             text-decoration: none;
-            transform: none;
-            box-shadow: none;
+            border-radius: 0.3rem;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .btn-cta:hover {
+            background-color: #e2e6ea;
+        }
+
+        .partner-logos {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 100%;
+        }
+
+        .partner-logo {
+            width: 100px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .modal-content {
+            animation: fadeInUp 0.3s ease-in-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .partner-footer-logo {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .footer ul {
+            padding-left: 0;
+        }
+
+        .footer li {
+            margin-bottom: 8px;
+        }
+
+        .footer .bg-opacity-50 {
+            background-color: rgba(255, 255, 255, 0.75) !important;
+            /* semi-transparent white for readability */
+        }
+
+        .container-footer {
+            width: 100%;
+            height: 100%;
+            ;
         }
     </style>
 </head>
@@ -374,20 +561,18 @@
 <body>
     <!-- Navbar -->
     <div class="navbar">
-        <div class="col-lg-6 d-flex gap-4">
+        <div class="col-lg-6 d-flex">
             <div class="col-lg-2">
                 <img src="{{ url('img/logo.png') }}" alt="Logo" class="logo" width="" />
             </div>
-            <div class="col-lg-2">
-                <img src="{{ url('img/pu.jpeg') }}" alt="Logo" class="logo" width="" />
-            </div>
         </div>
         <div class="user-info">
-            <span>Halo User</span>
-            <img src="{{ url('img/user.png') }}" alt="Profile" class="profile-picture" />
+            <span>Halo, {{ $user->alumniSiswaProfile->nama_lengkap }}</span>
+            <img src="{{ asset('storage/' . $user->alumniSiswaProfile->foto_profil) }}" alt="Profile"
+                class="profile-picture" />
         </div>
         <button class="btn d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
-            <i class="bi bi-list fs-3"></i>
+            <i class="bi bi-list fs-3" id="sideBarOff"></i>
         </button>
     </div>
 
@@ -417,131 +602,274 @@
     </div>
 
     <div class="main-wrapper">
-        <div class="sidebar">
-            <a class="text-secondary" href="{{ route('alumni-siswa.index') }}"><i
-                    class="bi bi-house-door-fill me-2"></i>Beranda</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.sertifikasi') }}"><i
-                    class="bi bi-patch-check-fill me-2"></i>Sertifikasi</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.loker') }}"><i
-                    class="bi bi-briefcase-fill me-2"></i>Loker</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.pelatihan') }}"><i
-                    class="bi bi-journal-text me-2"></i>Pelatihan</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.profile') }}"><i
-                    class="bi bi-person-fill me-2"></i>Profil</a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        <div class="sidebar sidebar-main d-flex flex-column p-3" style="width: 250px;">
+
+
+            <!-- Navigation Links -->
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.index') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.index') }}">
+                <i class="bi bi-house-door-fill me-2"></i> Beranda
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.sertifikasi') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.sertifikasi') }}">
+                <i class="bi bi-patch-check-fill me-2"></i> Sertifikasi
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.loker') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.loker') }}">
+                <i class="bi bi-briefcase-fill me-2"></i> Loker
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.pelatihan') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.pelatihan') }}">
+                <i class="bi bi-journal-text me-2"></i> Pelatihan
+            </a>
+            <a class="nav-link d-flex align-items-center mb-4 {{ request()->routeIs('alumni-siswa.profile') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.profile') }}">
+                <i class="bi bi-person-fill me-2"></i> Profil
+            </a>
+
+            <!-- Logout -->
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                 @csrf
-                <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </a>
             </form>
         </div>
 
         <div class="content">
-            <div class="banner">
-                <div
-                    class="col-lg-7 d-flex flex-column justify-content-center text-lg-start text-center py-5 px-4 ml-5">
-                    <h2 class="fw-bold">Bangun Masa Depanmu Bersama Skul.Id</h2>
-                    <p class="text-secondary">Temukan peluang terbaik seperti pelatihan, sertifikasi, dan informasi
-                        kampus untuk membantumu meraih cita-cita karier.</p>
-                </div>
-                <img src="{{ url('img/main-dashboard.png') }}" alt="Ilustrasi" class="illustration" />
-            </div>
 
-            <div class="main-content px-5 py-3">
+            <div class="main-content">
                 <div class="row">
 
                     <div class="col-lg-12">
-                        {{-- Alert Message --}}
-                        @if (session('success'))
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
+                        <!-- SECTION: Kenapa Sertifikasi Itu Penting -->
+                        <section class="section-highlight">
+                            <div class="container text-center">
+                                <h2 class="section-title">Kenapa Sertifikasi Itu Penting?</h2>
+                                <p class="section-desc">
+                                    Sertifikasi membuktikan keahlianmu di bidang tertentu dan meningkatkan peluang
+                                    karier. Mulai dari pekerjaan impian hingga peluang naik jabatan — semua bisa lebih
+                                    dekat jika kamu memiliki kompetensi yang teruji.
+                                </p>
                             </div>
-                        @endif
+                        </section>
 
-                        @if (session('error'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                {{ session('error') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
+                        <!-- SECTION: Statistik Skul.Id -->
+                        <section class="section-stats mt-6">
+                            <div class="container text-center">
+                                <div class="stats-grid">
+                                    <div class="stat-item">
+                                        <i class="bi bi-people-fill stat-icon text-success"></i>
+                                        <h3 class="stat-number text-success">0+</h3>
+                                        <p class="stat-label">Pengguna Terdaftar</p>
+                                    </div>
+                                    <div class="stat-item">
+                                        <i class="bi bi-award-fill stat-icon text-primary"></i>
+                                        <h3 class="stat-number text-primary">0+</h3>
+                                        <p class="stat-label">Program Sertifikasi</p>
+                                    </div>
+                                    <div class="stat-item">
+                                        <i class="bi bi-briefcase-fill stat-icon text-warning"></i>
+                                        <h3 class="stat-number text-warning">0+</h3>
+                                        <p class="stat-label">Alumni Bekerja</p>
+                                    </div>
+                                </div>
                             </div>
-                        @endif
+                        </section>
 
-                        @if (session('message'))
-                            <div class="alert alert-{{ session('alert-type') ?? 'info' }} alert-dismissible fade show"
-                                role="alert">
-                                {{ session('message') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
+
+                        <!-- SECTION: Call to Action -->
+                        <section class="section-cta">
+                            <div class="container text-center">
+                                <h2 class="section-title">Siap Menjadi Profesional Bersertifikat?</h2>
+                                <p class="section-desc text-secondary">Jelajahi program terbaik dan mulai langkah
+                                    pertamamu
+                                    menuju masa depan cerah.</p>
                             </div>
-                        @endif
+                        </section>
 
-                        <input type="text" class="form-control search-bar" placeholder="Cari jurusan" />
-
-                        <div class="row g-4">
+                        <div class="certificate-grid">
                             @foreach ($sertifikasi as $item)
-                                <div class="col-md-4 d-flex justify-content-center">
-                                    <div class="certificate-card">
-                                        <img src="{{ asset('storage/' . $item->foto_sertifikasi) }}"
-                                            alt="Foto Sertifikasi" class="certificate-img">
+                                <div class="certificate-card">
+                                    <img src="{{ asset('storage/' . $item->foto_sertifikasi) }}"
+                                        alt="Foto Sertifikasi" class="certificate-img">
 
-                                        <div class="certificate-content">
+                                    <div class="certificate-content">
+                                        <div>
                                             <h3 class="certificate-title">{{ $item->judul_sertifikasi }}</h3>
-
-                                            <p class="certificate-provider">
-                                                {{ $item->tempat }}, {{ $item->kota }}
+                                            <p class="certificate-provider">{{ $item->tempat }}, {{ $item->kota }}
                                             </p>
-
-                                            <p class="certificate-date">
-                                                {{ $item->tanggal_mulai }} s/d {{ $item->tanggal_selesai }}
+                                            <p class="certificate-date">{{ $item->tanggal_mulai }} s/d
+                                                {{ $item->tanggal_selesai }}</p>
+                                            <p class="biaya">Biaya:
+                                                {{ $item->biaya == 0 ? 'Gratis' : 'Rp ' . number_format((float) str_replace('.', '', $item->biaya), 0, ',', '.') }}
                                             </p>
+                                        </div>
 
-                                            <p class="certificate-provider">
-                                                Biaya: Rp{{ number_format($item->biaya, 0, ',', '.') }}
-                                            </p>
+                                        <div class="card-actions">
+                                            <button class="btn-view secondary" data-bs-toggle="modal"
+                                                data-bs-target="#detailModal{{ $item->id }}">
+                                                Detail
+                                            </button>
 
-                                            {{-- Tombol Detail dan Daftar sejajar --}}
-                                            <div class="d-flex gap-2 mt-3 justify-content-between">
-                                                <a href="#" class="btn-view" data-bs-toggle="modal"
-                                                    data-bs-target="#detailModal{{ $item->id }}">Detail</a>
-
-                                                <form action="{{ route('alumni-siswa.sertifikasi.store',$item->id) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <input type="hidden" name="sertifikasi_id"
-                                                        value="{{ $item->id }}">
-                                                    <button type="submit" class="btn-view">Daftar</button>
-                                                </form>
-                                            </div>
+                                            <form action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <input type="hidden" name="sertifikasi_id"
+                                                    value="{{ $item->id }}">
+                                                <button type="submit" class="btn-view">Daftar</button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
 
-
-                                {{-- Modal Detail --}}
+                                {{-- Modal --}}
                                 <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
                                     aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                                        <div class="modal-content p-4">
-                                            <h5 class="modal-title mb-3">{{ $item->judul_sertifikasi }}</h5>
-                                            <p><strong>Deskripsi:</strong></p>
-                                            <p>{{ $item->deskripsi }}</p>
-                                            <p><strong>Tanggal:</strong> {{ $item->tanggal_mulai }} s/d
-                                                {{ $item->tanggal_selesai }}</p>
-                                            <p><strong>Tempat:</strong> {{ $item->tempat }}, {{ $item->kota }}</p>
-                                            <p><strong>Biaya:</strong> Rp{{ number_format($item->biaya, 0, ',', '.') }}
-                                            </p>
-                                            <button type="button" class="btn btn-secondary mt-3"
-                                                data-bs-dismiss="modal">Tutup</button>
+                                    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content rounded-4 shadow border-0 overflow-hidden">
+
+                                            <!-- Header Gambar -->
+                                            <div class="position-relative"
+                                                style="height: 280px; background-color: #f5f5f5;">
+                                                <img src="{{ asset('storage/' . $item->foto_sertifikasi) }}"
+                                                    class="w-100 h-100 object-fit-cover" style="object-fit: cover;"
+                                                    alt="Foto Sertifikasi">
+                                                <div class="position-absolute top-0 end-0 p-3">
+                                                    <button type="button"
+                                                        class="btn-close bg-white rounded-circle p-2"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Body -->
+                                            <div class="modal-body p-4">
+                                                <div class="row">
+                                                    <!-- Konten Kiri -->
+                                                    <div class="col-md-7">
+                                                        <h4 class="fw-bold">
+                                                            <i class="bi bi-mortarboard-fill me-2 text-primary"></i>
+                                                            {{ $item->judul_sertifikasi }}
+                                                        </h4>
+                                                        <p class="text-muted small mb-3">
+                                                            <i class="bi bi-geo-alt-fill me-1"></i>
+                                                            {{ $item->kota }},{{ $item->tempat }}
+                                                        </p>
+                                                        <p class="text-muted small mb-3">
+                                                            <i class="bi bi-calendar-event me-1"></i>
+                                                            {{ $item->tanggal_mulai }} - {{ $item->tanggal_selesai }}
+                                                        </p>
+
+
+                                                        <h6 class="fw-semibold mb-2"><i
+                                                                class="bi text-secondary"></i>Deskripsi</h6>
+                                                        <p class="text-secondary" style="text-align: justify;">
+                                                            {{ $item->deskripsi }}
+                                                        </p>
+                                                    </div>
+
+                                                    <!-- Konten Kanan -->
+                                                    <div class="col-md-5">
+                                                        <div class="bg-light rounded-3 p-3 mb-3">
+                                                            <small class="text-muted d-block mb-1">
+                                                                <i class="bi bi-calendar-range me-1 text-primary"></i>
+                                                                Tanggal
+                                                            </small>
+                                                            <p class="mb-0 fw-semibold">{{ $item->tanggal_mulai }} s/d
+                                                                {{ $item->tanggal_selesai }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="bg-light rounded-3 p-3 mb-3">
+                                                            <small class="text-muted d-block mb-1">
+                                                                <i class="bi bi-geo-alt me-1 text-primary"></i> Lokasi
+                                                            </small>
+                                                            <p class="mb-0 fw-semibold"> {{ $item->kota }},
+                                                                {{ $item->tempat }}
+                                                            </p>
+                                                        </div>
+                                                        <div class="bg-light rounded-3 p-3 mb-3">
+                                                            <small class="text-muted d-block mb-1">
+                                                                <i class="bi bi-cash-coin me-1 text-success"></i> Biaya
+                                                            </small>
+                                                            <p class="biaya">
+                                                                @if ($item->biaya == 0)
+                                                                    <span
+                                                                        class="text-success fw-semibold">Gratis</span>
+                                                                @else
+                                                                    Rp{{ number_format($item->biaya, 0, ',', '.') }}
+                                                                @endif
+                                                            </p>
+                                                        </div>
+                                                        <div class="d-grid">
+
+                                                            <form
+                                                                action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                <input type="hidden" name="sertifikasi_id"
+                                                                    value="{{ $item->id }}">
+                                                                <button class="btn btn-primary w-100">
+                                                                    <i class="bi bi-pencil-square me-1"></i> Daftar
+                                                                    Sekarang
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
                                         </div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
 
+
                     </div>
                 </div>
             </div>
+            <footer class="footer text-dark"
+                style="background: url('{{ url('img/footer.png') }}') no-repeat center center / cover;">
+                <div class="container-footer">
+                    <div class="row align-items-start bg-white bg-opacity-75 rounded-3 p-4 shadow-sm">
+                        <!-- Logo & Deskripsi -->
+                        <div class="col-md-4 mb-4">
+                            <img src="{{ url('img/logo.png') }}" alt="Logo Skul.Id" style="height: 65px;"
+                                class="mb-3">
+                            <p class="small">
+                                mitraskul.Id adalah platform yang menghubungkan alumni dengan sekolah, dunia industri,
+                                dan
+                                peluang karier.
+                            </p>
+                        </div>
+
+                        <!-- Kontak -->
+                        <div class="col-md-4 mb-4">
+                            <h6 class="fw-bold text-uppercase mb-3">Kontak</h6>
+                            <ul class="list-unstyled small">
+                                <li><i class="bi bi-envelope-fill me-2"></i>mitraskulid@gmail.com</li>
+                                <li><i class="bi bi-telephone-fill me-2"></i>+62 851-7959-2408</li>
+                            </ul>
+                        </div>
+
+                        <!-- Partner -->
+                        <div class="col-md-4 mb-4">
+                            <h6 class="fw-bold text-uppercase mb-3">Didukung Oleh</h6>
+                            <div class="d-flex align-items-center gap-3 flex-wrap">
+                                <img src="{{ url('img/Telkomsel.png') }}" alt="Telkomsel"
+                                    class="partner-footer-logo">
+                                <img src="{{ url('img/pu.png') }}" alt="PUP Makassar" class="partner-footer-logo">
+                            </div>
+                        </div>
+                        <div class="text-center text-dark small mt-4">
+                            © 2025 Skul.Id. All rights reserved.
+                        </div>
+                    </div>
+
+                </div>
+            </footer>
         </div>
     </div>
 

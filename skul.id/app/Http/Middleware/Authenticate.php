@@ -24,10 +24,6 @@ class Authenticate extends Middleware
                 return route('login.mitra'); // Pastikan route ini ada
             }
 
-            if ($request->is('siswa/*')) {
-                return '/login/alumni';
-            }
-
             if ($request->is('admin/*')) {
                 return '/login/admin';
             }

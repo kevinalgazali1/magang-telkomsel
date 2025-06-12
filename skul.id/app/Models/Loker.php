@@ -20,4 +20,9 @@ class Loker extends Model
     {
         return $this->hasMany(DaftarLoker::class);
     }
+
+    public function mitra()
+    {
+        return $this->belongsTo(User::class, 'mitra_id');
+    }
 }

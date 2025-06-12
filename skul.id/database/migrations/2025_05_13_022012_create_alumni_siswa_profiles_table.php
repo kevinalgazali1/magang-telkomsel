@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('kesesuaian_sertifikasi')->nullable();
             $table->string('nama_universitas')->nullable();
             $table->string('jurusan_universitas')->nullable();
+            $table->string('foto_profil');
             $table->timestamps();
         });
     }

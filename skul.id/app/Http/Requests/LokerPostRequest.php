@@ -22,14 +22,15 @@ class LokerPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama_perusahaan' => 'required',
-            'gambar' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'posisi' => 'required',
-            'lokasi' => 'required',
-            'tipe' => 'required',
-            'pendidikan' => 'required',
-            'deskripsi' => 'required',
-            'gaji' => 'required',
+            'nama_perusahaan' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'posisi' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:255',
+            'tipe' => 'required|in:freelance,magang,part time,full time',
+            'pendidikan' => 'required|string|max:255',
+            'gaji_min' => 'required|numeric',
+            'gaji_max' => 'required|numeric|gte:gaji_min',
+            'gambar' => 'required|image|mimes:jpg,jpeg,png|max:10048',
         ];
     }
 }

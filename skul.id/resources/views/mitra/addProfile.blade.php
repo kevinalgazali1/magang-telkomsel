@@ -26,6 +26,16 @@
         header img {
             width: 120px;
         }
+
+        .is-invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .invalid-feedback {
+            color: #dc3545;
+            font-size: 0.875em;
+        }
     </style>
 </head>
 
@@ -33,7 +43,6 @@
 
     <header>
         <img src="{{ url('img/logo.png') }}" alt="Logo Skul.Id">
-        <img src="{{ url('img/pu.jpeg') }}" alt="Logo Skul.Id" class="mx-2">
     </header>
 
     <div class="container">
@@ -45,13 +54,14 @@
                 </div>
             @endif
             @if ($errors->any())
-                <div class="alert alert-danger" id="error-message">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal menyimpan data',
+                        html: `{!! implode('<br>', $errors->all()) !!}`,
+                        confirmButtonText: 'Oke'
+                    });
+                </script>
             @endif
             <form action="{{ route('mitra.storeProfile') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -59,13 +69,13 @@
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Nama instansi</label>
                     <input type="text" class="form-control rounded-3" name="nama_instansi"
-                        value="{{ old('nama_instansi') }}" required>
+                        value="{{ old('nama_instansi') }}" data-required="true">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Kategori</label>
-                    <select class="form-select rounded-3" name="kategori">
-                        <option selected disabled>Pilih Kategori Mitra</option>
+                    <select class="form-select rounded-3" name="kategori" data-required="true">
+                        <option selected disabled value="">Pilih Kategori Mitra</option>
                         <option value="kampus">Kampus</option>
                         <option value="sekolah">Sekolah</option>
                         <option value="instansi Pemerintah">Instansi Pemerintah</option>
@@ -76,22 +86,21 @@
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Penanggung Jawab</label>
                     <input type="text" class="form-control rounded-3" name="penanggung_jawab"
-                        value="{{ old('penanggung_jawab') }}" required>
+                        value="{{ old('penanggung_jawab') }}" data-required="true">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Bidang Industri</label>
                     <input type="text" class="form-control rounded-3" name="bidang_industri"
-                        value="{{ old('bidang_industri') }}" required>
+                        value="{{ old('bidang_industri') }}" data-required="true">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Provinsi</label>
-                    <select class="form-select rounded-3" id="provinsi-select" name="provinsi" required>
-                        <option selected disabled>Pilih Provinsi</option>
+                    <select class="form-select rounded-3" id="provinsi-select" name="provinsi" data-required="true">
+                        <option selected disabled value="">Pilih Provinsi</option>
                         @foreach ($provinsi as $prov)
-                            <option value="{{ $prov['name'] }}" data-id="{{ $prov['id'] }}">
-                                {{ $prov['name'] }}
+                            <option value="{{ $prov['name'] }}" data-id="{{ $prov['id'] }}">{{ $prov['name'] }}
                             </option>
                         @endforeach
                     </select>
@@ -99,8 +108,8 @@
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Kota/Kabupaten</label>
-                    <select class="form-select rounded-3" id="kota-select" name="kota" required>
-                        <option selected disabled>Pilih Kota/Kabupaten</option>
+                    <select class="form-select rounded-3" id="kota-select" name="kota" data-required="true">
+                        <option selected disabled value="">Pilih Kota/Kabupaten</option>
                         @foreach ($kabupaten as $kab)
                             <option value="{{ $kab['name'] }}">{{ $kab['name'] }}</option>
                         @endforeach
@@ -109,13 +118,13 @@
 
                 <div class="mb-4">
                     <label class="form-label fw-semibold">Alamat</label>
-                    <textarea class="form-control rounded-3" rows="2" name="alamat">{{ old('alamat') }}</textarea>
+                    <textarea class="form-control rounded-3" rows="2" name="alamat" data-required="true">{{ old('alamat') }}</textarea>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Email</label>
                     <input type="email" class="form-control rounded-3" name="email" value="{{ old('email') }}"
-                        required>
+                        data-required="true">
                 </div>
 
                 <div class="mb-3">
@@ -133,6 +142,55 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if ($errors->has('email'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Email sudah digunakan!',
+                text: '{{ $errors->first('email') }}',
+                confirmButtonText: 'Oke'
+            });
+        </script>
+    @endif
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const requiredFields = this.querySelectorAll('[data-required]');
+            let emptyFields = [];
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    emptyFields.push(field);
+                }
+            });
+
+            if (emptyFields.length > 0) {
+                e.preventDefault();
+
+                emptyFields.forEach(field => field.classList.add('is-invalid'));
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Data belum lengkap!',
+                    text: 'Harap isi semua field yang wajib diisi.',
+                    confirmButtonText: 'Oke'
+                });
+
+                return false;
+            } else {
+                requiredFields.forEach(field => field.classList.remove('is-invalid'));
+            }
+        });
+
+        document.querySelectorAll('[data-required]').forEach(function(field) {
+            field.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+    </script>
+
     <script>
         document.getElementById('provinsi-select').addEventListener('change', function() {
             const provId = this.options[this.selectedIndex].getAttribute('data-id');
@@ -141,7 +199,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const kotaSelect = document.getElementById('kota-select');
-                    kotaSelect.innerHTML = '<option selected disabled>Pilih Kota/Kabupaten</option>';
+                    kotaSelect.innerHTML = '<option selected disabled value="">Pilih Kota/Kabupaten</option>';
 
                     data.forEach(kota => {
                         const opt = document.createElement('option');
@@ -157,23 +215,21 @@
             if (msg) {
                 msg.style.transition = "opacity 0.5s ease-out";
                 msg.style.opacity = "0";
-                setTimeout(() => msg.remove(), 500); // hapus elemen setelah transisi
+                setTimeout(() => msg.remove(), 500);
             }
         }, 5000);
-
-        setTimeout(function() {
-            var errorMsg = document.getElementById('error-message');
-            if (errorMsg) {
-                errorMsg.style.transition = "opacity 0.5s ease-out";
-                errorMsg.style.opacity = "0";
-                setTimeout(() => errorMsg.remove(), 500);
-            }
-        }, 5000);
-
-
-        // Inisialisasi saat halaman pertama kali dibuka
-        document.addEventListener('DOMContentLoaded', toggleStatus);
     </script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonText: 'Oke'
+            });
+        </script>
+    @endif
 
 </body>
 
