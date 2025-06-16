@@ -37,7 +37,7 @@
         }
 
         .navbar .logo {
-            width: 150px;
+            width: 80px;
             margin-left: 30px;
         }
 
@@ -583,57 +583,22 @@
                     </div>
 
                     <div class="row g-3 mb-10">
-                        <!-- Artikel 1 -->
-                        <div class="col-md-6">
-                            <div class="artikel-card">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    alt="Thumbnail">
-                                <div class="artikel-content">
-                                    <div class="fw-semibold mb-1">Code Redeem Roblox: Blox Fruits Mei 2025</div>
-                                    <div class="text-muted small">Oleh Duniagames</div>
+                        @foreach ($artikels as $artikel)
+                            <div class="col-md-6">
+                                <div class="artikel-card">
+                                    <img src="{{ asset('storage/' . $artikel->gambar_artikel) }}" alt="Thumbnail"
+                                        onerror="this.src='https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg'">
+                                    <div class="artikel-content">
+                                        <div class="fw-semibold mb-1">
+                                            {{ $artikel->judul }}
+                                        </div>
+                                        <div class="text-muted small">Oleh {{ $artikel->penulis }}</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Artikel 2 -->
-                        <div class="col-md-6">
-                            <div class="artikel-card">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    alt="Thumbnail">
-                                <div class="artikel-content">
-                                    <div class="fw-semibold mb-1">PS5 Bakal Memperkenalkan Cara Baru untuk Beli Game
-                                        Mereka</div>
-                                    <div class="text-muted small">Oleh Duniagames</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Artikel 3 -->
-                        <div class="col-md-6">
-                            <div class="artikel-card">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    alt="Thumbnail">
-                                <div class="artikel-content">
-                                    <div class="fw-semibold mb-1">Rilis Teaser Perdana, Ini Beragam Hal Menarik
-                                        Godzilla X Kong: Supernova</div>
-                                    <div class="text-muted small">Oleh Duniagames</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Artikel 4 -->
-                        <div class="col-md-6">
-                            <div class="artikel-card">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    alt="Thumbnail">
-                                <div class="artikel-content">
-                                    <div class="fw-semibold mb-1">Alliance Insight: Set Terbaru Yu-Gi-Oh! AE yang
-                                        Hadirkan Kartu-kartu Lama!</div>
-                                    <div class="text-muted small">Oleh Duniagames</div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+
 
                     <!-- Footer -->
                 </div>

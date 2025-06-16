@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Data Diri</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.0/dist/css/tom-select.css" rel="stylesheet">
     <style>
         :root {
             --primary: #2563eb;
@@ -153,6 +154,11 @@
         #pekerjaan-fields {
             display: none;
         }
+
+        .is-invalid {
+            border: 1px solid red !important;
+            background-color: #ffe6e6;
+        }
     </style>
 </head>
 
@@ -167,17 +173,11 @@
             <div class="card-form">
                 <h2>Data Diri</h2>
 
-                @if (session('success'))
-                    <div id="success-message" class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
                 @if ($errors->any())
-                    <div class="alert alert-danger" id="error-message">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $err)
+                                <li>{{ $err }}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -193,21 +193,23 @@
 
                     <div class="form-group">
                         <label>Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required>
+                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}"
+                            data-required="true">
                     </div>
 
                     <div class="form-group" id="nik-group">
                         <label>Nomor Induk Kependudukan (NIK)</label>
-                        <input type="text" name="nik" value="{{ old('nik') }}" required>
+                        <input type="text" name="nik" value="{{ old('nik') }}" data-required="true">
                     </div>
                     <div class="form-group" id="tahun-lulusan-group">
                         <label>Tahun Kelulusan</label>
-                        <input type="number" name="tahun_kelulusan" value="{{ old('tahun_kelulusan') }}">
+                        <input type="number" name="tahun_kelulusan" value="{{ old('tahun_kelulusan') }}"
+                            data-required="true">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Provinsi</label>
-                        <select class="form-select rounded-3" id="provinsi-select" name="provinsi" required>
+                        <select class="form-select rounded-3" id="provinsi-select" name="provinsi" data-required="true">
                             <option selected disabled>Pilih Provinsi</option>
                             @foreach ($provinsi as $prov)
                                 <option value="{{ $prov['name'] }}" data-id="{{ $prov['id'] }}">
@@ -219,7 +221,7 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Kota/Kabupaten</label>
-                        <select class="form-select rounded-3" id="kota-select" name="kota" required>
+                        <select class="form-select rounded-3" id="kota-select" name="kota" data-required="true">
                             <option selected disabled>Pilih Kota/Kabupaten</option>
                             @foreach ($kabupaten as $kab)
                                 <option value="{{ $kab['name'] }}" data-id="{{ $kab['id'] }}">
@@ -231,21 +233,21 @@
 
                     <div class="mb-3">
                         <label for="asal_sekolah">Asal Sekolah (SMA/SMK)</label>
-                        <select name="asal_sekolah" id="asal_sekolah" class="form-select" style="width: 100%" required>
-                            <option disabled selected>Pilih Sekolah</option>
-                        </select>
+                        <select name="asal_sekolah" id="asal_sekolah" placeholder="Cari nama sekolah..."
+                            class="form-select" data-required="true"></select>
                     </div>
 
                     <div class="mb-3">
                         <label for="npsn">NPSN</label>
-                        <input type="text" id="npsn" name="npsn" class="form-control" readonly required>
+                        <input type="text" id="npsn" name="npsn" class="form-control" readonly>
                     </div>
+
 
 
                     <div class="mb-3">
                         <label for="jurusan_sekolah">Jurusan Sekolah</label>
                         <input list="daftar-jurusan" name="jurusan_sekolah" id="jurusan_sekolah" class="form-control"
-                            value="{{ old('jurusan_sekolah') }}" required>
+                            value="{{ old('jurusan_sekolah') }}" data-required="true">
                         <datalist id="daftar-jurusan">
                             <option value="Desain Pemodelan dan Informasi Bangunan (DPIB)">
                             <option value="Bisnis Konstruksi dan Properti (BKP)">
@@ -261,7 +263,7 @@
 
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" name="email" value="{{ old('email') }}" required>
+                        <input type="email" name="email" value="{{ old('email') }}" data-required="true">
                     </div>
 
                     <div class="form-group">
@@ -271,7 +273,7 @@
 
                     <div class="form-group">
                         <label>Jenis Kelamin</label>
-                        <select name="jenis_kelamin">
+                        <select name="jenis_kelamin" data-required="true">
                             <option value="laki-laki" selected>Laki-laki</option>
                             <option value="perempuan">Perempuan</option>
                         </select>
@@ -279,12 +281,13 @@
 
                     <div class="form-group">
                         <label>Tanggal Lahir</label>
-                        <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" required>
+                        <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}"
+                            data-required="true">
                     </div>
 
                     <div class="form-group">
                         <label>Status Saat Ini</label>
-                        <select name="status_saat_ini" id="status_saat_ini" required>
+                        <select name="status_saat_ini" id="status_saat_ini" data-required="true">
                             <option disabled selected>Pilih Status</option>
                             <option value="Bekerja">Bekerja</option>
                             <option value="Wirausaha">Wirausaha</option>
@@ -356,7 +359,7 @@
                         <label for="foto" class="form-label">Upload Foto
                             Profile</label>
                         <input type="file" class="form-control" id="foto_profil" name="foto_profil"
-                            accept=".jpg,.jpeg,.png" required>
+                            accept=".jpg,.jpeg,.png" data-required="true">
                     </div>
 
                     <button type="submit">Simpan Perubahan</button>
@@ -374,6 +377,58 @@
     </div>
     </div>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if ($errors->has('email'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Email sudah digunakan!',
+                text: '{{ $errors->first('email') }}',
+                confirmButtonText: 'Oke'
+            });
+        </script>
+    @endif
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const requiredFields = this.querySelectorAll('[data-required]');
+            let emptyFields = [];
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    emptyFields.push(field);
+                }
+            });
+
+            if (emptyFields.length > 0) {
+                e.preventDefault();
+
+                // Tambah class 'is-invalid' ke field kosong
+                emptyFields.forEach(field => field.classList.add('is-invalid'));
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Data belum lengkap!',
+                    text: 'Harap isi semua field yang wajib diisi.',
+                    confirmButtonText: 'Oke'
+                });
+
+                return false;
+            } else {
+                // Hapus class 'is-invalid' jika sudah terisi
+                requiredFields.forEach(field => field.classList.remove('is-invalid'));
+            }
+        });
+
+        // Hapus 'is-invalid' saat mengetik
+        document.querySelectorAll('[data-required]').forEach(function(field) {
+            field.addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        });
+    </script>
     <script>
         document.getElementById('provinsi-select').addEventListener('change', function() {
             const provId = this.options[this.selectedIndex].getAttribute('data-id');
@@ -497,34 +552,58 @@
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#asal_sekolah').select2({
-                placeholder: 'Ketik nama sekolah...',
-                minimumInputLength: 6,
-                ajax: {
-                    url: '/cari-sekolah',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            q: params.term
-                        };
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: data.results
-                        };
-                    },
-                    cache: true
-                }
-            });
+    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.0/dist/js/tom-select.complete.min.js"></script>
+    {{-- <script>
+        $('#asal_sekolah').select2({
+            ajax: {
+                url: '/alumni-siswa/cari-sekolah',
+                dataType: 'json',
+                delay: 500,
+                data: function(params) {
+                    return {
+                        q: params.term
+                    };
+                },
+                processResults: function(data) {
+                    return {
+                        results: data.results
+                    };
+                },
+                cache: true
+            },
+            minimumInputLength: 3,
+            placeholder: "Cari nama sekolah..."
+        });
 
-            // Isi NPSN otomatis
-            $('#asal_sekolah').on('select2:select', function(e) {
-                let data = e.params.data;
-                $('#npsn').val(data.npsn || '');
+        // Isi input NPSN saat opsi dipilih
+        $('#asal_sekolah').on('select2:select', function(e) {
+            var data = e.params.data;
+            $('#npsn').val(data.id); // id berisi NPSN
+        });
+    </script> --}}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            new TomSelect("#asal_sekolah", {
+                valueField: 'id',
+                labelField: 'text',
+                searchField: 'text',
+                placeholder: 'Cari nama sekolah...',
+                load: function(query, callback) {
+                    if (query.length < 3) return callback();
+
+                    fetch(`/alumni-siswa/cari-sekolah?q=${encodeURIComponent(query)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            callback(data.results);
+                        }).catch(() => {
+                            callback();
+                        });
+                },
+                onChange: function(value) {
+                    document.getElementById('npsn').value = value;
+                }
             });
         });
     </script>

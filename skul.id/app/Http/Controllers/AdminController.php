@@ -8,6 +8,7 @@ use App\Models\Artikel;
 use App\Models\Pelatihan;
 use App\Models\Sertifikasi;
 use App\Models\MitraProfile;
+use App\Models\DaftarLoker;
 use Illuminate\Http\Request;
 use App\Models\AlumniSiswaProfile;
 use Illuminate\Support\Facades\DB;
@@ -161,11 +162,94 @@ class AdminController extends Controller
         return view('admin.loker', compact('lokers', 'title'));
     }
 
+    // Menangani aksi store/update/delete
+    public function handleLoker(Request $request)
+    {
+        $action = $request->input('action');
+
+        switch ($action) {
+            case 'store':
+                return $this->storeLoker($request);
+            case 'update':
+                return $this->updateLoker($request);
+            case 'delete':
+                return $this->deleteLoker($request);
+            default:
+                abort(400, 'Aksi tidak dikenali');
+        }
+    }
+
+    // Tambah loker baru
+    protected function storeLoker(Request $request)
+    {
+        $data = $request->validate([
+            'nama_perusahaan' => 'required|string',
+            'posisi' => 'required|string',
+            'lokasi' => 'required|string',
+            'tipe' => 'required|string',
+            'pendidikan' => 'required|string',
+            'gaji' => 'nullable|string',
+            'deskripsi' => 'required|string',
+            'gambar' => 'required|image|max:2048',
+        ]);
+
+        $data['gambar'] = $request->file('gambar')->store('loker', 'public');
+        $data['user_id'] = auth()->id(); // atau bisa ditentukan id mitra tertentu
+
+        Loker::create($data);
+
+        return redirect()->route('admin.loker')->with('success', 'Loker berhasil ditambahkan.');
+    }
+
+    // Update loker
+    protected function updateLoker(Request $request)
+    {
+        $loker = Loker::findOrFail($request->id);
+
+        $data = $request->validate([
+            'nama_perusahaan' => 'required|string',
+            'posisi' => 'required|string',
+            'lokasi' => 'required|string',
+            'tipe' => 'required|string',
+            'pendidikan' => 'required|string',
+            'gaji' => 'nullable|string',
+            'deskripsi' => 'required|string',
+            'gambar' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama
+            if ($loker->gambar && Storage::disk('public')->exists($loker->gambar)) {
+                Storage::disk('public')->delete($loker->gambar);
+            }
+            $data['gambar'] = $request->file('gambar')->store('loker', 'public');
+        }
+
+        $loker->update($data);
+
+        return redirect()->route('admin.loker')->with('success', 'Loker berhasil diperbarui.');
+    }
+
+    // Hapus loker
+    protected function deleteLoker(Request $request)
+    {
+        $loker = Loker::findOrFail($request->id);
+
+        if ($loker->gambar && Storage::disk('public')->exists($loker->gambar)) {
+            Storage::disk('public')->delete($loker->gambar);
+        }
+
+        $loker->delete();
+
+        return redirect()->route('admin.loker')->with('success', 'Loker berhasil dihapus.');
+    }
+
+
     public function pelatihan(Request $request)
     {
         if ($request->isMethod('post')) {
             $action = $request->input('action');
-
+    
             if ($action === 'store') {
                 $validated = $request->validate([
                     'nama_pelatihan' => 'required',
@@ -173,88 +257,169 @@ class AdminController extends Controller
                     'tanggal_mulai' => 'required|date',
                     'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
                     'deskripsi' => 'required',
-                    'biaya' => 'nullable',
+                    'biaya' => 'nullable|numeric',
                     'kota' => 'required',
-                    'status' => 'required',
+                    'status' => 'required|in:Gratis,Berbayar',
                     'foto_pelatihan' => 'required|image|max:2048',
                 ]);
-
-                $validated['user_id'] = auth()->id(); // atau isi dengan user mitra sesuai kebutuhan
+    
+                $validated['user_id'] = auth()->id();
                 $validated['foto_pelatihan'] = $request->file('foto_pelatihan')->store('pelatihan');
-
+    
                 Pelatihan::create($validated);
-
+    
                 return redirect()->back()->with('success', 'Pelatihan berhasil ditambahkan.');
             }
-
+    
             if ($action === 'update') {
                 $pelatihan = Pelatihan::findOrFail($request->input('id'));
-
+    
                 $data = $request->except(['action', 'id', 'foto_pelatihan']);
+    
                 if ($request->hasFile('foto_pelatihan')) {
+                    // Hapus foto lama (opsional, aktifkan jika mau)
+                    // if ($pelatihan->foto_pelatihan) {
+                    //     Storage::delete($pelatihan->foto_pelatihan);
+                    // }
                     $data['foto_pelatihan'] = $request->file('foto_pelatihan')->store('pelatihan');
                 }
-
+    
                 $pelatihan->update($data);
+    
                 return redirect()->back()->with('success', 'Pelatihan berhasil diupdate.');
             }
-
+    
             if ($action === 'delete') {
                 Pelatihan::destroy($request->input('id'));
                 return redirect()->back()->with('success', 'Pelatihan berhasil dihapus.');
             }
         }
+    
+        // === QUERY with FILTER ===
+        $pelatihansQuery = Pelatihan::with('user.mitraProfile');
+    
+        if ($request->filled('search')) {
+            $pelatihansQuery->where('nama_pelatihan', 'like', '%' . $request->search . '%');
+        }
+    
+        if ($request->filled('status')) {
+            $pelatihansQuery->where('status', $request->status);
+        }
 
+        if ($request->filled('mitra')) {
+            $pelatihansQuery->whereHas('user.mitraProfile', function ($q) use ($request) {
+                $q->where('nama_instansi', 'like', '%' . $request->mitra . '%');
+            });
+        }
+        
+        if ($request->filled('kota')) {
+            $pelatihansQuery->where('kota', 'like', '%' . $request->kota . '%');
+        }
+        
+        if ($request->filled('tanggal_mulai')) {
+            $pelatihansQuery->whereDate('tanggal_mulai', '>=', $request->tanggal_mulai);
+        }
+        
+        if ($request->filled('tanggal_selesai')) {
+            $pelatihansQuery->whereDate('tanggal_mulai', '<=', $request->tanggal_selesai);
+        }
+        
+    
+        // === PAGINATION 10 PER HALAMAN ===
+        $pelatihans = $pelatihansQuery->latest()->paginate(10)->withQueryString();
+    
+        // === METRICS ===
+        $totalPelatihan = Pelatihan::count();
+        $totalUser = \App\Models\User::count();
+        $userTerdaftar = Pelatihan::distinct('user_id')->count('user_id');
+        $persentaseUserTerdaftar = $totalUser > 0 ? round(($userTerdaftar / $totalUser) * 100, 2) : 0;
+        $totalPelatihanSelesai = Pelatihan::whereDate('tanggal_selesai', '<', now())->count();
+    
         return view('admin.pelatihan', [
             'title' => 'Pelatihan',
-            'pelatihans' => Pelatihan::with('user')->latest()->get(),
+            'pelatihans' => $pelatihans,
+            'totalPelatihan' => $totalPelatihan,
+            'persentaseUserTerdaftar' => $persentaseUserTerdaftar,
+            'totalPelatihanSelesai' => $totalPelatihanSelesai,
         ]);
     }
+         
 
-    public function users()
+    public function users(Request $request)
     {
-        $profiles = AlumniSiswaProfile::with('user')->get();
-        $users = User::all(); // untuk select user saat tambah/edit
+        // Mulai query dengan Eloquent, gunakan eager loading 'user' langsung di sini
+        $profilesQuery = AlumniSiswaProfile::with('user');
+    
+        // Filter pencarian
+        if ($request->filled('search')) {
+            $profilesQuery->where('nama_lengkap', 'like', '%' . $request->search . '%');
+        }
+        if ($request->filled('asal_sekolah')) {
+            $profilesQuery->where('asal_sekolah', 'like', '%' . $request->asal_sekolah . '%');
+        }
+        if ($request->filled('jurusan')) {
+            $profilesQuery->where('jurusan_sekolah', 'like', '%' . $request->jurusan . '%');
+        }
+        if ($request->filled('tahun_kelulusan')) {
+            $profilesQuery->where('tahun_kelulusan', $request->tahun_kelulusan);
+        }
+        if ($request->filled('nama_universitas')) {
+            $profilesQuery->where('nama_universitas', 'like', '%' . $request->nama_universitas . '%');
+        }
+        if ($request->filled('status')) {
+            $profilesQuery->where('status_saat_ini', $request->status);
+        }
+        if ($request->filled('tanggal_mulai') && $request->filled('tanggal_selesai')) {
+            $profilesQuery->whereBetween('created_at', [
+                $request->tanggal_mulai . ' 00:00:00',
+                $request->tanggal_selesai . ' 23:59:59'
+            ]);
+        } elseif ($request->filled('tanggal_mulai')) {
+            $profilesQuery->where('created_at', '>=', $request->tanggal_mulai . ' 00:00:00');
+        } elseif ($request->filled('tanggal_selesai')) {
+            $profilesQuery->where('created_at', '<=', $request->tanggal_selesai . ' 23:59:59');
+        }
+    
+        // Ambil hasil query setelah filter selesai
+        $profiles = $profilesQuery->get();
+    
+        // Statistik
+        $totalAlumni = AlumniSiswaProfile::count();
+        $totalSekolah = AlumniSiswaProfile::distinct('asal_sekolah')->count('asal_sekolah');
+        $totalJurusan = AlumniSiswaProfile::distinct('jurusan_sekolah')->count('jurusan_sekolah');
+    
         return view('admin.usersalumni', [
-            'title' => 'Data Users',
+            'title' => 'Data Users Alumni',
             'profiles' => $profiles,
-            'users' => $users,
+            'totalAlumni' => $totalAlumni,
+            'totalSekolah' => $totalSekolah,
+            'totalJurusan' => $totalJurusan,
         ]);
     }
-
-    // // Update data
-    // public function usersUpdate(Request $request)
-    // {
-    //     $request->validate([
-    //         'id' => 'required|exists:alumni_siswa_profiles,id',
-    //         'user_id' => 'required|exists:users,id',
-    //         'nama_lengkap' => 'required',
-    //         'nik' => 'required|unique:alumni_siswa_profiles,nik,' . $request->id,
-    //         'tahun_kelulusan' => 'nullable|digits:4',
-    //         'asal_sekolah' => 'required',
-    //         'jurusan_sekolah' => 'required',
-    //         'jenis_kelamin' => 'required',
-    //         'tanggal_lahir' => 'required|date',
-    //         'npsn' => 'required',
-    //         'provinsi' => 'required',
-    //         'kota' => 'required',
-    //         'alamat' => 'required',
-    //         'status_saat_ini' => 'required',
-    //     ]);
-
-    //     $profile = AlumniSiswaProfile::findOrFail($request->id);
-    //     $profile->update($request->all());
-
-    //     return back()->with('success', 'Data user berhasil diupdate.');
-    // }
-
-    // Hapus data
-    public function usersDelete(Request $request)
+    
+    
+    // Simpan data baru
+    public function usersStore(Request $request)
     {
-        $profile = AlumniSiswaProfile::findOrFail($request->id);
-        $profile->delete();
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'nama_lengkap' => 'required',
+            'nik' => 'required|unique:alumni_siswa_profiles,nik',
+            'tahun_kelulusan' => 'nullable|digits:4',
+            'asal_sekolah' => 'required',
+            'jurusan_sekolah' => 'required',
+            'jenis_kelamin' => 'required',
+            'tanggal_lahir' => 'required|date',
+            'npsn' => 'required',
+            'provinsi' => 'required',
+            'kota' => 'required',
+            'alamat' => 'required',
+            'status_saat_ini' => 'required',
+        ]);
 
-        return back()->with('success', 'Data user berhasil dihapus.');
+        AlumniSiswaProfile::create($request->all());
+
+        return back()->with('success', 'Data user berhasil ditambahkan.');
     }
 
 
@@ -325,18 +490,11 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'Data mitra berhasil diperbarui.');
     }
 
-public function deleteMitra(Request $request, $id)
-{
-    // Gunakan parameter $id, BUKAN $request->id
-    $user = User::findOrFail($id);
+    private function deleteMitra(Request $request)
+    {
+        $profile = MitraProfile::findOrFail($request->id);
+        $profile->delete();
 
-    // Hapus profil mitra jika ada relasi
-    $user->mitraProfile()->delete();
-
-    // Hapus user
-    $user->delete();
-
-    return redirect()->back()->with('success', 'Data mitra berhasil dihapus secara menyeluruh.');
-}
-
+        return redirect()->back()->with('success', 'Data mitra berhasil dihapus.');
+    }
 }

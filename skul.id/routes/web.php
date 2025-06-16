@@ -76,8 +76,8 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
 Route::middleware(['auth', 'role:alumnisiswa'])->group(function () {
     Route::get('/alumni-siswa/addProfile', [AlumniSiswaController::class, 'addProfile'])->name('alumni-siswa.addProfile');
     Route::post('/alumni-siswa/storeProfile', [AlumniSiswaController::class, 'storeProfile'])->name('alumni-siswa.storeProfile');
-    Route::get('/get-sekolah', [AlumniSiswaController::class, 'getSekolah']);
-    Route::get('/cari-sekolah', [AlumniSiswaController::class, 'searchSekolah']);
+    Route::get('alumni-siswa/get-sekolah', [AlumniSiswaController::class, 'getSekolah']);
+    Route::get('alumni-siswa/cari-sekolah', [AlumniSiswaController::class, 'cariSekolah']);
     Route::middleware('profile')->group(function () {
         Route::get('/alumni-siswa', [AlumniSiswaController::class, 'index'])->name('alumni-siswa.index');
         Route::get('/alumni-siswa/profile', [AlumniSiswaController::class, 'profile'])->name('alumni-siswa.profile');

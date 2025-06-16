@@ -93,11 +93,12 @@
                         </a>
                     </div>
                 </div>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                     @csrf
-                    <a href="#" class="logout"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+                    <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
+                        onclick="confirmLogout(event)">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
                 </form>
             </div>
             <div class="mt-auto pt-5 text-muted small">
@@ -119,11 +120,15 @@
                         Mitra</button>
                 </div>
 
+                @if (session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
+
                 <div class="table-responsive">
                     <table class="table table-bordered align-middle">
                         <thead class="table-light">
                             <tr>
-                                <th>No</th>
+                                <th>#</th>
                                 <th>Nama Instansi</th>
                                 <th>Penanggung Jawab</th>
                                 <th>Bidang Industri</th>
@@ -135,7 +140,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($profiles as $index => $m)
+                            @foreach ($profiles as $index => $m)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $m->nama_instansi }}</td>
@@ -145,34 +150,82 @@
                                     <td>{{ $m->provinsi }}</td>
                                     <td>{{ $m->kota }}</td>
                                     <td>{{ $m->alamat }}</td>
-                                    <td class="text-center">
-                                        <!-- Tombol edit dan hapus -->
-                                        <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
-                                            data-bs-target="#modalEdit{{ $m->id }}"><i
-                                                class="bi bi-pencil"></i></button>
-                                        <form id="deleteForm-{{ $m->user->id }}"
-                                            action="{{ route('admin.usersmitra.destroy', $m->user->id) }}" method="POST"
-                                            class="d-inline">
+                                    <td>
+                                        <button class="btn btn-sm btn-info text-white" data-bs-toggle="modal"
+                                            data-bs-target="#modalEdit{{ $m->id }}">Edit</button>
+                                        <form action="{{ route('admin.usersmitra') }}" method="POST" class="d-inline">
                                             @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                                onclick="confirmDelete({{ $m->user->id }})" title="Hapus">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="id" value="{{ $m->id }}">
+                                            <button onclick="return confirm('Yakin hapus mitra ini?')"
+                                                class="btn btn-sm btn-danger">Hapus</button>
                                         </form>
                                     </td>
                                 </tr>
 
-                                <!-- Modal Edit (biarkan seperti sebelumnya) -->
+                                <!-- Modal Edit -->
                                 <div class="modal fade" id="modalEdit{{ $m->id }}" tabindex="-1">
-                                    ...
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <form action="{{ route('admin.usersmitra') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="action" value="update">
+                                                <input type="hidden" name="id" value="{{ $m->id }}">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Edit Mitra</h5>
+                                                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row g-3">
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Nama Instansi</label>
+                                                            <input type="text" name="nama_instansi"
+                                                                class="form-control" value="{{ $m->nama_instansi }}"
+                                                                required>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Penanggung Jawab</label>
+                                                            <input type="text" name="penanggung_jawab"
+                                                                class="form-control"
+                                                                value="{{ $m->penanggung_jawab }}" required>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Bidang Industri</label>
+                                                            <input type="text" name="bidang_industri"
+                                                                class="form-control"
+                                                                value="{{ $m->bidang_industri }}">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Kategori</label>
+                                                            <input type="text" name="kategori"
+                                                                class="form-control" value="{{ $m->kategori }}">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Provinsi</label>
+                                                            <input type="text" name="provinsi"
+                                                                class="form-control" value="{{ $m->provinsi }}">
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="form-label">Kota</label>
+                                                            <input type="text" name="kota" class="form-control"
+                                                                value="{{ $m->kota }}">
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <label class="form-label">Alamat</label>
+                                                            <textarea name="alamat" class="form-control" rows="2">{{ $m->alamat }}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-success">Update</button>
+                                                    <button class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Tutup</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
-
-                            @empty
-                                <tr>
-                                    <td colspan="9" class="text-center text-muted">Data user mitra belum ada.</td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -274,22 +327,6 @@
                     confirmButtonColor: '#d33'
                 });
             @endif
-            function confirmDelete(id) {
-                Swal.fire({
-                    title: 'Yakin ingin menghapus?',
-                    text: "Data sertifikasi akan dihapus permanen!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById('deleteForm-' + id).submit();
-                    }
-                });
-            }
         </script>
         @if (session('success'))
             <script>
@@ -304,6 +341,25 @@
                 });
             </script>
         @endif
+        <script>
+            function confirmLogout() {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Yakin ingin logout?',
+                    text: "Anda akan keluar dari akun ini.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, logout!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('logout-form').submit();
+                    }
+                });
+            }
+        </script>
 
 </body>
 

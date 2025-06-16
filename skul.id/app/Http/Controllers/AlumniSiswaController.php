@@ -4,30 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Loker;
+use App\Models\Artikel;
 use App\Models\Pelatihan;
 use App\Models\Sertifikasi;
 use Illuminate\Http\Request;
 use App\Models\AlumniSiswaProfile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class AlumniSiswaController extends Controller
 {
     public function index()
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
-        return view('alumni-siswa.beranda', compact('user'));
+        $artikels = Artikel::latest()->take(4)->get(); // Ambil 4 artikel terbaru
+        return view('alumni-siswa.beranda', compact('user', 'artikels'));
     }
 
     public function addProfile()
     {
-        $provinsi = Http::get('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')->json();
+        $allProvinsi = Http::get('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')->json();
+
+        // Filter hanya provinsi Sulawesi (ID 71-76)
+        $provinsi = collect($allProvinsi)->filter(function ($item) {
+            return in_array($item['id'], ['71', '72', '73', '74', '75', '76']);
+        })->values();
         // Default: ambil kabupaten dari provinsi Sulawesi Selatan (id 73)
         $kabupaten = Http::get('https://www.emsifa.com/api-wilayah-indonesia/api/regencies/73.json')->json();
 
-        $kode_kabupaten = '7371';
-
-        $sekolah = Http::get("https://api-sekolah-indonesia.vercel.app/sekolah?kab_kota={$kode_kabupaten}&page=1&perPage=100")->json();
+        $sekolah = Http::get("https://api-sekolah-indonesia.vercel.app/sekolah/SMK?page=1&perPage=100")->json();
 
         $user = Auth::user();
 
@@ -41,34 +48,44 @@ class AlumniSiswaController extends Controller
         return view('alumni-siswa.addProfile', compact('no_hp', 'provinsi', 'kabupaten', 'sekolah'));
     }
 
-    public function searchSekolah(Request $request)
+    public function cariSekolah(Request $request)
     {
-        $query = $request->input('q'); // dari Select2
+        $query = strtolower(trim($request->get('q')));
 
-        $response = Http::get('https://api-sekolah-indonesia.vercel.app/sekolah', [
-            'perPage' => 100,
-            'keyword' => $query,
-        ]);
-
-        $data = $response->json();
-        $results = [];
-
-        if (isset($data['dataSekolah'])) {
-            foreach ($data['dataSekolah'] as $item) {
-                if (in_array($item['bentuk'], ['SMA', 'SMK'])) {
-                    $results[] = [
-                        'id' => $item['sekolah'],
-                        'text' => $item['sekolah'],
-                        'npsn' => $item['npsn'],
-                    ];
-                }
-            }
+        if (strlen($query) < 3) {
+            return response()->json(['results' => []]);
         }
+
+        $cacheKey = "cari_sekolah:$query";
+
+        $results = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($query) {
+            try {
+                $response = Http::timeout(3)->get("https://api-sekolah-indonesia.vercel.app/sekolah/s", [
+                    'sekolah' => $query,
+                ]);
+
+                $data = $response->json();
+
+                if (!isset($data['dataSekolah'])) {
+                    return [];
+                }
+
+                return collect($data['dataSekolah'])
+                    ->filter(fn($item) => isset($item['bentuk']) && in_array($item['bentuk'], ['SMK', 'SMA']))
+                    ->map(fn($item) => [
+                        'id' => $item['npsn'],
+                        'text' => $item['sekolah'],
+                    ])
+                    ->take(10)
+                    ->values()
+                    ->toArray();
+            } catch (\Exception $e) {
+                return []; // fallback jika API timeout atau error
+            }
+        });
 
         return response()->json(['results' => $results]);
     }
-
-
 
 
     public function storeProfile(Request $request)
@@ -282,7 +299,9 @@ class AlumniSiswaController extends Controller
     public function artikel()
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
-        return view('alumni-siswa.artikel', compact('user'));
+        $artikels = Artikel::latest()->paginate(6);
+
+        return view('alumni-siswa.artikel', compact('user', 'artikels'));
     }
 
     public function lokerSearch(Request $request)

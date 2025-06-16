@@ -38,7 +38,7 @@
         }
 
         .navbar .logo {
-            width: 120px;
+            width: 80px;
         }
 
         .user-info {

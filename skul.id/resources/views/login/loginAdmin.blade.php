@@ -238,7 +238,7 @@
 
                 <form action="{{ route('login') }}" method="POST">
                     @csrf
-                    <input type="hidden" name="login_type" value="mitra" />
+                    <input type="hidden" name="login_type" value="admin" />
 
                     <!-- Nomor HP -->
                     <div class="mb-3 position-relative">

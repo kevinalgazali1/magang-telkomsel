@@ -38,7 +38,7 @@
         }
 
         .navbar .logo {
-            width: 120px;
+            width: 80px;
         }
 
         .user-info {
@@ -255,7 +255,8 @@
             }
 
             .user-info {
-                display: none;;
+                display: none;
+                ;
             }
 
             .banner-images {
@@ -315,7 +316,8 @@
         </div>
         <div class="user-info">
             <span>Halo, {{ $user->alumniSiswaProfile->nama_lengkap }}</span>
-            <img src="{{ asset('storage/' . $user->alumniSiswaProfile->foto_profil) }}" alt="Profile" class="profile-picture" />
+            <img src="{{ asset('storage/' . $user->alumniSiswaProfile->foto_profil) }}" alt="Profile"
+                class="profile-picture" />
         </div>
         <button class="btn d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
             <i class="bi bi-list fs-3"></i>
@@ -381,51 +383,27 @@
                     <h5 class="fw-bold text-danger mb-4"><i class="bi bi-journal-richtext me-2"></i>ARTIKEL TERBARU</h5>
 
                     <div class="row g-4">
-                        <!-- Artikel 1 -->
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card h-100 border-0 shadow-sm artikel-item">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    class="card-img-top" alt="Artikel">
-                                <div class="card-body">
-                                    <h6 class="fw-semibold text-dark">5 Tips Sukses Masuk Dunia Kerja Setelah Lulus
-                                    </h6>
-                                    <p class="text-muted small mb-2">Oleh Skul.Id • 15 Mei 2025</p>
-                                    <p class="card-text text-secondary small">Pelajari bagaimana mempersiapkan CV,
-                                        wawancara, dan strategi lainnya untuk menaklukkan dunia kerja.</p>
+                        @foreach ($artikels as $artikel)
+                            <div class="col-md-6 col-lg-4">
+                                <div class="card h-100 border-0 shadow-sm artikel-item">
+                                    <img src="{{ asset('storage/' . $artikel->gambar_artikel) }}" class="card-img-top"
+                                        alt="Artikel">
+                                    <div class="card-body">
+                                        <h6 class="fw-semibold text-dark">{{ $artikel->judul }}</h6>
+                                        <p class="text-muted small mb-2">Oleh {{ $artikel->penulis }} •
+                                            {{ $artikel->created_at->format('d M Y') }}</p>
+                                        <p class="card-text text-secondary small">
+                                            {{ Str::limit(strip_tags($artikel->isi), 100) }}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endforeach
+                    </div>
 
-                        <!-- Artikel 2 -->
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card h-100 border-0 shadow-sm artikel-item">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    class="card-img-top" alt="Artikel">
-                                <div class="card-body">
-                                    <h6 class="fw-semibold text-dark">Kenali Beasiswa Dalam dan Luar Negeri 2025</h6>
-                                    <p class="text-muted small mb-2">Oleh Tim Beasiswaku • 14 Mei 2025</p>
-                                    <p class="card-text text-secondary small">Simak daftar beasiswa terkini dan
-                                        persyaratan agar kamu tidak ketinggalan kesempatan emas ini!</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Artikel 3 -->
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card h-100 border-0 shadow-sm artikel-item">
-                                <img src="https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg"
-                                    class="card-img-top" alt="Artikel">
-                                <div class="card-body">
-                                    <h6 class="fw-semibold text-dark">Karier Digital yang Menjanjikan di Masa Depan
-                                    </h6>
-                                    <p class="text-muted small mb-2">Oleh Skul.Id • 13 Mei 2025</p>
-                                    <p class="card-text text-secondary small">Dunia digital terus berkembang. Yuk
-                                        kenali profesi-profesi yang paling dicari saat ini!</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Tambahkan lebih banyak artikel di sini -->
+                    <!-- Pagination links -->
+                    <div class="mt-4">
+                        {{ $artikels->links() }}
                     </div>
                 </div>
             </div>

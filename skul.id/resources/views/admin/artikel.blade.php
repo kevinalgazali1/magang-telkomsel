@@ -123,11 +123,12 @@
                         </a>
                     </div>
                 </div>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                     @csrf
-                    <a href="#" class="logout"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+                    <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
+                        onclick="confirmLogout(event)">
+                        <i class="bi bi-box-arrow-right me-2"></i> Logout
+                    </a>
                 </form>
             </div>
             <div class="mt-auto pt-5 text-muted small">
@@ -155,36 +156,58 @@
                     </a>
                 </div>
 
-                {{-- Modal Artikel --}}
-                @foreach ($artikel as $item)
-                    <!-- Modal -->
-                    <div class="modal fade" id="artikelModal{{ $item->id }}" tabindex="-1"
-                        aria-labelledby="artikelModalLabel{{ $item->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <div>
-                                        <h5 class="modal-title" id="artikelModalLabel{{ $item->id }}">
-                                            {{ $item->judul }}</h5>
-                                        <small class="text-muted">Ditulis oleh {{ $item->penulis }}</small>
-                                        <br>
-                                        <small class="text-muted">{{ $item->created_at->format('d M Y') }}</small>
+                <!-- Card Grid -->
+                <div class="row g-4 mb-5">
+                    @foreach ($artikel as $item)
+                        <div class="col-md-4">
+                            <div class="card border-0 shadow-sm rounded-4 h-100">
+                                <img src="{{ asset('storage/' . $item->gambar_artikel) }}"
+                                    class="card-img-top rounded-top-4" alt="Gambar Artikel {{ $item->judul }}">
+                                <div class="card-body">
+                                    <h5 class="fw-semibold mb-2">{{ $item->judul }}</h5>
+                                    <p class="text-muted small">{{ Str::limit(strip_tags($item->isi), 50, '...') }}</p>
+                                    <div class="mt-3 d-flex justify-content-between align-items-center">
+                                        {{-- <small class="text-muted">Penulis: {{ $item->penulis }}</small> --}}
+                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#artikelModal{{ $item->id }}">
+                                            Baca Selengkapnya
+                                        </button>
                                     </div>
-                                </div>
-                                <div class="modal-body">
-                                    <img src="{{ asset('storage/' . $item->gambar_artikel) }}"
-                                        alt="Gambar Artikel {{ $item->judul }}" class="img-fluid mb-3 rounded">
-                                    {!! nl2br(e($item->isi)) !!}
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary btn-sm"
-                                        data-bs-dismiss="modal">Tutup</button>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="artikelModal{{ $item->id }}" tabindex="-1"
+                            aria-labelledby="artikelModalLabel{{ $item->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <div>
+                                            <h5 class="modal-title" id="artikelModalLabel{{ $item->id }}">
+                                                {{ $item->judul }}</h5>
+                                            {{-- <small class="text-muted">{{ $item->penulis }}</small> --}}
+                                            <small class="text-muted">{{ $item->created_at->format('d M Y') }}</small>
+                                        </div>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img src="{{ asset('storage/' . $item->gambar_artikel) }}"
+                                            alt="Gambar Artikel {{ $item->judul }}" class="img-fluid mb-3 rounded">
+                                        {!! $item->isi !!}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-sm"
+                                            data-bs-dismiss="modal">Tutup</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
 
                 <!-- Tabel Artikel -->
                 <div class="card border-0 shadow-sm rounded-4">
@@ -209,26 +232,18 @@
                                             <td>{{ $item->penulis }}</td>
                                             <td>{{ $item->created_at->format('d M Y') }}</td>
                                             <td class="text-end">
-                                                <a href="#" class="btn btn-sm btn-outline-primary" title="Lihat"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#artikelModal{{ $item->id }}">
+                                                <a href="#" class="btn btn-sm btn-outline-primary"
+                                                    title="Lihat">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
                                                 <a href="#" class="btn btn-sm btn-outline-warning"
-                                                    title="Edit" data-bs-toggle="modal"
-                                                    data-bs-target="#editArtikelModal{{ $item->id }}">
+                                                    title="Edit">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <form id="deleteForm-{{ $item->id }}"
-                                                    action="{{ route('admin.artikel.destroy', $item->id) }}" method="POST"
-                                                    class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        onclick="confirmDelete({{ $item->id }})" title="Hapus">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
+                                                <button class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Hapus?')" title="Hapus">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @empty
@@ -293,107 +308,24 @@
         </div>
     </div>
 
-    @foreach ($artikel as $item)
-        <!-- Modal Edit Artikel -->
-        <div class="modal fade" id="editArtikelModal{{ $item->id }}" tabindex="-1"
-            aria-labelledby="editArtikelModalLabel{{ $item->id }}" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form action="{{ route('admin.artikel.update', $item->id) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editArtikelModalLabel{{ $item->id }}">Edit Artikel</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Tutup"></button>
-                        </div>
-                        <div class="modal-body">
-
-                            <div class="mb-3">
-                                <label for="judul{{ $item->id }}" class="form-label">Judul Artikel</label>
-                                <input type="text" class="form-control" id="judul{{ $item->id }}"
-                                    name="judul" value="{{ $item->judul }}" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="penulis{{ $item->id }}" class="form-label">Penulis Artikel</label>
-                                <input type="text" class="form-control" id="penulis{{ $item->id }}"
-                                    name="penulis" value="{{ $item->penulis }}" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="isi{{ $item->id }}" class="form-label">Isi Artikel</label>
-                                <textarea class="form-control" id="isi{{ $item->id }}" name="isi" rows="5" required>{{ $item->isi }}</textarea>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="gambar_artikel{{ $item->id }}" class="form-label">Gambar
-                                    Artikel</label>
-                                <input class="form-control" type="file" id="gambar_artikel{{ $item->id }}"
-                                    name="gambar_artikel" accept="image/*">
-                                <small class="text-muted">Biarkan kosong jika tidak ingin mengganti gambar.</small>
-                            </div>
-
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    @endforeach
-
-
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        @if (session('success'))
+        function confirmLogout() {
+            event.preventDefault();
             Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        @endif
-
-        @if (session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        @endif
-
-        @if (session('message'))
-            Swal.fire({
-                icon: '{{ session('alert-type') == 'warning' ? 'warning' : 'info' }}',
-                title: '{{ ucfirst(session('alert-type') ?? 'Info') }}',
-                text: '{{ session('message') }}',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        @endif
-
-        function confirmDelete(id) {
-            Swal.fire({
-                title: 'Yakin ingin menghapus?',
-                text: "Data sertifikasi akan dihapus permanen!",
+                title: 'Yakin ingin logout?',
+                text: "Anda akan keluar dari akun ini.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Ya, hapus!',
+                confirmButtonText: 'Ya, logout!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('deleteForm-' + id).submit();
+                    document.getElementById('logout-form').submit();
                 }
             });
         }
