@@ -38,7 +38,7 @@
         }
 
         .navbar .logo {
-            width: 150px;
+            width: 80px;
             margin-left: 30px;
         }
 

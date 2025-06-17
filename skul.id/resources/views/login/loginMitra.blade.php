@@ -232,8 +232,6 @@
                 <img src="{{ url('img/login-mitra.png') }}" alt="Icon Mitra" class="log-logo" />
             </div>
 
-             {{-- <p>Belum memiliki akun? <a href="{{ route('register.mitra') }}" class="text-danger">Daftar
-                            Sekarang</a></p> --}}
 
             <div class="login-form">
                 <div class="text mb-3">

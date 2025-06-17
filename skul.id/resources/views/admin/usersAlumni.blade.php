@@ -323,7 +323,8 @@
                                 class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
                                 <i class="bi bi-arrow-clockwise me-1"></i> Reset
                             </a>
-                            <a href="#" class="btn btn-success rounded-pill px-4 shadow-sm">
+                            <a href="{{ route('export.alumni.csv') }}"
+                                class="btn btn-success rounded-pill px-4 shadow-sm">
                                 <i class="bi bi-download me-1"></i> CSV
                             </a>
                         </div>

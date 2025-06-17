@@ -402,8 +402,50 @@
                     </div>
 
                     <!-- Pagination links -->
-                    <div class="mt-4">
-                        {{ $artikels->links() }}
+                    <!-- Custom Pagination for Artikels -->
+                    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                        <div class="small text-muted">
+                            Showing
+                            <strong>{{ $artikels->firstItem() ?? 0 }}</strong>
+                            to
+                            <strong>{{ $artikels->lastItem() ?? 0 }}</strong>
+                            of
+                            <strong>{{ $artikels->total() }}</strong>
+                            entries
+                        </div>
+
+                        <nav>
+                            <ul class="pagination mb-0">
+                                {{-- Previous Page Link --}}
+                                @if ($artikels->onFirstPage())
+                                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                @else
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $artikels->previousPageUrl() }}" rel="prev">&laquo;</a></li>
+                                @endif
+
+                                {{-- Pagination Elements --}}
+                                @foreach ($artikels->getUrlRange(1, $artikels->lastPage()) as $page => $url)
+                                    @if ($page == $artikels->currentPage())
+                                        <li class="page-item active"><span
+                                                class="page-link">{{ $page }}</span></li>
+                                    @elseif ($page == 1 || $page == $artikels->lastPage() || abs($page - $artikels->currentPage()) <= 1)
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $url }}">{{ $page }}</a></li>
+                                    @elseif ($page == 2 || $page == $artikels->lastPage() - 1)
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($artikels->hasMorePages())
+                                    <li class="page-item"><a class="page-link" href="{{ $artikels->nextPageUrl() }}"
+                                            rel="next">&raquo;</a></li>
+                                @else
+                                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                @endif
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

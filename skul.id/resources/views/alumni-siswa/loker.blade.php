@@ -619,8 +619,7 @@
                                             <i class="bi bi-mortarboard me-1"></i>{{ $item->pendidikan }}
                                         </span>
                                         <span class="badge bg-light text-dark border">
-                                            Rp
-                                            {{ number_format((float) str_replace('.', '', $item->gaji), 0, ',', '.') }}
+                                            {{ $item->gaji }}
                                         </span>
                                     </div>
 
@@ -703,7 +702,7 @@
                                                 <div>
                                                     <strong class="d-block">Gaji</strong>
                                                     <span
-                                                        class="text-muted">Rp{{ number_format((float) str_replace('.', '', $item->gaji), 0, ',', '.') }}</span>
+                                                        class="text-muted">{{ $item->gaji }}</span>
                                                 </div>
                                             </div>
                                         </div>

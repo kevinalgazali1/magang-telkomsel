@@ -467,10 +467,10 @@
                                             <h5 class="fw-semibold mb-0">👥 Peserta Terdaftar</h5>
 
                                             {{-- Tombol Download --}}
-                                            <a href="{{ route('admin.sertifikasi', $s->id) }}"
-                                                class="btn btn-sm btn-outline-success">
-                                                Download
-                                            </a>
+                                            <button id="btnDownloadPeserta" data-id="{{ $s->id }}"
+                                                class="btn btn-sm btn-outline-success d-flex align-items-center">
+                                                <i class="bi bi-download me-1"></i> Download
+                                            </button>
                                         </div>
 
                                         @if ($s->daftarSertifikasis && $s->daftarSertifikasis->count())
@@ -693,6 +693,22 @@
                 }
             });
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadBtn = document.getElementById('btnDownloadPeserta');
+
+            if (downloadBtn) {
+                downloadBtn.addEventListener('click', function() {
+                    const sertifikasiId = this.getAttribute('data-id');
+
+                    if (sertifikasiId) {
+                        // Trigger download CSV
+                        window.location.href = `/public/sertifikasi/${sertifikasiId}/peserta/export`;
+                    }
+                });
+            }
+        });
     </script>
 </body>
 

@@ -299,7 +299,7 @@ class AlumniSiswaController extends Controller
     public function artikel()
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
-        $artikels = Artikel::latest()->paginate(6);
+        $artikels = Artikel::latest()->paginate(6)->withQueryString();
 
         return view('alumni-siswa.artikel', compact('user', 'artikels'));
     }

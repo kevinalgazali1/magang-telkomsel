@@ -133,4 +133,10 @@ class LokerController extends Controller
         $loker->delete();
         return redirect()->back()->with('success', 'Lowongan Kerja berhasil dihapus.');
     }
+
+    public function getPeserta($id)
+    {
+        $peserta = DaftarLoker::where('loker_id', $id)->get();
+        return response()->json($peserta);
+    }
 }

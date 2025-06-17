@@ -173,16 +173,6 @@
             <div class="card-form">
                 <h2>Data Diri</h2>
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $err)
-                                <li>{{ $err }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
                 <form action="{{ route('alumni-siswa.storeProfile') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
@@ -586,7 +576,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             new TomSelect("#asal_sekolah", {
-                valueField: 'id',
+                valueField: 'text', // <--- simpan nama sekolah
                 labelField: 'text',
                 searchField: 'text',
                 placeholder: 'Cari nama sekolah...',
@@ -602,7 +592,11 @@
                         });
                 },
                 onChange: function(value) {
-                    document.getElementById('npsn').value = value;
+                    // jika kamu masih ingin simpan NPSN, buat input hidden untuk itu
+                    const selectedOption = this.options[value];
+                    if (selectedOption && selectedOption.id) {
+                        document.getElementById('npsn').value = selectedOption.id;
+                    }
                 }
             });
         });

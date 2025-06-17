@@ -40,7 +40,7 @@
         }
 
         .navbar .logo {
-            width: 150px;
+            width: 80px;
             margin-left: 30px;
         }
 
@@ -145,7 +145,7 @@
         }
 
         .navbar .logo {
-            width: 150px;
+            width: 80px;
             margin-left: 30px;
         }
 
@@ -1096,7 +1096,7 @@
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            document.getElementById('tambahForm').submit();
+                            document.getElementById('tambahPelatihanForm').submit();
                         }
                     });
                 }

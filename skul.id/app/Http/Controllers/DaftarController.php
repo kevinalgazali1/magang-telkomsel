@@ -112,7 +112,7 @@ class DaftarController extends Controller
                 'jurusan'           => $profile->jurusan_sekolah,
                 'jenis_kelamin'     => $profile->jenis_kelamin,
                 'tanggal_lahir'     => $profile->tanggal_lahir,
-                'cv'                => $cv,
+                'cv'                => $cv_name,
                 'nik'               => $profile->nik,
                 'tahun_kelulusan'   => $profile->tahun_kelulusan,
                 'npsn'              => $profile->npsn,

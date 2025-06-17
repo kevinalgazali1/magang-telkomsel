@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Sertifikasi;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\DaftarSertifikasi;
 use App\Http\Controllers\Controller;
@@ -138,11 +139,40 @@ class SertifikasiController extends Controller
     public function exportPesertaCsv($id)
     {
         $peserta = DaftarSertifikasi::where('sertifikasi_id', $id)->get();
+        $sertifikasi = Sertifikasi::find($id);
 
-        $filename = 'daftar_peserta_sertifikasi_' . $id . '.csv';
+        if (!$sertifikasi) {
+            return redirect()->back()->with('danger', 'Sertifikasi tidak ditemukan.');
+        }
+
+        // Membuat nama file dari judul sertifikasi
+        $judulSlug = Str::slug($sertifikasi->judul_sertifikasi);
+        $filename = "daftar_peserta_{$judulSlug}.csv";
+
         $handle = fopen('php://temp', 'w+');
 
-        fputcsv($handle, ['No', 'Nama Lengkap', 'Email', 'No. Telepon', 'Asal Sekolah', 'Jurusan', 'Jenis Kelamin', 'Tanggal Lahir', 'NIK', 'Tahun Kelulusan', 'NPSN', 'Provinsi', 'Kota', 'Alamat', 'Status Saat Ini', 'Bidang Pekerjaan', 'Sertifikasi Terakhir', 'Kesesuaian Sertifikasi', 'Nama Universitas', 'Jurusan Universitas']);
+        fputcsv($handle, [
+            'No',
+            'Nama Lengkap',
+            'Email',
+            'No. Telepon',
+            'Asal Sekolah',
+            'Jurusan',
+            'Jenis Kelamin',
+            'Tanggal Lahir',
+            'NIK',
+            'Tahun Kelulusan',
+            'NPSN',
+            'Provinsi',
+            'Kota',
+            'Alamat',
+            'Status Saat Ini',
+            'Bidang Pekerjaan',
+            'Sertifikasi Terakhir',
+            'Kesesuaian Sertifikasi',
+            'Nama Universitas',
+            'Jurusan Universitas'
+        ]);
 
         foreach ($peserta as $index => $p) {
             fputcsv($handle, [

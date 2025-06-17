@@ -172,7 +172,7 @@
         }
 
         .navbar .logo {
-            width: 150px;
+            width: 80px;
             margin-left: 30px;
         }
 
@@ -736,28 +736,12 @@
                                                                                 <th>CV</th>
                                                                             </tr>
                                                                         </thead>
-                                                                        <tbody>
-                                                                            @forelse ($loker->daftarLoker as $index => $pelamar)
-                                                                                <tr>
-                                                                                    <td>{{ $index + 1 }}</td>
-                                                                                    <td>{{ $pelamar->nama_lengkap }}
-                                                                                    </td>
-                                                                                    <td>{{ $pelamar->email }}</td>
-                                                                                    <td>
-                                                                                        <a href="{{ asset('storage/' . $pelamar->cv) }}"
-                                                                                            target="_blank"
-                                                                                            class="btn btn-sm btn-outline-primary">Lihat
-                                                                                            CV</a>
-                                                                                    </td>
-                                                                                </tr>
-                                                                            @empty
-                                                                                <tr>
-                                                                                    <td colspan="4"
-                                                                                        class="text-muted fst-italic">
-                                                                                        Belum
-                                                                                        ada pelamar</td>
-                                                                                </tr>
-                                                                            @endforelse
+                                                                        <tbody id="pesertaTableBody">
+                                                                            <tr>
+                                                                                <td colspan="4"
+                                                                                    class="text-muted fst-italic">
+                                                                                    Memuat data...</td>
+                                                                            </tr>
                                                                         </tbody>
                                                                     </table>
                                                                 </div>
@@ -865,7 +849,7 @@
                                                         <input type="text" class="form-control"
                                                             id="nama_perusahaan" name="nama_perusahaan"
                                                             value="{{ auth()->user()->mitraProfile->nama_instansi }}"
-                                                            required>
+                                                            readonly>
                                                     </div>
                                                 </div>
 
@@ -1337,6 +1321,47 @@
                     setTimeout(() => alert.remove(), 300);
                 }
             }, 5000);
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const lokerId = {{ $loker->id }}; // pastikan variabel ini tersedia di Blade
+                const tableBody = document.getElementById('pesertaTableBody');
+
+                fetch(`/loker/${lokerId}/peserta`)
+                    .then(response => response.json())
+                    .then(data => {
+                        tableBody.innerHTML = ''; // kosongkan isi awal
+
+                        if (data.length === 0) {
+                            tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="4" class="text-muted fst-italic">Belum ada pelamar</td>
+                        </tr>`;
+                            return;
+                        }
+
+                        data.forEach((pelamar, index) => {
+                            tableBody.innerHTML += `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${pelamar.nama_lengkap}</td>
+            <td>${pelamar.email}</td>
+            <td>
+                <a href="/storage/assets/cv/${pelamar.cv}" target="_blank"
+                    class="btn btn-sm btn-outline-primary">Lihat CV</a>
+            </td>
+        </tr>`;
+                        });
+
+                    })
+                    .catch(error => {
+                        console.error('Gagal memuat data pelamar:', error);
+                        tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-danger">Gagal memuat data.</td>
+                    </tr>`;
+                    });
+            });
         </script>
 
 

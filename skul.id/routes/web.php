@@ -60,6 +60,7 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
         Route::post('/mitra/store-loker', [LokerController::class, 'store'])->name('mitra.loker.store');
         Route::put('/mitra/update-loker/{id}', [LokerController::class, 'update'])->name('mitra.loker.update');
         Route::delete('/mitra/delete-loker/{id}', [LokerController::class, 'destroy'])->name('mitra.loker.destroy');
+        Route::get('/loker/{id}/peserta', [LokerController::class, 'getPeserta']);
         Route::get('/mitra/pelatihan', [PelatihanController::class, 'index'])->name('mitra.pelatihan');
         Route::post('/mitra/store-pelatihan', [PelatihanController::class, 'store'])->name('mitra.pelatihan.store');
         Route::put('/mitra/update-pelatihan/{id}', [PelatihanController::class, 'update'])->name('mitra.pelatihan.update');
@@ -111,6 +112,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/store-sertifikasi', [SertifikasiController::class, 'store'])->name('admin.sertifikasi.store');
     Route::put('/admin/update-sertifikasi/{id}', [SertifikasiController::class, 'update'])->name('admin.sertifikasi.update');
     Route::delete('/admin/delete-sertifikasi/{id}', [SertifikasiController::class, 'destroy'])->name('admin.sertifikasi.destroy');
+    Route::get('/sertifikasi/{id}/peserta/export', [SertifikasiController::class, 'exportPesertaCsv']);
     Route::get('/admin/loker', [AdminController::class, 'loker'])->name('admin.loker');
     Route::post('/admin/store-loker', [LokerController::class, 'store'])->name('admin.loker.store');
     Route::put('/admin/update-loker/{id}', [LokerController::class, 'update'])->name('admin.loker.update');

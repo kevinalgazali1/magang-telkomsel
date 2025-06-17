@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\AlumniSiswaProfile;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
 
 class UserController extends Controller
@@ -49,15 +50,18 @@ class UserController extends Controller
 
     public function exportAlumniCsv()
     {
-        $alumni = AlumniSiswaProfile::with('user')->get(); // untuk ambil data user (misal email)
+        // Ambil semua user yang punya profile alumni
+        $users = User::whereHas('alumniSiswaProfile')->with('alumniSiswaProfile')->get();
 
-        $filename = 'data_alumni.csv';
+        $filename = 'data_alumni_' . now()->format('Ymd_His') . '.csv';
         $handle = fopen('php://temp', 'w+');
 
-        // Header kolom sesuai dengan field di tabel
+        // Header kolom CSV
         fputcsv($handle, [
             'No',
             'Nama Lengkap',
+            'Email',
+            'No. HP',
             'NIK',
             'Tahun Kelulusan',
             'Asal Sekolah',
@@ -76,26 +80,31 @@ class UserController extends Controller
             'Jurusan Universitas'
         ]);
 
-        foreach ($alumni as $index => $a) {
+        // Data baris
+        foreach ($users as $index => $user) {
+            $alumni = $user->alumniSiswaProfile;
+
             fputcsv($handle, [
                 $index + 1,
-                $a->nama_lengkap,
-                '="' . $a->nik . '"', // supaya NIK tidak diubah format di Excel
-                $a->tahun_kelulusan,
-                $a->asal_sekolah,
-                $a->jurusan_sekolah,
-                $a->jenis_kelamin,
-                $a->tanggal_lahir,
-                $a->npsn,
-                $a->provinsi,
-                $a->kota,
-                $a->alamat,
-                $a->status_saat_ini,
-                $a->bidang_pekerjaan,
-                $a->sertifikasi_terakhir,
-                $a->kesesuaian_sertifikasi,
-                $a->nama_universitas,
-                $a->jurusan_universitas,
+                $alumni->nama_lengkap,
+                $user->email,
+                $user->no_hp,
+                '="' . $alumni->nik . '"',
+                $alumni->tahun_kelulusan,
+                $alumni->asal_sekolah,
+                $alumni->jurusan_sekolah,
+                $alumni->jenis_kelamin,
+                $alumni->tanggal_lahir,
+                $alumni->npsn,
+                $alumni->provinsi,
+                $alumni->kota,
+                $alumni->alamat,
+                $alumni->status_saat_ini,
+                $alumni->bidang_pekerjaan,
+                $alumni->sertifikasi_terakhir,
+                $alumni->kesesuaian_sertifikasi,
+                $alumni->nama_universitas,
+                $alumni->jurusan_universitas,
             ]);
         }
 
