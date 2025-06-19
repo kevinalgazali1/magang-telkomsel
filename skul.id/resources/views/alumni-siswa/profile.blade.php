@@ -311,6 +311,10 @@
                                     <div class="fw-semibold">{{ $profile->asal_sekolah }}</div>
                                 </div>
                                 <div class="col-md-6 mb-3">
+                                    <small class="text-muted">NPSN</small>
+                                    <div class="fw-semibold">{{ $profile->npsn }}</div>
+                                </div>
+                                <div class="col-md-6 mb-3">
                                     <small class="text-muted">Email</small>
                                     <div class="fw-semibold">{{ $user->email }}</div>
                                 </div>
@@ -347,7 +351,7 @@
                                     Telah mendaftar <strong>{{ $user->daftarSertifikasi->count() }}</strong>
                                     sertifikasi.
                                 </p>
-                                @forelse ($user->daftarSertifikasi as $pendaftaran)
+                                {{-- @forelse ($user->daftarSertifikasi as $pendaftaran)
                                     @php
                                         $sertifikasi = $pendaftaran->sertifikasi;
                                         $penyelenggara = $sertifikasi?->mitra?->mitraProfile?->nama_instansi ?? '-';
@@ -358,7 +362,7 @@
                                     </div>
                                 @empty
                                     <p class="text-muted">Belum ada sertifikasi yang didaftarkan.</p>
-                                @endforelse
+                                @endforelse --}}
                             </div>
 
 
@@ -371,7 +375,7 @@
                                     Telah mendaftar <strong>{{ $user->daftarLoker->count() }}</strong>
                                     lowongan kerja.
                                 </p>
-                                @forelse ($user->daftarLoker as $pendaftaran)
+                                {{-- @forelse ($user->daftarLoker as $pendaftaran)
                                     @php
                                         $loker = $pendaftaran->loker;
                                         $penyelenggara = $loker?->mitra?->mitraProfile?->nama_instansi ?? '-';
@@ -382,7 +386,7 @@
                                     </div>
                                 @empty
                                     <p class="text-muted">Belum ada melamar lowongan kerja.</p>
-                                @endforelse
+                                @endforelse --}}
                             </div>
 
                             <!-- Pelatihan -->
@@ -393,7 +397,7 @@
                                     Telah mendaftar <strong>{{ $user->daftarPelatihan->count() }}</strong>
                                     pelatihan.
                                 </p>
-                                @forelse ($user->daftarPelatihan as $pendaftaran)
+                                {{-- @forelse ($user->daftarPelatihan as $pendaftaran)
                                     @php
                                         $pelatihan = $pendaftaran->pelatihan;
                                         $penyelenggara = $pelatihan?->mitra?->mitraProfile?->nama_instansi ?? '-';
@@ -404,7 +408,7 @@
                                     </div>
                                 @empty
                                     <p class="text-muted">Belum ada sertifikasi yang didaftarkan.</p>
-                                @endforelse
+                                @endforelse --}}
                             </div>
                         </div>
                     </div>

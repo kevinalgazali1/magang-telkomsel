@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class AlumniSiswaController extends Controller
 {
@@ -158,87 +159,90 @@ class AlumniSiswaController extends Controller
 
     public function editProfile()
     {
+        $allProvinsi = Http::get('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')->json();
+
+        // Filter hanya provinsi Sulawesi (ID 71-76)
+        $provinsi = collect($allProvinsi)->filter(function ($item) {
+            return in_array($item['id'], ['71', '72', '73', '74', '75', '76']);
+        })->values();
+        // Default: ambil kabupaten dari provinsi Sulawesi Selatan (id 73)
+        $kabupaten = Http::get('https://www.emsifa.com/api-wilayah-indonesia/api/regencies/73.json')->json();
+
+        $sekolah = Http::get("https://api-sekolah-indonesia.vercel.app/sekolah/SMK?page=1&perPage=100")->json();
+
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
-        return view('alumni-siswa.editProfile', compact('user'));
+
+        return view('alumni-siswa.editProfile', compact('user', 'provinsi', 'kabupaten', 'sekolah'));
     }
 
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
 
-        $validated = $request->validate([
-            'nama_lengkap' => 'required|string',
-            'nik' => 'required|string|unique:alumni_siswa_profiles,nik,' . $user->id . ',user_id',
-            'kelas' => 'nullable|numeric',
-            'tahun_kelulusan' => 'nullable|numeric',
-            'jurusan_sekolah' => 'required|string',
-            'asal_sekolah' => 'required|string',
-            'no_telepon' => 'required|string',
-            'jenis_kelamin' => 'required|string',
-            'tanggal_lahir' => 'required|date',
-            'alamat' => 'required|string',
-            'status' => 'required|string',
-            'status_saat_ini' => 'nullable|string',
-            'bidang_pekerjaan' => 'nullable|string',
-            'sertifikasi_terakhir' => 'nullable|string',
-            'kesesuaian_sertifikasi' => 'nullable|string',
-            'provinsi' => 'nullable|string',
-            'kota' => 'nullable|string',
-            'npsn' => 'nullable|string',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'foto_profil' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+        try {
+            $validated = $request->validate([
+                'nama_lengkap' => 'required|string',
+                'nik' => 'required|string|unique:alumni_siswa_profiles,nik,' . $user->id . ',user_id',
+                'kelas' => 'nullable|numeric',
+                'tahun_kelulusan' => 'nullable|numeric',
+                'jurusan_sekolah' => 'required|string',
+                'asal_sekolah' => 'required|string',
+                'no_hp' => 'required|string|unique:users,no_hp,' . $user->id,
+                'jenis_kelamin' => 'required|string',
+                'tanggal_lahir' => 'required|date',
+                'alamat' => 'required|string',
+                'status_saat_ini' => 'nullable|string',
+                'bidang_pekerjaan' => 'nullable|string',
+                'sertifikasi_terakhir' => 'nullable|string',
+                'kesesuaian_sertifikasi' => 'nullable|string',
+                'provinsi' => 'nullable|string',
+                'kota' => 'nullable|string',
+                'npsn' => 'nullable|string',
+                'nama_universitas' => 'nullable|string',
+                'jurusan_universitas' => 'nullable|string',
+                'email' => 'required|email|unique:users,email,' . $user->id,
+                'foto_profil' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            ]);
 
-        // Ambil atau buat profile
-        $profile = AlumniSiswaProfile::firstOrNew(['user_id' => $user->id]);
+            // Update atau buat profil alumni
+            $profile = AlumniSiswaProfile::firstOrNew(['user_id' => $user->id]);
+            $profile->fill($validated);
 
-        // Update field biasa
-        $profile->nama_lengkap = $validated['nama_lengkap'];
-        $profile->nik = $validated['nik'] ?? null;
-        $profile->kelas = $validated['kelas'] ?? null;
-        $profile->tahun_kelulusan = $validated['tahun_kelulusan'] ?? null;
-        $profile->jurusan_sekolah = $validated['jurusan_sekolah'];
-        $profile->asal_sekolah = $validated['asal_sekolah'];
-        $profile->no_telepon = $validated['no_telepon'];
-        $profile->jenis_kelamin = $validated['jenis_kelamin'];
-        $profile->tanggal_lahir = $validated['tanggal_lahir'];
-        $profile->alamat = $validated['alamat'];
-        $profile->status_saat_ini = $validated['status_saat_ini'] ?? null;
-        $profile->bidang_pekerjaan = $validated['bidang_pekerjaan'] ?? null;
-        $profile->sertifikasi_terakhir = $validated['sertifikasi_terakhir'] ?? null;
-        $profile->kesesuaian_sertifikasi = $validated['kesesuaian_sertifikasi'] ?? null;
-        $profile->provinsi = $validated['provinsi'] ?? null;
-        $profile->kota = $validated['kota'] ?? null;
-        $profile->npsn = $validated['npsn'] ?? null;
-
-        // ✅ Upload foto baru jika ada
-        if ($request->hasFile('foto_profil')) {
-            // 🔥 Hapus file lama
-            if ($profile->foto_profil) {
-                $oldPath = public_path('storage/' . $profile->foto_profil);
-                if (file_exists($oldPath)) {
-                    unlink($oldPath);
+            // Handle upload foto
+            if ($request->hasFile('foto_profil')) {
+                // hapus file lama jika ada
+                if ($profile->foto_profil && file_exists(public_path('storage/' . $profile->foto_profil))) {
+                    unlink(public_path('storage/' . $profile->foto_profil));
                 }
+
+                // upload file baru
+                $file = $request->file('foto_profil');
+                $fileName = $file->hashName();
+                $file->move(public_path('storage/assets/profile'), $fileName);
+                $profile->foto_profil = 'assets/profile/' . $fileName;
             }
 
-            // 📥 Upload file baru
-            $file = $request->file('foto_profil');
-            $file_name = $file->hashName();
-            $file->move(public_path('storage/assets/profile'), $file_name);
+            // Set default jika belum pernah upload
+            if (!$profile->foto_profil) {
+                $profile->foto_profil = 'assets/profile/user.png';
+            }
 
-            // 💾 Simpan path baru
-            $profile->foto_profil = 'assets/profile/' . $file_name;
+            $profile->save();
+
+            // Update user (email dan no hp)
+            $user->update([
+                'email' => $validated['email'],
+            ]);
+
+            return redirect()->route('alumni-siswa.profile')->with('success', 'Profil berhasil diperbarui!');
+        } catch (\Throwable $e) {
+            Log::error('Update profile gagal: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Terjadi kesalahan saat menyimpan data.');
         }
-
-        $profile->save();
-
-        // Update email user
-        $user->email = $validated['email'];
-        $user->save();
-
-        return redirect()->route('alumni-siswa.profile')->with('success', 'Profil berhasil diperbarui!');
-        return redirect()->route('alumni-siswa.profile')->with('errror', 'Profil berhasil diperbarui!');
     }
+
+
+
 
     public function sertifikasi()
     {
