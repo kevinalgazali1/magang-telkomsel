@@ -767,32 +767,55 @@
 
                     <!-- Search Form -->
                     <form method="GET" action="{{ route('alumni-siswa.pelatihan') }}"
-                        class="d-flex bg-white rounded-pill overflow-hidden shadow"
-                        style="max-width: 600px; width: 100%;">
-                        <input type="text" name="search" class="form-control border-0 px-4 py-2"
-                            placeholder="Cari pelatihan berdasarkan nama, kota, dll...">
-                        <button type="submit" class="btn px-4 rounded-0 text-white"
-                            style="background-color: #a83245;">
-                            <i class="bi bi-search"></i>
-                        </button>
+                        class="row g-2 align-items-center mb-4">
+
+                        <div class="col-md-4">
+                            <input type="text" name="nama" class="form-control"
+                                placeholder="Cari nama pelatihan..." value="{{ request('nama') }}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <input type="text" name="kota" class="form-control" placeholder="Cari kota..."
+                                value="{{ request('kota') }}">
+                        </div>
+
+                        <div class="col-md-3">
+                            <select name="status" class="form-select">
+                                <option value="">Semua Status</option>
+                                <option value="Gratis" {{ request('status') == 'Gratis' ? 'selected' : '' }}>Gratis
+                                </option>
+                                <option value="Berbayar" {{ request('status') == 'Berbayar' ? 'selected' : '' }}>
+                                    Berbayar</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-danger w-100">
+                                <i class="bi bi-search"></i> Cari
+                            </button>
+                        </div>
                     </form>
+
 
                     <!-- Statistik Section -->
                     <div class="d-flex flex-wrap justify-content-center gap-4 mt-5">
                         <div class="text-center px-3">
                             <i class="bi bi-people-fill fs-2 text-info mb-2"></i>
-                            <h2 class="fw-bold text-info mb-0 count-up" data-count="{{ $totalAlumni }}">{{ $totalAlumni }}</h2>
+                            <h2 class="fw-bold text-info mb-0 count-up" data-count="{{ $totalAlumni }}">
+                                {{ $totalAlumni }}</h2>
                             <small class="text-muted">Peserta Terdaftar</small>
                         </div>
                         <div class="text-center px-3">
                             <i class="bi bi-easel2-fill fs-2 text-danger mb-2"></i>
                             <!-- Lebih representatif untuk pelatihan -->
-                            <h2 class="fw-bold text-danger mb-0 count-up" data-count="{{ $totalPelatihan }}">{{ $totalPelatihan }}</h2>
+                            <h2 class="fw-bold text-danger mb-0 count-up" data-count="{{ $totalPelatihan }}">
+                                {{ $totalPelatihan }}</h2>
                             <small class="text-muted">Program Pelatihan</small>
                         </div>
                         <div class="text-center px-3">
                             <i class="bi bi-calendar-check-fill fs-2 text-info mb-2"></i> <!-- Terlaksana / sukses -->
-                            <h2 class="fw-bold text-info mb-0 count-up" data-count="{{ $pelatihanSelesai }}">{{ $pelatihanSelesai }}</h2>
+                            <h2 class="fw-bold text-info mb-0 count-up" data-count="{{ $pelatihanSelesai }}">
+                                {{ $pelatihanSelesai }}</h2>
                             <small class="text-muted">Pelatihan Terlaksana</small>
                         </div>
                     </div>
@@ -801,86 +824,101 @@
             </section>
 
 
-            <div class="training-grid">
-                @foreach ($pelatihan as $item)
-                    <div class="training-card" style="cursor: pointer;" data-bs-toggle="modal"
-                        data-bs-target="#detailModal{{ $item->id }}">
-                        <div>
-                            <div class="training-title">{{ $item->nama_pelatihan }}</div>
-                            <div class="training-info">
-                                <i class="bi bi-geo-alt-fill"></i> {{ $item->kota }}
-                            </div>
-                            <div class="training-info">
-                                <i class="bi bi-calendar3"></i>
-                                {{ \Carbon\Carbon::parse($item->tanggal_mulai)->translatedFormat('d M') }} -
-                                {{ \Carbon\Carbon::parse($item->tanggal_selesai)->translatedFormat('d M Y') }}
-                            </div>
-                            <div class="training-badge {{ $item->biaya == 0 ? 'badge-free' : 'badge-paid' }}">
-                                {{ $item->biaya == 0 ? 'Gratis' : 'Rp ' . number_format((float) str_replace('.', '', $item->biaya), 0, ',', '.') }}
+            @if ($pelatihan->isEmpty())
+                <div class="d-flex justify-content-center align-items-center">
+                    <div class="alert alert-warning text-center">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Tidak ada pelatihan ditemukan.
+                    </div>
+                </div>
+            @else
+                <div class="training-grid">
+                    @foreach ($pelatihan as $item)
+                        <div class="training-card" style="cursor: pointer;" data-bs-toggle="modal"
+                            data-bs-target="#detailModal{{ $item->id }}">
+                            <div>
+                                <div class="training-title">{{ $item->nama_pelatihan }}</div>
+                                <div class="training-info">
+                                    <i class="bi bi-geo-alt-fill"></i> {{ $item->kota }}
+                                </div>
+                                <div class="training-info">
+                                    <i class="bi bi-calendar3"></i>
+                                    {{ \Carbon\Carbon::parse($item->tanggal_mulai)->translatedFormat('d M') }} -
+                                    {{ \Carbon\Carbon::parse($item->tanggal_selesai)->translatedFormat('d M Y') }}
+                                </div>
+                                <div class="training-badge {{ $item->biaya == 0 ? 'badge-free' : 'badge-paid' }}">
+                                    {{ $item->biaya == 0 ? 'Gratis' : 'Rp ' . number_format((float) str_replace('.', '', $item->biaya), 0, ',', '.') }}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Modal Detail -->
-                    <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
-                        aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-xl">
-                            <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
-                                <div class="row g-0">
-                                    <!-- LEFT: Image Section -->
-                                    <div class="col-md-5"
-                                        style="background: url('{{ $item->foto_pelatihan ?? 'https://source.unsplash.com/600x800/?training,workshop' }}') center center / cover no-repeat;">
-                                    </div>
-                                    <!-- RIGHT: Content -->
-                                    <div class="col-md-7 bg-white p-4 d-flex flex-column justify-content-between">
-                                        <div>
-                                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                                <h4 class="fw-bold mb-0 text-dark"
-                                                    id="detailModalLabel{{ $item->id }}">
-                                                    {{ $item->nama_pelatihan }}
-                                                </h4>
-                                                <button type="button" class="btn-close"
-                                                    data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <ul class="list-unstyled mb-4">
-                                                <li class="mb-2 text-muted"><strong class="text-dark">Kota:</strong>
-                                                    {{ $item->kota }}</li>
-                                                <li class="mb-2 text-muted"><strong class="text-dark">Tempat:</strong>
-                                                    {{ $item->tempat ?? '-' }}</li>
-                                                <li class="mb-2 text-muted"><strong class="text-dark">Waktu:</strong>
-                                                    {{ \Carbon\Carbon::parse($item->tanggal_mulai)->translatedFormat('d M Y') }}
-                                                    -
-                                                    {{ \Carbon\Carbon::parse($item->tanggal_selesai)->translatedFormat('d M Y') }}
-                                                </li>
-                                                <li class="mb-2 text-muted"><strong class="text-dark">Biaya:</strong>
-                                                    {{ $item->biaya == 0 ? 'Gratis' : 'Rp ' . number_format((float) str_replace('.', '', $item->biaya), 0, ',', '.') }}
-                                                </li>
-                                            </ul>
-                                            <div class="mb-4" style="max-height: 150px; overflow-y: auto;">
-                                                <p class="text-muted"><strong
-                                                        class="text-dark">Deskripsi:</strong><br>
-                                                    {!! nl2br(e($item->deskripsi)) !!}
-                                                </p>
-                                            </div>
+                        <!-- Modal Detail -->
+                        <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
+                            aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content border-0 rounded-4 overflow-hidden shadow-lg">
+                                    <div class="row g-0">
+                                        <!-- LEFT: Image Section -->
+                                        <div class="col-md-5"
+                                            style="background: url('{{ $item->foto_pelatihan ?? 'https://source.unsplash.com/600x800/?training,workshop' }}') center center / cover no-repeat;">
                                         </div>
-                                        <div class="text-end">
-                                            <form action="{{ route('alumni-siswa.pelatihan.store', $item->id) }}"
-                                                method="POST">
-                                                @csrf
-                                                <input type="hidden" name="pelatihan_id"
-                                                    value="{{ $item->id }}">
-                                                <button type="submit"
-                                                    class="btn btn-primary px-4 py-2 rounded-pill">Daftar
-                                                    Sekarang</button>
-                                            </form>
+                                        <!-- RIGHT: Content -->
+                                        <div class="col-md-7 bg-white p-4 d-flex flex-column justify-content-between">
+                                            <div>
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <h4 class="fw-bold mb-0 text-dark"
+                                                        id="detailModalLabel{{ $item->id }}">
+                                                        {{ $item->nama_pelatihan }}
+                                                    </h4>
+                                                    <button type="button" class="btn-close"
+                                                        data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <ul class="list-unstyled mb-4">
+                                                    <li class="mb-2 text-muted"><strong
+                                                            class="text-dark">Kota:</strong>
+                                                        {{ $item->kota }}</li>
+                                                    <li class="mb-2 text-muted"><strong
+                                                            class="text-dark">Tempat:</strong>
+                                                        {{ $item->tempat ?? '-' }}</li>
+                                                    <li class="mb-2 text-muted"><strong
+                                                            class="text-dark">Waktu:</strong>
+                                                        {{ \Carbon\Carbon::parse($item->tanggal_mulai)->translatedFormat('d M Y') }}
+                                                        -
+                                                        {{ \Carbon\Carbon::parse($item->tanggal_selesai)->translatedFormat('d M Y') }}
+                                                    </li>
+                                                    <li class="mb-2 text-muted"><strong
+                                                            class="text-dark">Biaya:</strong>
+                                                        {{ $item->biaya == 0 ? 'Gratis' : 'Rp ' . number_format((float) str_replace('.', '', $item->biaya), 0, ',', '.') }}
+                                                    </li>
+                                                </ul>
+                                                <div class="mb-4" style="max-height: 150px; overflow-y: auto;">
+                                                    <p class="text-muted"><strong
+                                                            class="text-dark">Deskripsi:</strong><br>
+                                                        {!! nl2br(e($item->deskripsi)) !!}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <form action="{{ route('alumni-siswa.pelatihan.store', $item->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="pelatihan_id"
+                                                        value="{{ $item->id }}">
+                                                    <button type="submit"
+                                                        class="btn btn-primary px-4 py-2 rounded-pill">Daftar
+                                                        Sekarang</button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
+            @endif
+
+
             <footer class="footer text-dark"
                 style="background: url('{{ url('img/footer.png') }}') no-repeat center center / cover;">
                 <div class="container-footer">

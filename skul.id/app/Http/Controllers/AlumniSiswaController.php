@@ -242,17 +242,37 @@ class AlumniSiswaController extends Controller
         }
     }
 
-    public function sertifikasi()
+    public function sertifikasi(Request $request)
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
         $totalAlumni = User::whereHas('alumniSiswaProfile')->count();
-        $sertifikasi = Sertifikasi::all();
+
+        $searchNama = $request->input('nama');
+        $searchKota = $request->input('kota');
+        $searchStatus = $request->input('status');
+
+        $sertifikasi = Sertifikasi::query();
+
+        if ($searchNama) {
+            $sertifikasi->where('judul_sertifikasi', 'like', '%' . $searchNama . '%');
+        }
+
+        if ($searchKota) {
+            $sertifikasi->where('kota', 'like', '%' . $searchKota . '%');
+        }
+
+        if ($searchStatus) {
+            $sertifikasi->where('status', $searchStatus);
+        }
+
+        $sertifikasi = $sertifikasi->latest()->get();
         $totalSertifikasi = Sertifikasi::count();
 
         $totalAlumniBekerja = User::whereHas('alumniSiswaProfile', function ($query) {
             $query->where('status_saat_ini', 'Bekerja');
         })->count();
-        return view('alumni-siswa.sertifikasi', compact('user', 'sertifikasi', 'totalAlumni', 'totalSertifikasi', 'totalAlumniBekerja'));
+
+        return view('alumni-siswa.sertifikasi', compact('user', 'sertifikasi', 'totalAlumni', 'totalSertifikasi', 'totalAlumniBekerja', 'searchNama', 'searchKota', 'searchStatus'));
     }
 
     public function loker(Request $request)
@@ -285,14 +305,34 @@ class AlumniSiswaController extends Controller
         return view('alumni-siswa.loker', compact('user', 'loker', 'lokasiList'));
     }
 
-    public function pelatihan()
+    public function pelatihan(Request $request)
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
         $totalAlumni = User::whereHas('alumniSiswaProfile')->count();
-        $pelatihan = Pelatihan::all();
+
+        $searchNama = $request->input('nama');
+        $searchKota = $request->input('kota');
+        $searchStatus = $request->input('status');
+
+        $pelatihan = Pelatihan::query();
+
+        if ($searchNama) {
+            $pelatihan->where('nama_pelatihan', 'like', '%' . $searchNama . '%');
+        }
+
+        if ($searchKota) {
+            $pelatihan->where('kota', 'like', '%' . $searchKota . '%');
+        }
+
+        if ($searchStatus) {
+            $pelatihan->where('status', $searchStatus);
+        }
+
+        $pelatihan = $pelatihan->latest()->get();
+
         $totalPelatihan = Pelatihan::count();
         $pelatihanSelesai = Pelatihan::whereDate('tanggal_selesai', '<=', Carbon::today())->count();
-        return view('alumni-siswa.pelatihan', compact('user', 'pelatihan', 'totalAlumni', 'totalPelatihan', 'pelatihanSelesai'));
+        return view('alumni-siswa.pelatihan', compact('user', 'pelatihan', 'totalAlumni', 'totalPelatihan', 'pelatihanSelesai', 'searchNama', 'searchKota', 'searchStatus'));
     }
 
     public function ikatan()

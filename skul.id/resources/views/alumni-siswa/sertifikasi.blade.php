@@ -687,144 +687,195 @@
                                     pertamamu
                                     menuju masa depan cerah.</p>
                             </div>
+
+                            <!-- Search Form -->
+                            <form method="GET" action="{{ route('alumni-siswa.sertifikasi') }}"
+                                class="row g-2 align-items-center mb-4 mt-4">
+
+                                <div class="col-md-4">
+                                    <input type="text" name="nama" class="form-control"
+                                        placeholder="Cari nama sertifikasi..." value="{{ request('nama') }}">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <input type="text" name="kota" class="form-control"
+                                        placeholder="Cari kota..." value="{{ request('kota') }}">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <select name="status" class="form-select">
+                                        <option value="">Semua Status</option>
+                                        <option value="Gratis" {{ request('status') == 'Gratis' ? 'selected' : '' }}>
+                                            Gratis
+                                        </option>
+                                        <option value="Berbayar"
+                                            {{ request('status') == 'Berbayar' ? 'selected' : '' }}>
+                                            Berbayar</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-danger w-100">
+                                        <i class="bi bi-search"></i> Cari
+                                    </button>
+                                </div>
+                            </form>
                         </section>
 
-                        <div class="certificate-grid">
-                            @foreach ($sertifikasi as $item)
-                                <div class="certificate-card">
-                                    <img src="{{ asset('storage/' . $item->foto_sertifikasi) }}"
-                                        alt="Foto Sertifikasi" class="certificate-img">
-
-                                    <div class="certificate-content">
-                                        <div>
-                                            <h3 class="certificate-title">{{ $item->judul_sertifikasi }}</h3>
-                                            <p class="certificate-provider">{{ $item->tempat }}, {{ $item->kota }}
-                                            </p>
-                                            <p class="certificate-date">{{ $item->tanggal_mulai }} s/d
-                                                {{ $item->tanggal_selesai }}</p>
-                                            <p class="biaya">Biaya:
-                                                {{ $item->biaya == 0 ? 'Gratis' : 'Rp ' . number_format((float) str_replace('.', '', $item->biaya), 0, ',', '.') }}
-                                            </p>
-                                        </div>
-
-                                        <div class="card-actions">
-                                            <button class="btn-view secondary" data-bs-toggle="modal"
-                                                data-bs-target="#detailModal{{ $item->id }}">
-                                                Detail
-                                            </button>
-
-                                            <form action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
-                                                method="POST">
-                                                @csrf
-                                                <input type="hidden" name="sertifikasi_id"
-                                                    value="{{ $item->id }}">
-                                                <button type="submit" class="btn-view">Daftar</button>
-                                            </form>
-                                        </div>
-                                    </div>
+                        @if ($sertifikasi->isEmpty())
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="alert alert-warning text-center">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    Tidak ada sertifikasi ditemukan.
                                 </div>
+                            </div>
+                        @else
+                            <div class="certificate-grid">
+                                @foreach ($sertifikasi as $item)
+                                    <div class="certificate-card">
+                                        <img src="{{ asset('storage/' . $item->foto_sertifikasi) }}"
+                                            alt="Foto Sertifikasi" class="certificate-img">
 
-                                {{-- Modal --}}
-                                <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
-                                    aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                                        <div class="modal-content rounded-4 shadow border-0 overflow-hidden">
-
-                                            <!-- Header Gambar -->
-                                            <div class="position-relative"
-                                                style="height: 280px; background-color: #f5f5f5;">
-                                                <img src="{{ asset('storage/' . $item->foto_sertifikasi) }}"
-                                                    class="w-100 h-100 object-fit-cover" style="object-fit: cover;"
-                                                    alt="Foto Sertifikasi">
-                                                <div class="position-absolute top-0 end-0 p-3">
-                                                    <button type="button"
-                                                        class="btn-close bg-white rounded-circle p-2"
-                                                        data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
+                                        <div class="certificate-content">
+                                            <div>
+                                                <h3 class="certificate-title">{{ $item->judul_sertifikasi }}</h3>
+                                                <p class="certificate-provider">{{ $item->tempat }},
+                                                    {{ $item->kota }}
+                                                </p>
+                                                <p class="certificate-date">{{ $item->tanggal_mulai }} s/d
+                                                    {{ $item->tanggal_selesai }}</p>
+                                                <p class="biaya">Biaya:
+                                                    {{ $item->biaya == 0 ? 'Gratis' : 'Rp ' . number_format((float) str_replace('.', '', $item->biaya), 0, ',', '.') }}
+                                                </p>
                                             </div>
 
-                                            <!-- Body -->
-                                            <div class="modal-body p-4">
-                                                <div class="row">
-                                                    <!-- Konten Kiri -->
-                                                    <div class="col-md-7">
-                                                        <h4 class="fw-bold">
-                                                            <i class="bi bi-mortarboard-fill me-2 text-primary"></i>
-                                                            {{ $item->judul_sertifikasi }}
-                                                        </h4>
-                                                        <p class="text-muted small mb-3">
-                                                            <i class="bi bi-geo-alt-fill me-1"></i>
-                                                            {{ $item->kota }},{{ $item->tempat }}
-                                                        </p>
-                                                        <p class="text-muted small mb-3">
-                                                            <i class="bi bi-calendar-event me-1"></i>
-                                                            {{ $item->tanggal_mulai }} - {{ $item->tanggal_selesai }}
-                                                        </p>
+                                            <div class="card-actions">
+                                                <button class="btn-view secondary" data-bs-toggle="modal"
+                                                    data-bs-target="#detailModal{{ $item->id }}">
+                                                    Detail
+                                                </button>
 
+                                                <form
+                                                    action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
+                                                    method="POST">
+                                                    @csrf
+                                                    <input type="hidden" name="sertifikasi_id"
+                                                        value="{{ $item->id }}">
+                                                    <button type="submit" class="btn-view">Daftar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                                        <h6 class="fw-semibold mb-2"><i
-                                                                class="bi text-secondary"></i>Deskripsi</h6>
-                                                        <p class="text-secondary" style="text-align: justify;">
-                                                            {{ $item->deskripsi }}
-                                                        </p>
+                                    {{-- Modal --}}
+                                    <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
+                                        aria-labelledby="detailModalLabel{{ $item->id }}" aria-hidden="true">
+                                        <div
+                                            class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                            <div class="modal-content rounded-4 shadow border-0 overflow-hidden">
+
+                                                <!-- Header Gambar -->
+                                                <div class="position-relative"
+                                                    style="height: 280px; background-color: #f5f5f5;">
+                                                    <img src="{{ asset('storage/' . $item->foto_sertifikasi) }}"
+                                                        class="w-100 h-100 object-fit-cover"
+                                                        style="object-fit: cover;" alt="Foto Sertifikasi">
+                                                    <div class="position-absolute top-0 end-0 p-3">
+                                                        <button type="button"
+                                                            class="btn-close bg-white rounded-circle p-2"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
+                                                </div>
 
-                                                    <!-- Konten Kanan -->
-                                                    <div class="col-md-5">
-                                                        <div class="bg-light rounded-3 p-3 mb-3">
-                                                            <small class="text-muted d-block mb-1">
-                                                                <i class="bi bi-calendar-range me-1 text-primary"></i>
-                                                                Tanggal
-                                                            </small>
-                                                            <p class="mb-0 fw-semibold">{{ $item->tanggal_mulai }} s/d
+                                                <!-- Body -->
+                                                <div class="modal-body p-4">
+                                                    <div class="row">
+                                                        <!-- Konten Kiri -->
+                                                        <div class="col-md-7">
+                                                            <h4 class="fw-bold">
+                                                                <i
+                                                                    class="bi bi-mortarboard-fill me-2 text-primary"></i>
+                                                                {{ $item->judul_sertifikasi }}
+                                                            </h4>
+                                                            <p class="text-muted small mb-3">
+                                                                <i class="bi bi-geo-alt-fill me-1"></i>
+                                                                {{ $item->kota }},{{ $item->tempat }}
+                                                            </p>
+                                                            <p class="text-muted small mb-3">
+                                                                <i class="bi bi-calendar-event me-1"></i>
+                                                                {{ $item->tanggal_mulai }} -
                                                                 {{ $item->tanggal_selesai }}
                                                             </p>
-                                                        </div>
-                                                        <div class="bg-light rounded-3 p-3 mb-3">
-                                                            <small class="text-muted d-block mb-1">
-                                                                <i class="bi bi-geo-alt me-1 text-primary"></i> Lokasi
-                                                            </small>
-                                                            <p class="mb-0 fw-semibold"> {{ $item->kota }},
-                                                                {{ $item->tempat }}
-                                                            </p>
-                                                        </div>
-                                                        <div class="bg-light rounded-3 p-3 mb-3">
-                                                            <small class="text-muted d-block mb-1">
-                                                                <i class="bi bi-cash-coin me-1 text-success"></i> Biaya
-                                                            </small>
-                                                            <p class="biaya">
-                                                                @if ($item->biaya == 0)
-                                                                    <span
-                                                                        class="text-success fw-semibold">Gratis</span>
-                                                                @else
-                                                                    Rp{{ number_format($item->biaya, 0, ',', '.') }}
-                                                                @endif
-                                                            </p>
-                                                        </div>
-                                                        <div class="d-grid">
 
-                                                            <form
-                                                                action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                <input type="hidden" name="sertifikasi_id"
-                                                                    value="{{ $item->id }}">
-                                                                <button class="btn btn-primary w-100">
-                                                                    <i class="bi bi-pencil-square me-1"></i> Daftar
-                                                                    Sekarang
-                                                                </button>
-                                                            </form>
+
+                                                            <h6 class="fw-semibold mb-2"><i
+                                                                    class="bi text-secondary"></i>Deskripsi</h6>
+                                                            <p class="text-secondary" style="text-align: justify;">
+                                                                {{ $item->deskripsi }}
+                                                            </p>
+                                                        </div>
+
+                                                        <!-- Konten Kanan -->
+                                                        <div class="col-md-5">
+                                                            <div class="bg-light rounded-3 p-3 mb-3">
+                                                                <small class="text-muted d-block mb-1">
+                                                                    <i
+                                                                        class="bi bi-calendar-range me-1 text-primary"></i>
+                                                                    Tanggal
+                                                                </small>
+                                                                <p class="mb-0 fw-semibold">{{ $item->tanggal_mulai }}
+                                                                    s/d
+                                                                    {{ $item->tanggal_selesai }}
+                                                                </p>
+                                                            </div>
+                                                            <div class="bg-light rounded-3 p-3 mb-3">
+                                                                <small class="text-muted d-block mb-1">
+                                                                    <i class="bi bi-geo-alt me-1 text-primary"></i>
+                                                                    Lokasi
+                                                                </small>
+                                                                <p class="mb-0 fw-semibold"> {{ $item->kota }},
+                                                                    {{ $item->tempat }}
+                                                                </p>
+                                                            </div>
+                                                            <div class="bg-light rounded-3 p-3 mb-3">
+                                                                <small class="text-muted d-block mb-1">
+                                                                    <i class="bi bi-cash-coin me-1 text-success"></i>
+                                                                    Biaya
+                                                                </small>
+                                                                <p class="biaya">
+                                                                    @if ($item->biaya == 0)
+                                                                        <span
+                                                                            class="text-success fw-semibold">Gratis</span>
+                                                                    @else
+                                                                        Rp{{ number_format($item->biaya, 0, ',', '.') }}
+                                                                    @endif
+                                                                </p>
+                                                            </div>
+                                                            <div class="d-grid">
+
+                                                                <form
+                                                                    action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    <input type="hidden" name="sertifikasi_id"
+                                                                        value="{{ $item->id }}">
+                                                                    <button class="btn btn-primary w-100">
+                                                                        <i class="bi bi-pencil-square me-1"></i> Daftar
+                                                                        Sekarang
+                                                                    </button>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+
+
                                             </div>
-
-
                                         </div>
                                     </div>
-                                </div>
-                            @endforeach
-                        </div>
+                                @endforeach
+                            </div>
+                        @endif
 
 
                     </div>
