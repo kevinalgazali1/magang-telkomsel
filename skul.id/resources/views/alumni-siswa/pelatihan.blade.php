@@ -781,18 +781,18 @@
                     <div class="d-flex flex-wrap justify-content-center gap-4 mt-5">
                         <div class="text-center px-3">
                             <i class="bi bi-people-fill fs-2 text-info mb-2"></i>
-                            <h2 class="fw-bold text-info mb-0 count-up" data-count="1200">0+</h2>
+                            <h2 class="fw-bold text-info mb-0 count-up" data-count="{{ $totalAlumni }}">{{ $totalAlumni }}</h2>
                             <small class="text-muted">Peserta Terdaftar</small>
                         </div>
                         <div class="text-center px-3">
                             <i class="bi bi-easel2-fill fs-2 text-danger mb-2"></i>
                             <!-- Lebih representatif untuk pelatihan -->
-                            <h2 class="fw-bold text-danger mb-0 count-up" data-count="80">0+</h2>
+                            <h2 class="fw-bold text-danger mb-0 count-up" data-count="{{ $totalPelatihan }}">{{ $totalPelatihan }}</h2>
                             <small class="text-muted">Program Pelatihan</small>
                         </div>
                         <div class="text-center px-3">
                             <i class="bi bi-calendar-check-fill fs-2 text-info mb-2"></i> <!-- Terlaksana / sukses -->
-                            <h2 class="fw-bold text-info mb-0 count-up" data-count="30">0+</h2>
+                            <h2 class="fw-bold text-info mb-0 count-up" data-count="{{ $pelatihanSelesai }}">{{ $pelatihanSelesai }}</h2>
                             <small class="text-muted">Pelatihan Terlaksana</small>
                         </div>
                     </div>

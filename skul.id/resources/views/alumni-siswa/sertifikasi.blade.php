@@ -661,17 +661,17 @@
                                 <div class="stats-grid">
                                     <div class="stat-item">
                                         <i class="bi bi-people-fill stat-icon text-success"></i>
-                                        <h3 class="stat-number text-success">0+</h3>
+                                        <h3 class="stat-number text-success">{{ $totalAlumni }}</h3>
                                         <p class="stat-label">Pengguna Terdaftar</p>
                                     </div>
                                     <div class="stat-item">
                                         <i class="bi bi-award-fill stat-icon text-primary"></i>
-                                        <h3 class="stat-number text-primary">0+</h3>
+                                        <h3 class="stat-number text-primary">{{ $totalSertifikasi }}</h3>
                                         <p class="stat-label">Program Sertifikasi</p>
                                     </div>
                                     <div class="stat-item">
                                         <i class="bi bi-briefcase-fill stat-icon text-warning"></i>
-                                        <h3 class="stat-number text-warning">0+</h3>
+                                        <h3 class="stat-number text-warning">{{ $totalAlumniBekerja }}</h3>
                                         <p class="stat-label">Alumni Bekerja</p>
                                     </div>
                                 </div>

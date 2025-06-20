@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Loker;
 use App\Models\Artikel;
@@ -241,14 +242,17 @@ class AlumniSiswaController extends Controller
         }
     }
 
-
-
-
     public function sertifikasi()
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
+        $totalAlumni = User::whereHas('alumniSiswaProfile')->count();
         $sertifikasi = Sertifikasi::all();
-        return view('alumni-siswa.sertifikasi', compact('user', 'sertifikasi'));
+        $totalSertifikasi = Sertifikasi::count();
+
+        $totalAlumniBekerja = User::whereHas('alumniSiswaProfile', function ($query) {
+            $query->where('status_saat_ini', 'Bekerja');
+        })->count();
+        return view('alumni-siswa.sertifikasi', compact('user', 'sertifikasi', 'totalAlumni', 'totalSertifikasi', 'totalAlumniBekerja'));
     }
 
     public function loker(Request $request)
@@ -284,8 +288,11 @@ class AlumniSiswaController extends Controller
     public function pelatihan()
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
+        $totalAlumni = User::whereHas('alumniSiswaProfile')->count();
         $pelatihan = Pelatihan::all();
-        return view('alumni-siswa.pelatihan', compact('user', 'pelatihan'));
+        $totalPelatihan = Pelatihan::count();
+        $pelatihanSelesai = Pelatihan::whereDate('tanggal_selesai', '<=', Carbon::today())->count();
+        return view('alumni-siswa.pelatihan', compact('user', 'pelatihan', 'totalAlumni', 'totalPelatihan', 'pelatihanSelesai'));
     }
 
     public function ikatan()
