@@ -934,7 +934,7 @@
                         aria-hidden="true">
                         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content edit-modal-content">
-                                <form id="editForm" method="POST" enctype="multipart/form-data"
+                                <form id="editForm" method="POST" enctype="multipart/form-data" action="{{ url('/mitra/update-loker/' . $loker->id) }}"
                                     onsubmit="return validateGajiEdit()">
                                     @csrf
                                     @method('PUT')
@@ -953,7 +953,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Nama Perusahaan</label>
                                                     <input type="text" class="form-control"
-                                                        id="edit_nama_perusahaan" name="nama_perusahaan" required>
+                                                        id="edit_nama_perusahaan" name="nama_perusahaan" readonly>
                                                 </div>
 
                                                 <div class="mb-3">
@@ -1026,7 +1026,7 @@
                                     <div class="modal-footer border-top-0">
                                         <button type="button" class="btn btn-light"
                                             data-bs-dismiss="modal">Batal</button>
-                                        <button type="submit" class="btn btn-primary"
+                                        <button type="button" class="btn btn-primary"
                                             onclick="confirmEdit()">Perbarui</button>
                                     </div>
                                 </form>
@@ -1290,9 +1290,11 @@
                 const lokasi = button.dataset.lokasi;
                 const tipe = button.dataset.tipe;
                 const pendidikan = button.dataset.pendidikan;
-                const gaji_min = button.dataset.gaji_min;
-                const gaji_max = button.dataset.gaji_max;
+                const gaji = button.dataset.gaji;
                 const gambar = button.dataset.gambar;
+
+                setGajiInputs(gaji);
+
 
                 document.getElementById('edit_id').value = id;
                 document.getElementById('edit_nama_perusahaan').value = nama_perusahaan;
@@ -1302,14 +1304,33 @@
                 document.getElementById('edit_tipe').value = tipe;
                 document.getElementById('edit_pendidikan').value = pendidikan;
 
-                document.getElementById('edit_gaji_min').value = gaji_min;
-                document.getElementById('edit_gaji_max').value = gaji_max;
-                document.getElementById('edit_gaji_min_view').value = 'Rp ' + new Intl.NumberFormat('id-ID').format(gaji_min);
-                document.getElementById('edit_gaji_max_view').value = 'Rp ' + new Intl.NumberFormat('id-ID').format(gaji_max);
 
                 document.getElementById('preview_gambar_edit').src = gambar;
 
                 document.getElementById('editForm').action = `/public/mitra/update-loker/${id}`;
+            }
+
+            function setGajiInputs(gajiRange) {
+                // gajiRange contoh: "Rp 10.000 - Rp 100.000"
+                const regex = /Rp\s*([\d\.]+)\s*-\s*Rp\s*([\d\.]+)/;
+                const match = gajiRange.match(regex);
+
+                if (match) {
+                    const gajiMinText = `Rp ${match[1]}`;
+                    const gajiMaxText = `Rp ${match[2]}`;
+                    const gajiMinNumber = parseInt(match[1].replace(/\./g, ''));
+                    const gajiMaxNumber = parseInt(match[2].replace(/\./g, ''));
+
+                    // Tampilkan dalam input view
+                    document.getElementById('edit_gaji_min_view').value = gajiMinText;
+                    document.getElementById('edit_gaji_max_view').value = gajiMaxText;
+
+                    // Simpan dalam input hidden
+                    document.getElementById('edit_gaji_min').value = gajiMinNumber;
+                    document.getElementById('edit_gaji_max').value = gajiMaxNumber;
+                } else {
+                    console.warn("Format gaji tidak cocok:", gajiRange);
+                }
             }
 
             // Alert Timeout

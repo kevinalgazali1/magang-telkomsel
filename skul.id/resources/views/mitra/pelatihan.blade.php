@@ -650,7 +650,17 @@
                                                                 class="btn btn-sm btn-outline-warning rounded-circle btn-icon"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#editPelatihanModal"
-                                                                onclick="openEditModal(this)" ...>
+                                                                data-id="{{ $pelatihan->id }}"
+                                                                data-nama_pelatihan="{{ $pelatihan->nama_pelatihan }}"
+                                                                data-deskripsi="{{ $pelatihan->deskripsi }}"
+                                                                data-mulai="{{ $pelatihan->tanggal_mulai }}"
+                                                                data-selesai="{{ $pelatihan->tanggal_selesai }}"
+                                                                data-kota="{{ $pelatihan->kota }}"
+                                                                data-tempat_pelatihan="{{ $pelatihan->tempat_pelatihan }}"
+                                                                data-status="{{ $pelatihan->status }}"
+                                                                data-biaya="{{ $pelatihan->biaya }}"
+                                                                data-foto="{{ asset('storage/' . $pelatihan->foto_pelatihan) }}"
+                                                                onclick="openEditModal(this)">
                                                                 <i class="bi bi-pencil-fill"></i>
                                                             </button>
                                                             <form id="deleteForm-{{ $pelatihan->id }}"
@@ -912,9 +922,9 @@
                     <!-- Modal Form Edit Pelatihan -->
                     <div class="modal fade" id="editPelatihanModal" tabindex="-1"
                         aria-labelledby="editPelatihanModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-dialog modal-xl modal-dialog-scrollable">
                             <div class="modal-content edit-modal-content">
-                                <form id="editForm" method="POST" enctype="multipart/form-data">
+                                <form id="editForm" method="POST" enctype="multipart/form-data" action="{{ url('/mitra/update-pelatihan/' . $pelatihan->id) }}">
                                     @csrf
                                     @method('PUT')
                                     <div class="modal-header border-0">
@@ -923,7 +933,7 @@
                                         </h5>
                                     </div>
 
-                                    <div class="modal-body">
+                                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
                                         <div class="row gx-4 gy-3">
                                             <!-- Left Column -->
                                             <div class="col-lg-6">
@@ -991,6 +1001,8 @@
                                                         accept=".jpg,.jpeg,.png"
                                                         onchange="previewImage(this, 'preview_foto_edit')">
                                                 </div>
+                                                <img id="preview_foto_edit" class="img-fluid mt-2 rounded"
+                                                    style="max-height: 200px;">
                                             </div>
                                         </div>
                                     </div>
@@ -1161,20 +1173,27 @@
                     const mulai = button.getAttribute('data-mulai');
                     const selesai = button.getAttribute('data-selesai');
                     const kota = button.getAttribute('data-kota');
-                    const tempat_pelatihan = button.getAttribute('data-tempat_pelatihan');
+                    const tempat = button.getAttribute('data-tempat_pelatihan');
+                    const status = button.getAttribute('data-status');
                     const biaya = button.getAttribute('data-biaya');
                     const foto = button.getAttribute('data-foto');
 
+                    // Set input values
+                    document.getElementById('edit_id').value = id;
                     document.getElementById('edit_nama_pelatihan').value = nama_pelatihan;
                     document.getElementById('edit_deskripsi').value = deskripsi;
                     document.getElementById('edit_tanggal_mulai').value = mulai;
                     document.getElementById('edit_tanggal_selesai').value = selesai;
                     document.getElementById('edit_kota').value = kota;
-                    document.getElementById('edit_tempat_pelatihan').value = tempat_pelatihan;
-                    document.getElementById('edit_biaya').value = biaya;
+                    document.getElementById('edit_tempat_pelatihan').value = tempat;
+                    document.getElementById('edit_status').value = status;
+                    document.getElementById('edit_biaya').value = biaya ? biaya : '';
                     document.getElementById('preview_foto_edit').src = foto;
 
-                    // Set form action URL
+                    // Tampilkan/sembunyikan field biaya berdasarkan status
+                    toggleBiayaField(document.getElementById('edit_status'));
+
+                    // Set action form
                     document.getElementById('editForm').action = `/public/mitra/update-pelatihan/${id}`;
                 }
 
@@ -1183,6 +1202,7 @@
                     let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambah titik setiap 3 digit dari belakang
                     input.value = formatted;
                 }
+
 
                 function toggleBiayaPelatihan() {
                     const status = document.getElementById('status').value;

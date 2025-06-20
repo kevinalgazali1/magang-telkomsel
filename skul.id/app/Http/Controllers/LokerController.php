@@ -98,7 +98,10 @@ class LokerController extends Controller
         $loker->lokasi = $request->lokasi;
         $loker->tipe = $request->tipe;
         $loker->pendidikan = $request->pendidikan;
-        $loker->gaji = $request->gaji;
+
+        // Format gaji jadi satu string
+        $loker->gaji = 'Rp ' . number_format($request->gaji_min, 0, ',', '.') .
+            ' - Rp ' . number_format($request->gaji_max, 0, ',', '.');
 
         if ($request->hasFile('gambar')) {
             // 🔥 Hapus file lama jika ada

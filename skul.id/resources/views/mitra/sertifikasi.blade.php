@@ -578,6 +578,14 @@
                                                         -
                                                         {{ \Carbon\Carbon::parse($sertif->tanggal_selesai)->format('d M Y') }}
                                                     </li>
+                                                    <li>
+                                                        <i class="bi bi-geo-alt"></i>
+                                                        {{ $sertif->kota }}, {{ $sertif->tempat }}
+                                                    </li>
+                                                    <li>
+                                                        <i class="bi bi-cash-stack"></i>
+                                                        {{ $sertif->biaya == 0 ? 'Gratis' : 'Rp' . number_format($sertif->biaya, 0, ',', '.') }}
+                                                    </li>
                                                 </ul>
 
                                                 <div class="mt-auto d-flex justify-content-between align-items-center">
@@ -797,7 +805,8 @@
                                 aria-labelledby="editSertifikasiModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                                     <div class="modal-content edit-modal-content">
-                                        <form id="editForm" method="POST" enctype="multipart/form-data">
+                                        <form id="editForm" method="POST" enctype="multipart/form-data"
+                                            action="{{ url('/mitra/update-sertifikasi/' . $sertif->id) }}">
                                             @csrf
                                             @method('PUT')
                                             <div class="modal-header border-0">
@@ -893,7 +902,6 @@
                                 </div>
                             </div>
 
-                            <!-- Modal Detail Sertifikasi -->
                             <!-- Modal Detail Sertifikasi -->
                             <div class="modal fade" id="detailModal" tabindex="-1"
                                 aria-labelledby="detailModalLabel" aria-hidden="true">
@@ -1193,7 +1201,7 @@
                 document.getElementById('preview_foto_edit').src = foto;
 
                 // Set form action URL
-                document.getElementById('editForm').action = `/public/mitra/update-sertifikasi/${id}`;
+                // document.getElementById('editForm').action = `/public/mitra/update-sertifikasi/${id}`;
             }
 
             setTimeout(() => {
