@@ -243,22 +243,64 @@
         <!-- Main Content -->
         <div class="flex-grow-1">
             <!-- Topbar -->
-            <div class="topbar d-flex justify-content-between align-items-center">
+            <div class="topbar d-flex justify-content-between align-items-center bg-primary text-light p-3">
                 <span class="nav-title">{{ $title ?? 'Dashboard' }}</span>
-                <span class="text-muted">Hi, Admin</span>
+                <span class="text-light">Hi, Admin</span>
             </div>
 
-            <div class="container py-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h4 class="fw-semibold">Data Sertifikasi</h4>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambah">+ Tambah
-                        Sertifikasi</button>
+            <form method="GET" action="" class="row g-2 mb-4 mx-4 gap-1 mt-5 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-muted">Judul Sertifikasi</label>
+                    <input type="text" class="form-control" name="judul" placeholder="Judul Sertifikasi"
+                        value="{{ request('judul') }}">
                 </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold small text-muted">Kota</label>
+                    <input type="text" class="form-control" name="kota" placeholder="Kota"
+                        value="{{ request('kota') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold small text-muted">Tahun Mulai</label>
+                    <input type="number" class="form-control" name="tahun_mulai" placeholder="Tahun Mulai"
+                        value="{{ request('tahun_mulai') }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold small text-muted">Status Selesai</label>
+                    <select class="form-select" name="status_selesai">
+                        <option value="">Semua</option>
+                        <option value="selesai" {{ request('status_selesai') == 'selesai' ? 'selected' : '' }}>Selesai
+                        </option>
+                        <option value="belum" {{ request('status_selesai') == 'belum' ? 'selected' : '' }}>Belum
+                            Selesai</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold small text-muted">Status</label>
+                    <select class="form-select" name="status">
+                        <option value="">Semua Status</option>
+                        <option value="Gratis" {{ request('status') == 'Gratis' ? 'selected' : '' }}>Gratis</option>
+                        <option value="Berbayar" {{ request('status') == 'Berbayar' ? 'selected' : '' }}>Berbayar
+                        </option>
+                    </select>
+                </div>
+                <div class="col-md-12 d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-search me-1"></i> Cari
+                    </button>
+                    <a href="{{ route('admin.sertifikasi') }}"
+                        class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                    </a>
+                    <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalTambah">
+                        <i class="bi bi-plus-circle me-1"></i> Tambah
+                    </button>
+                </div>
+            </form>
 
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
 
+
+            <div class="container py-4">
                 <div class="table-responsive">
                     <table class="table table-bordered align-middle soft-table">
                         <thead class="text-center">
@@ -267,10 +309,12 @@
                                 <th>Mitra</th>
                                 <th>Judul Sertifikasi</th>
                                 <th>Kota</th>
-                                <th>Tempat</th>
-                                <th>Status</th>
-                                <th>Tanggal</th>
                                 <th>Peserta</th>
+                                <th>Sekolah</th>
+                                <th>Jurusan</th>
+                                <th>Bekerja</th>
+                                <th>Tidak Bekerja</th>
+                                <th>Kuliah</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -278,31 +322,15 @@
                             @forelse ($sertifikasis as $s)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <div class="fw-semibold">{{ $s->user->mitraProfile->nama_instansi ?? '-' }}
                                         </div>
-                                        <div class="text-muted-small">{{ $s->user->email ?? '-' }}</div>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <div class="fw-semibold">{{ $s->judul_sertifikasi }}</div>
-                                        <div class="text-muted-small">{{ Str::limit($s->deskripsi, 40) }}</div>
                                     </td>
                                     <td class="text-center">
                                         {{ $s->kota }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $s->tempat }}
-                                    </td>
-                                    <td class="text-center">
-                                        <span
-                                            class="badge-soft {{ $s->status == 'Gratis' ? 'badge-aktif' : 'badge-nonaktif' }}">
-                                            {{ $s->status }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {{ \Carbon\Carbon::parse($s->tanggal_mulai)->format('d M Y') }} <br>
-                                        <span class="text-muted-small">s/d
-                                            {{ \Carbon\Carbon::parse($s->tanggal_selesai)->format('d M Y') }}</span>
                                     </td>
                                     <td class="text-center">
                                         <span>
@@ -310,24 +338,52 @@
                                         </span>
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn-icon" data-bs-toggle="modal"
-                                            data-bs-target="#modalLihat{{ $s->id }}" title="Lihat"><i
-                                                class="bi bi-eye-fill"></i></button>
-                                        <button class="btn-icon" data-bs-toggle="modal"
-                                            data-bs-target="#modalEdit{{ $s->id }}" title="Edit"><i
-                                                class="bi bi-pencil-square"></i></button>
-                                        <form action="{{ route('admin.sertifikasi') }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="{{ $s->id }}">
-                                            <button type="button" class="btn-icon text-danger" title="Hapus"
-                                                onclick="confirmDelete('{{ $s->id }}')">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </button>
-
-                                        </form>
+                                        <span>
+                                            {{ $s->jumlah_asal_sekolah }}
+                                        </span>
                                     </td>
+                                    <td class="text-center">
+                                        <span>{{ $s->jumlah_jurusan }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $s->jumlah_bekerja_dan_usaha }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $s->jumlah_tidak_bekerja }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ $s->jumlah_kuliah }}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex align-items-center justify-content-center gap-2 w-100">
+                                            <button class="btn-icon" data-bs-toggle="modal"
+                                                data-bs-target="#modalLihat{{ $s->id }}" title="Lihat"><i
+                                                    class="bi bi-eye-fill"></i></button>
+
+                                            @php
+                                                $sudahMulai = \Carbon\Carbon::parse($s->tanggal_mulai)->isPast();
+                                            @endphp
+
+                                            @if (!$sudahMulai)
+                                                <button class="btn-icon" data-bs-toggle="modal"
+                                                    data-bs-target="#modalEdit{{ $s->id }}" title="Edit">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </button>
+                                            @endif
+
+                                            <form action="{{ route('admin.sertifikasi') }}" method="POST"
+                                                class="d-inline">
+                                                @csrf
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id" value="{{ $s->id }}">
+                                                <button type="button" class="btn-icon text-danger" title="Hapus"
+                                                    onclick="confirmDelete('{{ $s->id }}')">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+
                                 </tr>
                             @empty
                                 <tr>
@@ -342,65 +398,109 @@
 
             {{-- Modal Tambah --}}
             <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content">
-                        <form action="{{ route('admin.sertifikasi') }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="action" value="store">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Tambah Sertifikasi</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                        <div class="row g-0">
+                            <!-- Ilustrasi -->
+                            <div class="col-md-5 d-none d-md-block bg-light position-relative">
+                                <div class="h-100 d-flex flex-column justify-content-center align-items-center p-4">
+                                    <h5 class="text-primary fw-bold">Tambah Sertifikasi Baru</h5>
+                                    <p class="text-muted text-center px-3">
+                                        Publikasikan program sertifikasi Anda agar alumni dapat
+                                        mengembangkan keterampilan dan
+                                        meningkatkan daya saing mereka.
+                                    </p>
+
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <div class="mb-3">
-                                    <label>Judul Sertifikasi</label>
-                                    <input type="text" class="form-control" name="judul_sertifikasi" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label>Deskripsi</label>
-                                    <textarea name="deskripsi" class="form-control" rows="3" required></textarea>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label>Tanggal Mulai</label>
-                                        <input type="date" class="form-control" name="tanggal_mulai" required>
+                            <!-- Form -->
+                            <div class="col-md-7 bg-white" style="max-height: 90vh; overflow-y: auto;">
+                                <form action="{{ route('admin.sertifikasi.store') }}" method="POST"
+                                    enctype="multipart/form-data" class="p-4" id="tambahForm">
+                                    @csrf
+                                    <div class="modal-header border-0 pb-0">
+                                        <h5 class="modal-title fw-bold" id="sertifikasiModalLabel">
+                                            <i class="bi bi-award-fill me-2 text-primary"></i>Tambah
+                                            Sertifikasi
+                                        </h5>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label>Tanggal Selesai</label>
-                                        <input type="date" class="form-control" name="tanggal_selesai" required>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="judul_sertifikasi" class="form-label">Judul
+                                                Sertifikasi</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                                <input type="text" class="form-control" id="judul_sertifikasi"
+                                                    name="judul_sertifikasi"
+                                                    placeholder="Contoh: Sertifikasi Digital Marketing" required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="deskripsi" class="form-label">Deskripsi</label>
+                                            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3"
+                                                placeholder="Jelaskan sertifikasi ini secara singkat..." required></textarea>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tanggal_mulai" class="form-label">Waktu
+                                                    Mulai</label>
+                                                <input type="date" class="form-control" id="tanggal_mulai"
+                                                    name="tanggal_mulai" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tanggal_selesai" class="form-label">Waktu
+                                                    Selesai</label>
+                                                <input type="date" class="form-control" id="tanggal_selesai"
+                                                    name="tanggal_selesai" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="kota" class="form-label">Kota
+                                                    Penyelenggaraan</label>
+                                                <input type="text" class="form-control" id="kota"
+                                                    name="kota" placeholder="Contoh: Jakarta" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tempat" class="form-label">Tempat
+                                                    Penyelenggaraan</label>
+                                                <input type="text" class="form-control" id="tempat"
+                                                    name="tempat" placeholder="Contoh: Gedung Balai Kartini"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="status" class="form-label">Status
+                                                Sertifikasi</label>
+                                            <select class="form-select" id="status" name="status" required
+                                                onchange="toggleBiaya()">
+                                                <option value="Berbayar">Berbayar</option>
+                                                <option value="Gratis" selected>Gratis</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3" id="biayaGroup">
+                                            <label for="biaya" class="form-label">Biaya Sertifikasi
+                                                (Rp)</label>
+                                            <input type="number" class="form-control" id="biaya" name="biaya"
+                                                placeholder="Contoh: 250000" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="foto_sertifikasi" class="form-label">Upload
+                                                Foto Sertifikasi</label>
+                                            <input type="file" class="form-control" id="foto_sertifikasi"
+                                                name="foto_sertifikasi" accept=".jpg,.jpeg,.png" required>
+                                        </div>
+                                        <div class="modal-footer border-0 pt-0">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                data-bs-dismiss="modal">Batal</button>
+                                            <button type="button" class="btn btn-primary"
+                                                onclick="confirmTambah()">Simpan
+                                                Sertifikasi</button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label>Biaya</label>
-                                    <input type="number" class="form-control" name="biaya">
-                                </div>
-                                <div class="mb-3">
-                                    <label>Kota</label>
-                                    <input type="text" class="form-control" name="kota" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label>Tempat</label>
-                                    <input type="text" class="form-control" name="tempat" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label>Status</label>
-                                    <select name="status" class="form-select" required>
-                                        <option value="Aktif">Aktif</option>
-                                        <option value="Nonaktif">Nonaktif</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label>Foto Sertifikasi</label>
-                                    <input type="file" class="form-control" name="foto_sertifikasi" required>
-                                </div>
+                                </form>
                             </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Tutup</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -530,9 +630,11 @@
                     aria-labelledby="modalEditLabel{{ $s->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content edit-modal-content">
-                            <form method="POST" action="{{ route('admin.sertifikasi') }}"
+                            <form id="editForm" method="POST"
+                                action="{{ url('/admin/update-sertifikasi/' . $s->id) }}"
                                 enctype="multipart/form-data">
                                 @csrf
+                                @method('PUT')
                                 <input type="hidden" name="action" value="update">
                                 <input type="hidden" name="id" value="{{ $s->id }}">
 
@@ -600,7 +702,7 @@
                                                 </select>
                                             </div>
 
-                                            <div class="form-group mb-3" id="edit_biaya_wrapper_{{ $s->id }}">
+                                            <div class="form-group mb-3" id="edit_biaya_wrapper{{ $s->id }}">
                                                 <label class="form-label">Biaya (Rp)</label>
                                                 <input type="number" class="form-control edit-input" name="biaya"
                                                     value="{{ preg_replace('/\D/', '', $s->biaya) }}">
@@ -619,7 +721,8 @@
                                 <div class="modal-footer border-top-0">
                                     <button type="button" class="btn btn-light"
                                         data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-primary">Perbarui</button>
+                                    <button type="button" class="btn btn-primary"
+                                        onclick="confirmEdit()">Perbarui</button>
                                 </div>
                             </form>
                         </div>
@@ -637,16 +740,35 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        function toggleBiayaField(id) {
-            const status = document.querySelector(`#modalEdit${id} select[name="status"]`).value;
-            const biayaWrapper = document.getElementById(`edit_biaya_wrapper_${id}`);
-            if (status === "Gratis") {
-                biayaWrapper.style.display = 'none';
-            } else {
-                biayaWrapper.style.display = 'block';
-            }
-        }
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
 
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('message'))
+            Swal.fire({
+                icon: '{{ session('alert-type') == 'warning' ? 'warning' : 'info' }}',
+                title: '{{ ucfirst(session('alert-type') ?? 'Info') }}',
+                text: '{{ session('message') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
         function confirmDelete(id) {
             Swal.fire({
                 title: 'Hapus Sertifikasi?',
@@ -671,6 +793,40 @@
                         `;
                     document.body.appendChild(form);
                     form.submit();
+                }
+            });
+        }
+
+        function confirmTambah() {
+            Swal.fire({
+                title: 'Simpan Sertifikasi?',
+                text: "Pastikan semua informasi sudah lengkap dan benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Simpan',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('tambahForm').submit();
+                }
+            });
+        }
+
+        function confirmEdit() {
+            Swal.fire({
+                title: 'Perbarui Sertifikasi?',
+                text: "Pastikan semua data sudah benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, perbarui!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('editForm').submit();
                 }
             });
         }
@@ -704,9 +860,71 @@
 
                     if (sertifikasiId) {
                         // Trigger download CSV
-                        window.location.href = `/public/sertifikasi/${sertifikasiId}/peserta/export`;
+                        window.location.href = `/public/admin/sertifikasi/${sertifikasiId}/peserta/export`;
                     }
                 });
+            }
+        });
+    </script>
+    <script>
+        function toggleBiayaField(id) {
+            const statusSelect = document.querySelector(`[name="status"][onchange*="${id}"]`);
+            const biayaWrapper = document.getElementById(`edit_biaya_wrapper${id}`);
+            const biayaInput = biayaWrapper.querySelector('input[name="biaya"]');
+
+            if (statusSelect && biayaWrapper && biayaInput) {
+                if (statusSelect.value === 'Gratis') {
+                    biayaWrapper.style.display = 'none';
+                    biayaInput.value = 0;
+                } else {
+                    biayaWrapper.style.display = 'block';
+                }
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            @foreach ($sertifikasis as $s)
+                toggleBiayaField({{ $s->id }});
+            @endforeach
+        });
+
+        function toggleBiaya() {
+            const status = document.getElementById('status').value;
+            const biayaWrapper = document.getElementById('biayaGroup');
+            const biayaInput = document.getElementById('biaya');
+
+            if (status === 'Gratis') {
+                biayaWrapper.style.display = 'none';
+                biayaInput.value = 0;
+            } else {
+                biayaWrapper.style.display = 'block';
+            }
+        }
+
+        // Panggil saat halaman selesai dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleBiaya();
+        });
+
+        const tanggalMulai = document.getElementById('tanggal_mulai');
+        const tanggalSelesai = document.getElementById('tanggal_selesai');
+
+        // Batasi tanggal mulai minimal hari ini
+        const today = new Date().toISOString().split('T')[0];
+        tanggalMulai.setAttribute('min', today);
+
+        // Saat tanggal mulai berubah
+        tanggalMulai.addEventListener('change', function() {
+            tanggalSelesai.value = ''; // kosongkan dulu agar tidak tertinggal nilai lama
+            tanggalSelesai.setAttribute('min', this.value); // tanggal selesai minimal = tanggal mulai
+        });
+
+        // Opsional: validasi tambahan saat submit (jika dibutuhkan)
+        document.querySelector('form')?.addEventListener('submit', function(e) {
+            if (tanggalSelesai.value < tanggalMulai.value) {
+                alert('Tanggal selesai tidak boleh sebelum tanggal mulai.');
+                e.preventDefault();
             }
         });
     </script>

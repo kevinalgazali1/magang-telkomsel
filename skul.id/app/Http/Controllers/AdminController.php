@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Loker;
 use App\Models\Artikel;
 use App\Models\Pelatihan;
+use App\Models\DaftarLoker;
 use App\Models\Sertifikasi;
 use App\Models\MitraProfile;
-use App\Models\DaftarLoker;
 use Illuminate\Http\Request;
 use App\Models\AlumniSiswaProfile;
 use Illuminate\Support\Facades\DB;
@@ -43,18 +44,63 @@ class AdminController extends Controller
         return view('admin.artikel', compact('artikel'));
     }
 
-    public function sertifikasi()
+    public function sertifikasi(Request $request)
     {
-        $sertifikasis = Sertifikasi::with([
-            'user.mitraProfile',
-            'daftarSertifikasis.user',  // eager load relasi user dari daftarSertifikasis
-        ])
-            ->withCount('daftarSertifikasis') // hitung jumlah relasi daftarSertifikasis
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Sertifikasi::with(['user.mitraProfile', 'daftarSertifikasis.user'])
+            ->withCount('daftarSertifikasis')
+            ->with(['daftarSertifikasis' => function ($q) {
+                $q->select(
+                    'id',
+                    'user_id',
+                    'sertifikasi_id',
+                    'email',
+                    'no_hp',
+                    'nama_lengkap',
+                    'asal_sekolah',
+                    'jurusan',
+                    'jenis_kelamin',
+                    'tanggal_lahir',
+                    'status_saat_ini'
+                );
+            }])
+            ->orderBy('created_at', 'desc');
+
+        if ($request->filled('judul')) {
+            $query->where('judul_sertifikasi', 'like', '%' . $request->judul . '%');
+        }
+
+        if ($request->filled('kota')) {
+            $query->where('kota', 'like', '%' . $request->kota . '%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('tahun_mulai')) {
+            $query->whereYear('tanggal_mulai', $request->tahun_mulai);
+        }
+
+        if ($request->filled('status_selesai')) {
+            if ($request->status_selesai == 'selesai') {
+                $query->whereDate('tanggal_selesai', '<', Carbon::today());
+            } elseif ($request->status_selesai == 'belum') {
+                $query->whereDate('tanggal_selesai', '>=', Carbon::today());
+            }
+        }
+
+        $sertifikasis = $query->get()->map(function ($s) {
+            $pesertas = collect($s->daftarSertifikasis);
+            $s->jumlah_asal_sekolah = collect($s->daftarSertifikasis)->pluck('asal_sekolah')->unique()->count();
+            $s->jumlah_jurusan = collect($s->daftarSertifikasis)->pluck('jurusan')->unique()->count();
+            $s->jumlah_kuliah = $pesertas->where('status_saat_ini', 'Kuliah')->count();
+            $s->jumlah_bekerja_dan_usaha = $pesertas->whereIn('status_saat_ini', ['Bekerja', 'Wirausaha'])->count();
+            $s->jumlah_tidak_bekerja = $pesertas->where('status_saat_ini', 'Tidak Bekerja')->count();
+            return $s;
+        });
 
         return view('admin.sertifikasi', [
-            'title' => 'Manajemen Sertifikasi',
+            'title' => 'Sertifikasi',
             'sertifikasis' => $sertifikasis,
         ]);
     }
@@ -249,7 +295,7 @@ class AdminController extends Controller
     {
         if ($request->isMethod('post')) {
             $action = $request->input('action');
-    
+
             if ($action === 'store') {
                 $validated = $request->validate([
                     'nama_pelatihan' => 'required',
@@ -262,20 +308,20 @@ class AdminController extends Controller
                     'status' => 'required|in:Gratis,Berbayar',
                     'foto_pelatihan' => 'required|image|max:2048',
                 ]);
-    
+
                 $validated['user_id'] = auth()->id();
                 $validated['foto_pelatihan'] = $request->file('foto_pelatihan')->store('pelatihan');
-    
+
                 Pelatihan::create($validated);
-    
+
                 return redirect()->back()->with('success', 'Pelatihan berhasil ditambahkan.');
             }
-    
+
             if ($action === 'update') {
                 $pelatihan = Pelatihan::findOrFail($request->input('id'));
-    
+
                 $data = $request->except(['action', 'id', 'foto_pelatihan']);
-    
+
                 if ($request->hasFile('foto_pelatihan')) {
                     // Hapus foto lama (opsional, aktifkan jika mau)
                     // if ($pelatihan->foto_pelatihan) {
@@ -283,25 +329,25 @@ class AdminController extends Controller
                     // }
                     $data['foto_pelatihan'] = $request->file('foto_pelatihan')->store('pelatihan');
                 }
-    
+
                 $pelatihan->update($data);
-    
+
                 return redirect()->back()->with('success', 'Pelatihan berhasil diupdate.');
             }
-    
+
             if ($action === 'delete') {
                 Pelatihan::destroy($request->input('id'));
                 return redirect()->back()->with('success', 'Pelatihan berhasil dihapus.');
             }
         }
-    
+
         // === QUERY with FILTER ===
         $pelatihansQuery = Pelatihan::with('user.mitraProfile');
-    
+
         if ($request->filled('search')) {
             $pelatihansQuery->where('nama_pelatihan', 'like', '%' . $request->search . '%');
         }
-    
+
         if ($request->filled('status')) {
             $pelatihansQuery->where('status', $request->status);
         }
@@ -311,30 +357,30 @@ class AdminController extends Controller
                 $q->where('nama_instansi', 'like', '%' . $request->mitra . '%');
             });
         }
-        
+
         if ($request->filled('kota')) {
             $pelatihansQuery->where('kota', 'like', '%' . $request->kota . '%');
         }
-        
+
         if ($request->filled('tanggal_mulai')) {
             $pelatihansQuery->whereDate('tanggal_mulai', '>=', $request->tanggal_mulai);
         }
-        
+
         if ($request->filled('tanggal_selesai')) {
             $pelatihansQuery->whereDate('tanggal_mulai', '<=', $request->tanggal_selesai);
         }
-        
-    
+
+
         // === PAGINATION 10 PER HALAMAN ===
         $pelatihans = $pelatihansQuery->latest()->paginate(10)->withQueryString();
-    
+
         // === METRICS ===
         $totalPelatihan = Pelatihan::count();
-        $totalUser = \App\Models\User::count();
+        $totalUser = User::count();
         $userTerdaftar = Pelatihan::distinct('user_id')->count('user_id');
         $persentaseUserTerdaftar = $totalUser > 0 ? round(($userTerdaftar / $totalUser) * 100, 2) : 0;
         $totalPelatihanSelesai = Pelatihan::whereDate('tanggal_selesai', '<', now())->count();
-    
+
         return view('admin.pelatihan', [
             'title' => 'Pelatihan',
             'pelatihans' => $pelatihans,
@@ -343,13 +389,13 @@ class AdminController extends Controller
             'totalPelatihanSelesai' => $totalPelatihanSelesai,
         ]);
     }
-         
+
 
     public function users(Request $request)
     {
         // Mulai query dengan Eloquent, gunakan eager loading 'user' langsung di sini
         $profilesQuery = AlumniSiswaProfile::with('user');
-    
+
         // Filter pencarian
         if ($request->filled('search')) {
             $profilesQuery->where('nama_lengkap', 'like', '%' . $request->search . '%');
@@ -379,15 +425,15 @@ class AdminController extends Controller
         } elseif ($request->filled('tanggal_selesai')) {
             $profilesQuery->where('created_at', '<=', $request->tanggal_selesai . ' 23:59:59');
         }
-    
+
         // Ambil hasil query setelah filter selesai
         $profiles = $profilesQuery->get();
-    
+
         // Statistik
         $totalAlumni = AlumniSiswaProfile::count();
         $totalSekolah = AlumniSiswaProfile::distinct('asal_sekolah')->count('asal_sekolah');
         $totalJurusan = AlumniSiswaProfile::distinct('jurusan_sekolah')->count('jurusan_sekolah');
-    
+
         return view('admin.usersalumni', [
             'title' => 'Data Users Alumni',
             'profiles' => $profiles,
@@ -396,8 +442,8 @@ class AdminController extends Controller
             'totalJurusan' => $totalJurusan,
         ]);
     }
-    
-    
+
+
     // Simpan data baru
     public function usersStore(Request $request)
     {

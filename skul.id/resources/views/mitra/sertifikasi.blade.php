@@ -1174,7 +1174,7 @@
 
                 // Tambah event listener tombol download (diperbarui setiap modal dibuka)
                 document.getElementById('btnDownloadPeserta').onclick = function() {
-                    window.location.href = `/public/sertifikasi/${sertifikasiId}/peserta/export`;
+                    window.location.href = `/public/mitra/sertifikasi/${sertifikasiId}/peserta/export`;
                 };
             }
         </script>

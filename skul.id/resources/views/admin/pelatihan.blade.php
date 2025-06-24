@@ -781,10 +781,6 @@
             </div>
         </div>
     </div>
-
-    </tbody>
-    </table>
-    </div>
     </div>
 
     {{-- Modal Tambah --}}

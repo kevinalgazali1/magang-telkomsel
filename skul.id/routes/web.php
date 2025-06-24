@@ -53,8 +53,8 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
         Route::post('/mitra/store-sertifikasi', [SertifikasiController::class, 'store'])->name('mitra.sertifikasi.store');
         Route::put('/mitra/update-sertifikasi/{id}', [SertifikasiController::class, 'update'])->name('mitra.sertifikasi.update');
         Route::delete('/mitra/delete-sertifikasi/{id}', [SertifikasiController::class, 'destroy'])->name('mitra.sertifikasi.destroy');
-        Route::get('/sertifikasi/{id}/peserta', [SertifikasiController::class, 'getPeserta']);
-        Route::get('/sertifikasi/{id}/peserta/export', [SertifikasiController::class, 'exportPesertaCsv']);
+        Route::get('/mitra/sertifikasi/{id}/peserta', [SertifikasiController::class, 'getPeserta']);
+        Route::get('/mitra/sertifikasi/{id}/peserta/export', [SertifikasiController::class, 'exportPesertaExcel']);
         Route::get('/mitra/profile', [MitraController::class, 'profile'])->name('mitra.profile');
         Route::get('/mitra/loker', [LokerController::class, 'index'])->name('mitra.loker');
         Route::post('/mitra/store-loker', [LokerController::class, 'store'])->name('mitra.loker.store');
@@ -112,7 +112,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/store-sertifikasi', [SertifikasiController::class, 'store'])->name('admin.sertifikasi.store');
     Route::put('/admin/update-sertifikasi/{id}', [SertifikasiController::class, 'update'])->name('admin.sertifikasi.update');
     Route::delete('/admin/delete-sertifikasi/{id}', [SertifikasiController::class, 'destroy'])->name('admin.sertifikasi.destroy');
-    Route::get('/sertifikasi/{id}/peserta/export', [SertifikasiController::class, 'exportPesertaCsv']);
+    Route::get('/admin/sertifikasi/{id}/peserta/export', [SertifikasiController::class, 'exportPesertaExcel']);
     Route::get('/admin/loker', [AdminController::class, 'loker'])->name('admin.loker');
     Route::post('/admin/store-loker', [LokerController::class, 'store'])->name('admin.loker.store');
     Route::put('/admin/update-loker/{id}', [LokerController::class, 'update'])->name('admin.loker.update');

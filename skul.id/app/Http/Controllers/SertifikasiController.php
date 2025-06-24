@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+
 use App\Models\User;
 use App\Models\Sertifikasi;
 use Illuminate\Support\Str;
@@ -12,6 +13,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use App\Http\Requests\SertifikasiStoreRequest;
+use App\Exports\PesertaSertifikasiExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SertifikasiController extends Controller
 {
@@ -136,76 +139,11 @@ class SertifikasiController extends Controller
         return response()->json($peserta);
     }
 
-    public function exportPesertaCsv($id)
+    public function exportPesertaExcel($id)
     {
-        $peserta = DaftarSertifikasi::where('sertifikasi_id', $id)->get();
-        $sertifikasi = Sertifikasi::find($id);
+        $sertifikasi = Sertifikasi::findOrFail($id);
+        $filename = 'daftar_peserta_' . Str::slug($sertifikasi->judul_sertifikasi) . '.xlsx';
 
-        if (!$sertifikasi) {
-            return redirect()->back()->with('danger', 'Sertifikasi tidak ditemukan.');
-        }
-
-        // Membuat nama file dari judul sertifikasi
-        $judulSlug = Str::slug($sertifikasi->judul_sertifikasi);
-        $filename = "daftar_peserta_{$judulSlug}.csv";
-
-        $handle = fopen('php://temp', 'w+');
-
-        fputcsv($handle, [
-            'No',
-            'Nama Lengkap',
-            'Email',
-            'No. Telepon',
-            'Asal Sekolah',
-            'Jurusan',
-            'Jenis Kelamin',
-            'Tanggal Lahir',
-            'NIK',
-            'Tahun Kelulusan',
-            'NPSN',
-            'Provinsi',
-            'Kota',
-            'Alamat',
-            'Status Saat Ini',
-            'Bidang Pekerjaan',
-            'Sertifikasi Terakhir',
-            'Kesesuaian Sertifikasi',
-            'Nama Universitas',
-            'Jurusan Universitas'
-        ]);
-
-        foreach ($peserta as $index => $p) {
-            fputcsv($handle, [
-                $index + 1,
-                $p->nama_lengkap,
-                $p->email,
-                $p->no_hp,
-                $p->asal_sekolah,
-                $p->jurusan,
-                $p->jenis_kelamin,
-                $p->tanggal_lahir,
-                '="' . $p->nik . '"',
-                $p->tahun_kelulusan,
-                $p->npsn,
-                $p->provinsi,
-                $p->kota,
-                $p->alamat,
-                $p->status_saat_ini,
-                $p->bidang_pekerjaan,
-                $p->sertifikasi_terakhir,
-                $p->kesesuaian_sertifikasi,
-                $p->nama_universitas,
-                $p->jurusan_universitas,
-            ]);
-        }
-
-        rewind($handle);
-        $csv = stream_get_contents($handle);
-        fclose($handle);
-
-        return Response::make($csv, 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename={$filename}",
-        ]);
+        return Excel::download(new PesertaSertifikasiExport($id), $filename);
     }
 }
