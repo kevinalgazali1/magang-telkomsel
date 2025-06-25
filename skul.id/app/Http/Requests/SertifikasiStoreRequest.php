@@ -29,7 +29,7 @@ class SertifikasiStoreRequest extends FormRequest
             'biaya' => 'required',
             'kota' => 'required',
             'tempat' => 'required',
-            'foto_sertifikasi' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_sertifikasi' => 'required|image|mimes:jpeg,png,jpg|max:10048',
         ];
     }
 }

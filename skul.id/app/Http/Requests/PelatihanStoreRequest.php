@@ -30,7 +30,7 @@ class PelatihanStoreRequest extends FormRequest
             'biaya' => 'nullable',
             'kota' => 'required',
             'status' => 'required|in:Gratis,Berbayar',
-            'foto_pelatihan' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_pelatihan' => 'required|image|mimes:jpeg,png,jpg|max:10048',
         ];
     }
 }

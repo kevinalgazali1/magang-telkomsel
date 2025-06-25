@@ -11,6 +11,7 @@ use App\Models\DaftarLoker;
 use App\Models\Sertifikasi;
 use App\Models\MitraProfile;
 use Illuminate\Http\Request;
+use App\Models\DaftarSertifikasi;
 use App\Models\AlumniSiswaProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -89,7 +90,7 @@ class AdminController extends Controller
             }
         }
 
-        $sertifikasis = $query->get()->map(function ($s) {
+        $sertifikasis = $query->paginate(5)->through(function ($s) {
             $pesertas = collect($s->daftarSertifikasis);
             $s->jumlah_asal_sekolah = collect($s->daftarSertifikasis)->pluck('asal_sekolah')->unique()->count();
             $s->jumlah_jurusan = collect($s->daftarSertifikasis)->pluck('jurusan')->unique()->count();
@@ -99,9 +100,26 @@ class AdminController extends Controller
             return $s;
         });
 
+        $totalSertifikasi = Sertifikasi::count();
+        $totalAlumni = User::where('role', 'alumnisiswa')->count();
+        $totalSertifikasi = Sertifikasi::count();
+
+        $sertifikasiTerdaftar = DaftarSertifikasi::distinct('sertifikasi_id')->count('sertifikasi_id');
+
+        // Hitung persentase sertifikasi yang telah diikuti oleh alumni
+        $persentaseSertifikasiTerdaftar = $totalSertifikasi > 0
+            ? round(($sertifikasiTerdaftar / $totalSertifikasi) * 100, 2)
+            : 0;
+        $totalSertifikasiSelesai = Sertifikasi::whereDate('tanggal_selesai', '<', now())->count();
+
         return view('admin.sertifikasi', [
             'title' => 'Sertifikasi',
             'sertifikasis' => $sertifikasis,
+            'totalSertifikasi' => $totalSertifikasi,
+            'totalUser' => $totalAlumni,
+            'userTerdaftar' => $sertifikasiTerdaftar,
+            'persentaseUserTerdaftar' => $persentaseSertifikasiTerdaftar,
+            'totalSertifikasiSelesai' => $totalSertifikasiSelesai
         ]);
     }
 

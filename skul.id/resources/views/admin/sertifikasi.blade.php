@@ -178,6 +178,69 @@
             scrollbar-width: thin;
             scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
         }
+
+        .dropdown-menu .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .sertifikasi-table-wrapper.fade {
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .sertifikasi-table {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            width: 100%;
+        }
+
+        .sertifikasi-table thead {
+            background-color: #f1f3f5;
+        }
+
+        .sertifikasi-table thead th {
+            font-weight: 600;
+            color: #343a40;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .sertifikasi-table tbody tr {
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+            background-color: #fff !important;
+        }
+
+        .sertifikasi-table tbody tr:hover {
+            transform: scale(1.02);
+            background-color: #ffffff !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            color: #fff;
+            z-index: 1;
+            position: relative;
+        }
+
+
+        .sertifikasi-table td,
+        .sertifikasi-table th {
+            vertical-align: middle;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .sertifikasi-table .btn-group .btn {
+            padding: 0.3rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 0.375rem;
+        }
+
+        .sertifikasi-table .badge {
+            font-size: 0.7rem;
+            padding: 0.35em 0.5em;
+            border-radius: 0.375rem;
+        }
     </style>
 </head>
 
@@ -248,7 +311,56 @@
                 <span class="text-light">Hi, Admin</span>
             </div>
 
-            <form method="GET" action="" class="row g-2 mb-4 mx-4 gap-1 mt-5 align-items-end">
+            <div class="container-fluid content py-4 px-0">
+                <div class="row g-4 px-4">
+                    <div class="col-md-4">
+                        <div class="card shadow-sm border-0 rounded-3 h-100">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <div class="d-flex justify-content-center align-items-center bg-primary bg-opacity-10 text-primary rounded-circle"
+                                    style="width: 60px; height: 60px;">
+                                    <i class="bi bi-bar-chart-line fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Total Sertifikasi</h6>
+                                    <h3 class="mb-0 fw-bold">{{ $totalSertifikasi ?? 0 }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card shadow-sm border-0 rounded-3 h-100">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <div class="d-flex justify-content-center align-items-center bg-success bg-opacity-10 text-success rounded-circle"
+                                    style="width: 60px; height: 60px;">
+                                    <i class="bi bi-people-fill fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Pengguna Terdaftar</h6>
+                                    <h3 class="mb-0 fw-bold">{{ $persentaseUserTerdaftar ?? 0 }}%</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card shadow-sm border-0 rounded-3 h-100">
+                            <div class="card-body d-flex align-items-center gap-3">
+                                <div class="d-flex justify-content-center align-items-center bg-info bg-opacity-10 text-info rounded-circle"
+                                    style="width: 60px; height: 60px;">
+                                    <i class="bi bi-check-circle fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Sertifikasi Selesai</h6>
+                                    <h3 class="mb-0 fw-bold">{{ $totalSertifikasiSelesai ?? 0 }}</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form method="GET" action="" class="row g-2 mb-2 mx-4 gap-1 mt-2 align-items-end">
                 <div class="col-md-3">
                     <label class="form-label fw-semibold small text-muted">Judul Sertifikasi</label>
                     <input type="text" class="form-control" name="judul" placeholder="Judul Sertifikasi"
@@ -301,9 +413,9 @@
 
 
             <div class="container py-4">
-                <div class="table-responsive">
-                    <table class="table table-bordered align-middle soft-table">
-                        <thead class="text-center">
+                <div class="table-responsive sertifikasi-table-wrapper">
+                    <table class="table sertifikasi-table table-hover align-middle mb-0" id="sertifikasiTable">
+                        <thead class="table-light text-center text-uppercase small">
                             <tr>
                                 <th>No</th>
                                 <th>Mitra</th>
@@ -326,73 +438,112 @@
                                         <div class="fw-semibold">{{ $s->user->mitraProfile->nama_instansi ?? '-' }}
                                         </div>
                                     </td>
-                                    <td class="text-center">
+                                    <td>
                                         <div class="fw-semibold">{{ $s->judul_sertifikasi }}</div>
                                     </td>
+                                    <td class="text-center">{{ $s->kota }}</td>
+                                    <td class="text-center">{{ $s->daftarSertifikasis->count() }}</td>
+                                    <td class="text-center">{{ $s->jumlah_asal_sekolah }}</td>
+                                    <td class="text-center">{{ $s->jumlah_jurusan }}</td>
+                                    <td class="text-center">{{ $s->jumlah_bekerja_dan_usaha }}</td>
+                                    <td class="text-center">{{ $s->jumlah_tidak_bekerja }}</td>
+                                    <td class="text-center">{{ $s->jumlah_kuliah }}</td>
                                     <td class="text-center">
-                                        {{ $s->kota }}
-                                    </td>
-                                    <td class="text-center">
-                                        <span>
-                                            {{ $s->daftarSertifikasis->count() }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span>
-                                            {{ $s->jumlah_asal_sekolah }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span>{{ $s->jumlah_jurusan }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $s->jumlah_bekerja_dan_usaha }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $s->jumlah_tidak_bekerja }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ $s->jumlah_kuliah }}
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="d-flex align-items-center justify-content-center gap-2 w-100">
-                                            <button class="btn-icon" data-bs-toggle="modal"
-                                                data-bs-target="#modalLihat{{ $s->id }}" title="Lihat"><i
-                                                    class="bi bi-eye-fill"></i></button>
-
-                                            @php
-                                                $sudahMulai = \Carbon\Carbon::parse($s->tanggal_mulai)->isPast();
-                                            @endphp
-
-                                            @if (!$sudahMulai)
-                                                <button class="btn-icon" data-bs-toggle="modal"
-                                                    data-bs-target="#modalEdit{{ $s->id }}" title="Edit">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </button>
-                                            @endif
-
-                                            <form action="{{ route('admin.sertifikasi') }}" method="POST"
-                                                class="d-inline">
-                                                @csrf
-                                                <input type="hidden" name="action" value="delete">
-                                                <input type="hidden" name="id" value="{{ $s->id }}">
-                                                <button type="button" class="btn-icon text-danger" title="Hapus"
-                                                    onclick="confirmDelete('{{ $s->id }}')">
-                                                    <i class="bi bi-trash-fill"></i>
-                                                </button>
-                                            </form>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                Aksi
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <button class="dropdown-item" data-bs-toggle="modal"
+                                                        data-bs-target="#modalLihat{{ $s->id }}">
+                                                        <i class="bi bi-eye me-2"></i> Lihat
+                                                    </button>
+                                                </li>
+                                                @php
+                                                    $sudahMulai = \Carbon\Carbon::parse($s->tanggal_mulai)->isPast();
+                                                @endphp
+                                                @if (!$sudahMulai)
+                                                    <li>
+                                                        <button class="dropdown-item" data-bs-toggle="modal"
+                                                            data-bs-target="#modalEdit{{ $s->id }}">
+                                                            <i class="bi bi-pencil me-2"></i> Edit
+                                                        </button>
+                                                    </li>
+                                                @endif
+                                                <li>
+                                                    <form action="{{ route('admin.sertifikasi') }}" method="POST"
+                                                        class="d-inline">
+                                                        @csrf
+                                                        <input type="hidden" name="action" value="delete">
+                                                        <input type="hidden" name="id"
+                                                            value="{{ $s->id }}">
+                                                        <button type="button" class="dropdown-item text-danger"
+                                                            onclick="confirmDelete('{{ $s->id }}')">
+                                                            <i class="bi bi-trash me-2"></i> Hapus
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </td>
-
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">Belum ada data sertifikasi.
+                                    <td colspan="11" class="text-center text-muted py-4">Belum ada data sertifikasi.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                        <div class="small text-muted">
+                            Showing
+                            <strong>{{ $sertifikasis->firstItem() ?? 0 }}</strong>
+                            to
+                            <strong>{{ $sertifikasis->lastItem() ?? 0 }}</strong>
+                            of
+                            <strong>{{ $sertifikasis->total() }}</strong>
+                            entries
+                        </div>
+
+                        <nav>
+                            <ul class="pagination mb-0">
+                                {{-- Previous Page Link --}}
+                                @if ($sertifikasis->onFirstPage())
+                                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                @else
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $sertifikasis->previousPageUrl() }}" rel="prev">&laquo;</a>
+                                    </li>
+                                @endif
+
+                                {{-- Pagination Elements --}}
+                                @foreach ($sertifikasis->getUrlRange(1, $sertifikasis->lastPage()) as $page => $url)
+                                    @if ($page == $sertifikasis->currentPage())
+                                        <li class="page-item active"><span
+                                                class="page-link">{{ $page }}</span>
+                                        </li>
+                                    @elseif ($page == 1 || $page == $sertifikasis->lastPage() || abs($page - $sertifikasis->currentPage()) <= 1)
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $url }}">{{ $page }}</a></li>
+                                    @elseif ($page == 2 || $page == $sertifikasis->lastPage() - 1)
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($sertifikasis->hasMorePages())
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $sertifikasis->nextPageUrl() }}" rel="next">&raquo;</a></li>
+                                @else
+                                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                @endif
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
 
@@ -481,8 +632,8 @@
                                         <div class="mb-3" id="biayaGroup">
                                             <label for="biaya" class="form-label">Biaya Sertifikasi
                                                 (Rp)</label>
-                                            <input type="number" class="form-control" id="biaya" name="biaya"
-                                                placeholder="Contoh: 250000" required>
+                                            <input type="string" class="form-control" id="biaya" name="biaya"
+                                                placeholder="Contoh: 250000" oninput="formatRupiah(this)" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="foto_sertifikasi" class="form-label">Upload
@@ -567,10 +718,11 @@
                                             <h5 class="fw-semibold mb-0">👥 Peserta Terdaftar</h5>
 
                                             {{-- Tombol Download --}}
-                                            <button id="btnDownloadPeserta" data-id="{{ $s->id }}"
-                                                class="btn btn-sm btn-outline-success d-flex align-items-center">
+                                            <button data-id="{{ $s->id }}"
+                                                class="btn btn-sm btn-outline-success d-flex align-items-center btnDownloadPeserta">
                                                 <i class="bi bi-download me-1"></i> Download
                                             </button>
+
                                         </div>
 
                                         @if ($s->daftarSertifikasis && $s->daftarSertifikasis->count())
@@ -704,8 +856,8 @@
 
                                             <div class="form-group mb-3" id="edit_biaya_wrapper{{ $s->id }}">
                                                 <label class="form-label">Biaya (Rp)</label>
-                                                <input type="number" class="form-control edit-input" name="biaya"
-                                                    value="{{ preg_replace('/\D/', '', $s->biaya) }}">
+                                                <input type="string" class="form-control edit-input" name="biaya"
+                                                    oninput="formatRupiah(this)" value="{{ $s->biaya }}">
                                             </div>
 
                                             <div class="form-group">
@@ -852,21 +1004,30 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const downloadBtn = document.getElementById('btnDownloadPeserta');
+            const downloadButtons = document.querySelectorAll('.btnDownloadPeserta');
 
-            if (downloadBtn) {
-                downloadBtn.addEventListener('click', function() {
+            downloadButtons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
                     const sertifikasiId = this.getAttribute('data-id');
-
                     if (sertifikasiId) {
-                        // Trigger download CSV
                         window.location.href = `/public/admin/sertifikasi/${sertifikasiId}/peserta/export`;
                     }
                 });
-            }
-        });
+            });
+        });yy
     </script>
     <script>
+        function formatRupiah(input) {
+            let value = input.value.replace(/\D/g, '');
+            input.value = new Intl.NumberFormat('id-ID').format(value);
+        }
+
+        function formatRupiah(input) {
+            let value = input.value.replace(/\D/g, ''); // Hapus semua karakter non-digit
+            let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambah titik setiap 3 digit dari belakang
+            input.value = formatted;
+        }
+
         function toggleBiayaField(id) {
             const statusSelect = document.querySelector(`[name="status"][onchange*="${id}"]`);
             const biayaWrapper = document.getElementById(`edit_biaya_wrapper${id}`);
