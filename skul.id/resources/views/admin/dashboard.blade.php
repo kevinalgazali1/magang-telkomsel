@@ -208,7 +208,7 @@
                 <!-- Daftar Mitra -->
                 <div class="mb-4 d-flex justify-content-between align-items-center">
                     <h4 class="fw-semibold fs-4">Daftar Mitra</h4>
-                    <a href="#" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                    <a href="{{ route('admin.usersmitra') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
                 </div>
                 <div class="row g-4">
                     @forelse ($mitras as $mitra)

@@ -49,7 +49,9 @@ class AdminController extends Controller
     {
         $query = Sertifikasi::with(['user.mitraProfile', 'daftarSertifikasis.user'])
             ->withCount('daftarSertifikasis')
-            ->with(['daftarSertifikasis' => function ($q) {
+            ->with([
+                'daftarSertifikasis.user',
+                'daftarSertifikasis' => function ($q) {
                 $q->select(
                     'id',
                     'user_id',
@@ -61,7 +63,8 @@ class AdminController extends Controller
                     'jurusan',
                     'jenis_kelamin',
                     'tanggal_lahir',
-                    'status_saat_ini'
+                    'status_saat_ini',
+                    'bukti_transfer'
                 );
             }])
             ->orderBy('created_at', 'desc');

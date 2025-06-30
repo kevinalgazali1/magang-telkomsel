@@ -24,7 +24,7 @@ class DaftarController extends Controller
                 return redirect()->back()->with('error', 'Data profil alumni belum lengkap.');
             }
 
-            // Cek jika sudah pernah mendaftar sertifikasi (opsional)
+            // Cek jika sudah pernah mendaftar sertifikasi
             $alreadyRegistered = DaftarSertifikasi::where('user_id', $user->id)
                 ->where('sertifikasi_id', $sertifikasi->id)
                 ->exists();
@@ -36,6 +36,21 @@ class DaftarController extends Controller
                 ]);
             }
 
+            // Validasi bukti transfer jika sertifikasi berbayar
+            if ($sertifikasi->status === 'berbayar') {
+                $request->validate([
+                    'bukti_transfer' => 'required|image|mimes:jpg,jpeg,png|max:10048',
+                ]);
+            }
+
+            // Proses upload bukti transfer jika berbayar
+            $buktiTransferPath = null;
+            if ($request->hasFile('bukti_transfer')) {
+                $file = $request->file('bukti_transfer');
+                $file_name = $file->hashName(); // nama unik
+                $file->move(public_path('storage/assets/bukti-transfer'), $file_name);
+                $buktiTransferPath = 'storage/assets/bukti-transfer/' . $file_name;
+            }
 
             // Simpan data ke daftar_sertifikasis
             DaftarSertifikasi::create([
@@ -60,6 +75,7 @@ class DaftarController extends Controller
                 'kesesuaian_sertifikasi' => $profile->kesesuaian_sertifikasi,
                 'nama_universitas' => $profile->nama_universitas,
                 'jurusan_universitas' => $profile->jurusan_universitas,
+                'bukti_transfer'   => $buktiTransferPath,
             ]);
 
             return redirect()->back()->with('success', 'Pendaftaran sertifikasi berhasil.');
@@ -70,6 +86,7 @@ class DaftarController extends Controller
             ]);
         }
     }
+
 
     public function storeDaftarLoker(Request $request, Loker $loker)
     {

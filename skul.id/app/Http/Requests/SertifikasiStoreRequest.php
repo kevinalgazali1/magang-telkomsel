@@ -30,6 +30,7 @@ class SertifikasiStoreRequest extends FormRequest
             'kota' => 'required',
             'tempat' => 'required',
             'foto_sertifikasi' => 'required|image|mimes:jpeg,png,jpg|max:10048',
+            'nomor_rekening' => 'nullable',
         ];
     }
 }

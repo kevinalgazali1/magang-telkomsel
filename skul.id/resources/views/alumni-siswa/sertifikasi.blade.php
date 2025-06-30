@@ -667,7 +667,7 @@
                                     <div class="stat-item">
                                         <i class="bi bi-award-fill stat-icon text-primary"></i>
                                         <h3 class="stat-number text-primary">{{ $totalSertifikasi }}</h3>
-                                        <p class="stat-label">Program Sertifikasi</p>
+                                        <p class="stat-label">Sertifikasi Tersedia</p>
                                     </div>
                                     <div class="stat-item">
                                         <i class="bi bi-briefcase-fill stat-icon text-warning"></i>
@@ -757,15 +757,77 @@
 
                                                 <form
                                                     action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
-                                                    method="POST">
+                                                    method="POST" enctype="multipart/form-data">
                                                     @csrf
+
                                                     <input type="hidden" name="sertifikasi_id"
                                                         value="{{ $item->id }}">
-                                                    <button type="submit" class="btn-view">Daftar</button>
+
+                                                    @if (strtolower($item->status) === 'berbayar')
+                                                        <button type="button" class="btn-view"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#modalBukti{{ $item->id }}">
+                                                            Daftar
+                                                        </button>
+                                                    @else
+                                                        <form
+                                                            action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="sertifikasi_id"
+                                                                value="{{ $item->id }}">
+                                                            <button type="submit" class="btn-view">Daftar
+                                                                Gratis</button>
+                                                        </form>
+                                                    @endif
                                                 </form>
+
                                             </div>
                                         </div>
                                     </div>
+
+                                    {{-- Modal Bukti --}}
+                                    <div class="modal fade" id="modalBukti{{ $item->id }}" tabindex="-1"
+                                        aria-labelledby="modalBuktiLabel{{ $item->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <form action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
+                                                method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                <input type="hidden" name="sertifikasi_id"
+                                                    value="{{ $item->id }}">
+
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="modalBuktiLabel{{ $item->id }}">Upload Bukti
+                                                            Transfer</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <p>Silakan transfer ke rekening berikut:</p>
+                                                        <p><strong>{{ $item->nomor_rekening }}</strong></p>
+                                                        <div class="mb-3">
+                                                            <label for="bukti_{{ $item->id }}"
+                                                                class="form-label">Bukti Transfer</label>
+                                                            <input type="file" name="bukti_transfer"
+                                                                class="form-control" id="bukti_{{ $item->id }}"
+                                                                accept="image/*" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-primary">Kirim Bukti &
+                                                            Daftar</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+
 
                                     {{-- Modal --}}
                                     <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
@@ -847,7 +909,7 @@
                                                                         <span
                                                                             class="text-success fw-semibold">Gratis</span>
                                                                     @else
-                                                                        Rp{{ number_format($item->biaya, 0, ',', '.') }}
+                                                                        {{ $item->biaya == 0 ? 'Gratis' : 'Rp ' . number_format((float) str_replace('.', '', $item->biaya), 0, ',', '.') }}
                                                                     @endif
                                                                 </p>
                                                             </div>
@@ -855,14 +917,31 @@
 
                                                                 <form
                                                                     action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
-                                                                    method="POST">
+                                                                    method="POST" enctype="multipart/form-data">
                                                                     @csrf
+
                                                                     <input type="hidden" name="sertifikasi_id"
                                                                         value="{{ $item->id }}">
-                                                                    <button class="btn btn-primary w-100">
-                                                                        <i class="bi bi-pencil-square me-1"></i> Daftar
-                                                                        Sekarang
-                                                                    </button>
+
+                                                                    @if (strtolower($item->status) === 'berbayar')
+                                                                        <button type="button" class="btn-view"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#modalBukti{{ $item->id }}">
+                                                                            Daftar
+                                                                        </button>
+                                                                    @else
+                                                                        <form
+                                                                            action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
+                                                                            method="POST">
+                                                                            @csrf
+                                                                            <input type="hidden"
+                                                                                name="sertifikasi_id"
+                                                                                value="{{ $item->id }}">
+                                                                            <button type="submit"
+                                                                                class="btn-view">Daftar
+                                                                                Gratis</button>
+                                                                        </form>
+                                                                    @endif
                                                                 </form>
                                                             </div>
                                                         </div>
@@ -876,6 +955,41 @@
                                 @endforeach
                             </div>
                         @endif
+
+                        <nav>
+                            <ul class="pagination mb-0">
+                                {{-- Previous Page Link --}}
+                                @if ($sertifikasi->onFirstPage())
+                                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                @else
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $sertifikasi->previousPageUrl() }}" rel="prev">&laquo;</a>
+                                    </li>
+                                @endif
+
+                                {{-- Pagination Elements --}}
+                                @foreach ($sertifikasi->getUrlRange(1, $sertifikasi->lastPage()) as $page => $url)
+                                    @if ($page == $sertifikasi->currentPage())
+                                        <li class="page-item active"><span
+                                                class="page-link">{{ $page }}</span></li>
+                                    @elseif ($page == 1 || $page == $sertifikasi->lastPage() || abs($page - $sertifikasi->currentPage()) <= 1)
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $url }}">{{ $page }}</a></li>
+                                    @elseif ($page == 2 || $page == $sertifikasi->lastPage() - 1)
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($sertifikasi->hasMorePages())
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $sertifikasi->nextPageUrl() }}" rel="next">&raquo;</a></li>
+                                @else
+                                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                @endif
+                            </ul>
+                        </nav>
+
 
 
                     </div>

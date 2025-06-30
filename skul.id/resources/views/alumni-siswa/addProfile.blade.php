@@ -542,36 +542,7 @@
     </script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.0/dist/js/tom-select.complete.min.js"></script>
-    {{-- <script>
-        $('#asal_sekolah').select2({
-            ajax: {
-                url: '/alumni-siswa/cari-sekolah',
-                dataType: 'json',
-                delay: 500,
-                data: function(params) {
-                    return {
-                        q: params.term
-                    };
-                },
-                processResults: function(data) {
-                    return {
-                        results: data.results
-                    };
-                },
-                cache: true
-            },
-            minimumInputLength: 3,
-            placeholder: "Cari nama sekolah..."
-        });
-
-        // Isi input NPSN saat opsi dipilih
-        $('#asal_sekolah').on('select2:select', function(e) {
-            var data = e.params.data;
-            $('#npsn').val(data.id); // id berisi NPSN
-        });
-    </script> --}}
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

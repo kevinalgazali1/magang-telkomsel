@@ -68,6 +68,7 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
         Route::get('/mitra/profile', [MitraController::class, 'profile'])->name('mitra.profile');
         Route::put('/mitra/update-profile', [MitraController::class, 'updateProfile'])->name('mitra.updateProfile');
         Route::put('/mitra/account/update', [UserController::class, 'updateAccount'])->name('mitra.account.update');
+        Route::get('/mitra/sertifikasi/export', [SertifikasiController::class, 'exportSertifikasi'])->name('mitra.sertifikasi.export');
     });
 });
 
@@ -127,6 +128,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('admin/users/mitra/store', [RegisteredUserController::class, 'storeMitraByAdmin'])->name('admin.usersmitra.store');
     Route::post('admin/users/admin/store', [RegisteredUserController::class, 'storeAdminByAdmin'])->name('admin.usersadmin.store');
     Route::get('/export-alumni', [UserController::class, 'exportAlumniCsv'])->name('export.alumni.csv');
+    Route::get('/admin/sertifikasi/export', [SertifikasiController::class, 'exportSertifikasi'])->name('admin.sertifikasi.export');
 });
 
 /**

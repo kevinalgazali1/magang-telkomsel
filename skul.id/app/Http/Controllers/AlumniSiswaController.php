@@ -251,7 +251,8 @@ class AlumniSiswaController extends Controller
         $searchKota = $request->input('kota');
         $searchStatus = $request->input('status');
 
-        $sertifikasi = Sertifikasi::query();
+        $sertifikasi = Sertifikasi::query()
+    ->whereDate('tanggal_mulai', '>', Carbon::today());
 
         if ($searchNama) {
             $sertifikasi->where('judul_sertifikasi', 'like', '%' . $searchNama . '%');
@@ -265,8 +266,8 @@ class AlumniSiswaController extends Controller
             $sertifikasi->where('status', $searchStatus);
         }
 
-        $sertifikasi = $sertifikasi->latest()->get();
-        $totalSertifikasi = Sertifikasi::count();
+        $sertifikasi = $sertifikasi->latest()->paginate(9)->withQueryString();
+        $totalSertifikasi = Sertifikasi::whereDate('tanggal_mulai', '>', Carbon::today())->count();
 
         $totalAlumniBekerja = User::whereHas('alumniSiswaProfile', function ($query) {
             $query->where('status_saat_ini', 'Bekerja');

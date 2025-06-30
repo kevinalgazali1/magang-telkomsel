@@ -403,6 +403,10 @@
                         class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
                         <i class="bi bi-arrow-clockwise me-1"></i> Reset
                     </a>
+                    <a href="{{ route('admin.sertifikasi.export', request()->query()) }}"
+                        class="btn btn-outline-success rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                    </a>
                     <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm" data-bs-toggle="modal"
                         data-bs-target="#modalTambah">
                         <i class="bi bi-plus-circle me-1"></i> Tambah
@@ -635,6 +639,12 @@
                                             <input type="string" class="form-control" id="biaya" name="biaya"
                                                 placeholder="Contoh: 250000" oninput="formatRupiah(this)" required>
                                         </div>
+                                        <div class="mb-3" id="rekeningGroup" style="display: none;">
+                                            <label for="nomor_rekening" class="form-label">Nomor Rekening</label>
+                                            <input type="text" class="form-control" id="nomor_rekening"
+                                                name="nomor_rekening"
+                                                placeholder="Contoh: 1234567890 a.n PT Sertifikasi BCA">
+                                        </div>
                                         <div class="mb-3">
                                             <label for="foto_sertifikasi" class="form-label">Upload
                                                 Foto Sertifikasi</label>
@@ -720,7 +730,7 @@
                                             {{-- Tombol Download --}}
                                             <button data-id="{{ $s->id }}"
                                                 class="btn btn-sm btn-outline-success d-flex align-items-center btnDownloadPeserta">
-                                                <i class="bi bi-download me-1"></i> Download
+                                                <i class="bi bi-download me-1"></i> Download Peserta
                                             </button>
 
                                         </div>
@@ -731,31 +741,38 @@
                                                 <table
                                                     class="table table-sm table-bordered align-middle mb-0 small text-nowrap">
                                                     <thead class="table-light sticky-top">
-                                                        <tr>
+                                                        <tr class="text-center">
                                                             <th>No</th>
                                                             <th>Nama</th>
                                                             <th>Email</th>
                                                             <th>No HP</th>
-                                                            <th>Sekolah</th>
-                                                            <th>Jurusan</th>
-                                                            <th>Gender</th>
-                                                            <th>Tgl Lahir</th>
+                                                            <th>Bukti TF</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         @foreach ($s->daftarSertifikasis as $peserta)
-                                                            <tr>
+                                                            <tr class="text-center">
                                                                 <td>{{ $loop->iteration }}</td>
                                                                 <td class="text-truncate" style="max-width: 120px;">
                                                                     {{ $peserta->nama_lengkap }}</td>
                                                                 <td class="text-truncate" style="max-width: 150px;">
                                                                     {{ $peserta->email }}</td>
                                                                 <td>{{ $peserta->no_hp }}</td>
-                                                                <td class="text-truncate" style="max-width: 100px;">
-                                                                    {{ $peserta->asal_sekolah }}</td>
-                                                                <td>{{ $peserta->jurusan }}</td>
-                                                                <td>{{ $peserta->jenis_kelamin }}</td>
-                                                                <td>{{ $peserta->tanggal_lahir }}</td>
+                                                                <td class="text-center">
+                                                                    @if ($peserta->bukti_transfer)
+                                                                        <img src="{{ asset($peserta->bukti_transfer) }}"
+                                                                            alt="Bukti Transfer" class="img-thumbnail"
+                                                                            style="max-height: 50px; cursor: pointer;"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#imageModal"
+                                                                            data-image="{{ asset($peserta->bukti_transfer) }}"
+                                                                            data-close-parent="#modalLihat{{ $s->id }}"
+                                                                            onclick="this.classList.add('was-open')">
+                                                                    @else
+                                                                        <span class="text-muted">Tidak ada</span>
+                                                                    @endif
+                                                                </td>
+
                                                             </tr>
                                                         @endforeach
                                                     </tbody>
@@ -775,6 +792,22 @@
                     </div>
                 </div>
             @endforeach
+
+            <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content border-0">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Pratinjau Bukti Transfer</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img id="modalImagePreview" src="" class="img-fluid rounded shadow"
+                                alt="Preview">
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {{-- Loop untuk Modal Edit --}}
             @foreach ($sertifikasis as $s)
@@ -858,6 +891,13 @@
                                                 <label class="form-label">Biaya (Rp)</label>
                                                 <input type="string" class="form-control edit-input" name="biaya"
                                                     oninput="formatRupiah(this)" value="{{ $s->biaya }}">
+                                            </div>
+
+                                            <div class="form-group mb-3"
+                                                id="edit_rekening_wrapper{{ $s->id }}">
+                                                <label class="form-label">Nomor Rekening</label>
+                                                <input type="text" class="form-control edit-input"
+                                                    name="nomor_rekening" value="{{ $s->nomor_rekening }}">
                                             </div>
 
                                             <div class="form-group">
@@ -983,6 +1023,57 @@
             });
         }
     </script>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+            const modalImage = document.getElementById('modalImagePreview');
+
+            // Tangani klik semua gambar dengan target imageModal
+            document.querySelectorAll('[data-bs-target="#imageModal"]').forEach(img => {
+                img.addEventListener('click', function() {
+                    const imageUrl = img.getAttribute('data-image');
+                    const parentSelector = img.getAttribute('data-close-parent');
+                    modalImage.src = imageUrl;
+
+                    // Sembunyikan modal induk jika ada
+                    if (parentSelector) {
+                        const parentModalEl = document.querySelector(parentSelector);
+                        if (parentModalEl) {
+                            const parentInstance = bootstrap.Modal.getInstance(parentModalEl);
+                            if (parentInstance) {
+                                parentInstance.hide();
+                                setTimeout(() => {
+                                    imageModal.show();
+                                }, 300);
+                            }
+                        }
+                    } else {
+                        imageModal.show();
+                    }
+                });
+            });
+
+            // Tampilkan kembali modal sebelumnya setelah image modal ditutup
+            document.getElementById('imageModal').addEventListener('hidden.bs.modal', function() {
+                const openedFrom = document.querySelector('[data-close-parent].was-open');
+                if (openedFrom) {
+                    const selector = openedFrom.getAttribute('data-close-parent');
+                    const modalEl = document.querySelector(selector);
+                    if (modalEl) {
+                        const instance = bootstrap.Modal.getOrCreateInstance(modalEl);
+                        instance.show();
+                    }
+                    openedFrom.classList.remove('was-open');
+                }
+            });
+        });
+    </script>
+
+
+
+
     <script>
         function confirmLogout() {
             event.preventDefault();
@@ -1010,11 +1101,12 @@
                 btn.addEventListener('click', function() {
                     const sertifikasiId = this.getAttribute('data-id');
                     if (sertifikasiId) {
-                        window.location.href = `/public/admin/sertifikasi/${sertifikasiId}/peserta/export`;
+                        window.location.href =
+                            `/public/admin/sertifikasi/${sertifikasiId}/peserta/export`;
                     }
                 });
             });
-        });yy
+        });
     </script>
     <script>
         function formatRupiah(input) {
@@ -1031,18 +1123,20 @@
         function toggleBiayaField(id) {
             const statusSelect = document.querySelector(`[name="status"][onchange*="${id}"]`);
             const biayaWrapper = document.getElementById(`edit_biaya_wrapper${id}`);
-            const biayaInput = biayaWrapper.querySelector('input[name="biaya"]');
+            const rekeningWrapper = document.getElementById(`edit_rekening_wrapper${id}`);
+            const biayaInput = biayaWrapper?.querySelector('input[name="biaya"]');
 
-            if (statusSelect && biayaWrapper && biayaInput) {
+            if (statusSelect) {
                 if (statusSelect.value === 'Gratis') {
-                    biayaWrapper.style.display = 'none';
-                    biayaInput.value = 0;
+                    if (biayaWrapper) biayaWrapper.style.display = 'none';
+                    if (rekeningWrapper) rekeningWrapper.style.display = 'none';
+                    if (biayaInput) biayaInput.value = 0;
                 } else {
-                    biayaWrapper.style.display = 'block';
+                    if (biayaWrapper) biayaWrapper.style.display = 'block';
+                    if (rekeningWrapper) rekeningWrapper.style.display = 'block';
                 }
             }
         }
-
 
         document.addEventListener('DOMContentLoaded', function() {
             @foreach ($sertifikasis as $s)
@@ -1053,13 +1147,16 @@
         function toggleBiaya() {
             const status = document.getElementById('status').value;
             const biayaWrapper = document.getElementById('biayaGroup');
+            const rekeningWrapper = document.getElementById('rekeningGroup');
             const biayaInput = document.getElementById('biaya');
 
             if (status === 'Gratis') {
                 biayaWrapper.style.display = 'none';
+                rekeningWrapper.style.display = 'none';
                 biayaInput.value = 0;
             } else {
                 biayaWrapper.style.display = 'block';
+                rekeningWrapper.style.display = 'block';
             }
         }
 

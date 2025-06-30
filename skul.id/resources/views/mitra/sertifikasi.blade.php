@@ -549,100 +549,208 @@
                                 </div>
                             </div>
 
-
-                            <!-- Tombol Tambah Sertifikasi -->
-                            <button class="btn btn-primary mb-4" data-bs-toggle="modal"
-                                data-bs-target="#sertifikasiModal">+ Tambah
-                                Sertifikasi</button>
-
-                            <hr class="container my-5">
+                            <hr class="container my-3">
 
                             <h5 class="mb-4 fw-bold">Sertifikasi Anda</h5>
 
+                            <form method="GET" action="" class="row g-2 mb-4 mx-4 gap-1 mt-2 align-items-end">
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold small text-muted">Judul Sertifikasi</label>
+                                    <input type="text" class="form-control" name="judul"
+                                        placeholder="Judul Sertifikasi" value="{{ request('judul') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold small text-muted">Kota</label>
+                                    <input type="text" class="form-control" name="kota" placeholder="Kota"
+                                        value="{{ request('kota') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold small text-muted">Tahun Mulai</label>
+                                    <input type="number" class="form-control" name="tahun_mulai"
+                                        placeholder="Tahun Mulai" value="{{ request('tahun_mulai') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold small text-muted">Status Selesai</label>
+                                    <select class="form-select" name="status_selesai">
+                                        <option value="">Semua</option>
+                                        <option value="selesai"
+                                            {{ request('status_selesai') == 'selesai' ? 'selected' : '' }}>Selesai
+                                        </option>
+                                        <option value="belum"
+                                            {{ request('status_selesai') == 'belum' ? 'selected' : '' }}>Belum
+                                            Selesai</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold small text-muted">Status</label>
+                                    <select class="form-select" name="status">
+                                        <option value="">Semua Status</option>
+                                        <option value="Gratis" {{ request('status') == 'Gratis' ? 'selected' : '' }}>
+                                            Gratis</option>
+                                        <option value="Berbayar"
+                                            {{ request('status') == 'Berbayar' ? 'selected' : '' }}>Berbayar
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12 d-flex justify-content-end gap-2">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                                        <i class="bi bi-search me-1"></i> Cari
+                                    </button>
+                                    <a href="{{ route('mitra.sertifikasi') }}"
+                                        class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                                        <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                                    </a>
+                                    <a href="{{ route('mitra.sertifikasi.export', request()->query()) }}"
+                                        class="btn btn-outline-success rounded-pill px-4 shadow-sm">
+                                        <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                                    </a>
+                                    <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm"
+                                        data-bs-toggle="modal" data-bs-target="#sertifikasiModal">
+                                        <i class="bi bi-plus-circle me-1"></i> Tambah
+                                    </button>
+                                </div>
+                            </form>
+
                             <!-- Sertifikasi Card Grid -->
-                            <div class="row row-cols-1 row-cols-md-3 g-4">
-                                @forelse($sertifikasiMitraSendiri as $sertif)
-                                    <div class="col">
-                                        <div class="card sertifikasi-card h-100 border-0 shadow-sm">
-                                            <img src="{{ asset('storage/' . $sertif->foto_sertifikasi) }}"
-                                                class="card-img-top object-fit-cover"
-                                                alt="Foto Sertifikasi {{ $sertif->judul_sertifikasi }}"
-                                                style="height: 200px; object-fit: cover;">
-
-                                            <div class="card-body d-flex flex-column">
-                                                <h6 class="fw-semibold mb-1">{{ $sertif->judul_sertifikasi }}</h6>
-
-                                                <ul class="list-unstyled text-muted sertif-info mb-3">
-                                                    <li><i
-                                                            class="bi bi-calendar-event"></i>{{ \Carbon\Carbon::parse($sertif->tanggal_mulai)->format('d M Y') }}
-                                                        -
-                                                        {{ \Carbon\Carbon::parse($sertif->tanggal_selesai)->format('d M Y') }}
-                                                    </li>
-                                                    <li>
-                                                        <i class="bi bi-geo-alt"></i>
-                                                        {{ $sertif->kota }}, {{ $sertif->tempat }}
-                                                    </li>
-                                                    <li>
-                                                        <i class="bi bi-cash-stack"></i>
-                                                        {{ $sertif->biaya == 0 ? 'Gratis' : 'Rp' . number_format($sertif->biaya, 0, ',', '.') }}
-                                                    </li>
-                                                </ul>
-
-                                                <div class="mt-auto d-flex justify-content-between align-items-center">
-                                                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3"
-                                                        onclick="showDetailModal(
-            '{{ asset('storage/' . $sertif->foto_sertifikasi) }}',
-            '{{ $sertif->judul_sertifikasi }}',
-            `{{ $sertif->deskripsi }}`,
-            '{{ \Carbon\Carbon::parse($sertif->tanggal_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($sertif->tanggal_selesai)->format('d M Y') }}',
-            '{{ $sertif->kota }}',
-            '{{ $sertif->tempat }}',
-            '{{ $sertif->biaya == 0 ? 'Gratis' : 'Rp' . number_format((int) $sertif->biaya, 0, ',', '.') }}',
-            {{ $sertif->id }}
-            )">
-                                                        Detail
-                                                    </button>
-
-
-                                                    <div class="d-flex gap-2">
-                                                        <button
-                                                            class="btn btn-sm btn-outline-warning rounded-circle btn-icon"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#editSertifikasiModal"
-                                                            data-id="{{ $sertif->id }}"
-                                                            data-judul="{{ $sertif->judul_sertifikasi }}"
-                                                            data-deskripsi="{{ $sertif->deskripsi }}"
-                                                            data-mulai="{{ $sertif->tanggal_mulai }}"
-                                                            data-selesai="{{ $sertif->tanggal_selesai }}"
-                                                            data-kota="{{ $sertif->kota }}"
-                                                            data-tempat="{{ $sertif->tempat }}"
-                                                            data-biaya="{{ $sertif->biaya }}"
-                                                            data-foto="{{ asset('storage/' . $sertif->foto_sertifikasi) }}"
-                                                            onclick="openEditModal(this)">
-                                                            <i class="bi bi-pencil-fill"></i>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light text-center text-uppercase small">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Foto</th>
+                                            <th>Judul Sertifikasi</th>
+                                            <th>Kota</th>
+                                            <th>Peserta</th>
+                                            <th>Sekolah</th>
+                                            <th>Jurusan</th>
+                                            <th>Bekerja</th>
+                                            <th>Tidak Bekerja</th>
+                                            <th>Kuliah</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($sertifikasiMitraSendiri as $index => $sertif)
+                                            <tr>
+                                                <td class="text-center">{{ $index + 1 }}</td>
+                                                <td class="text-center">
+                                                    <img src="{{ asset('storage/' . $sertif->foto_sertifikasi) }}"
+                                                        alt="{{ $sertif->judul_sertifikasi }}" width="100"
+                                                        style="object-fit: cover; height: 70px;">
+                                                </td>
+                                                <td class="text-center">{{ $sertif->judul_sertifikasi }}</td>
+                                                <td class="text-center">{{ $sertif->kota }}</td>
+                                                <td class="text-center">{{ $sertif->daftarSertifikasis->count() }}
+                                                </td>
+                                                <td class="text-center">{{ $sertif->jumlah_asal_sekolah }}</td>
+                                                <td class="text-center">{{ $sertif->jumlah_jurusan }}</td>
+                                                <td class="text-center">{{ $sertif->jumlah_bekerja_dan_usaha }}</td>
+                                                <td class="text-center">{{ $sertif->jumlah_tidak_bekerja }}</td>
+                                                <td class="text-center">{{ $sertif->jumlah_kuliah }}</td>
+                                                <td class="text-center">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-sm btn-primary dropdown-toggle"
+                                                            type="button" data-bs-toggle="dropdown"
+                                                            aria-expanded="false">
+                                                            Aksi
                                                         </button>
-
-                                                        <form id="deleteForm-{{ $sertif->id }}"
-                                                            action="{{ route('mitra.sertifikasi.destroy', $sertif->id) }}"
-                                                            method="POST" style="display: none;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                        </form>
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-outline-danger rounded-circle btn-icon"
-                                                            onclick="confirmDelete('{{ $sertif->id }}')">
-                                                            <i class="bi bi-trash-fill"></i>
-                                                        </button>
-
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li>
+                                                                <button class="dropdown-item" data-bs-toggle="modal"
+                                                                    data-bs-target="#detailModal{{ $sertif->id }}">
+                                                                    <i class="bi bi-eye me-2"></i> Lihat
+                                                                </button>
+                                                            </li>
+                                                            @php $sudahMulai = \Carbon\Carbon::parse($sertif->tanggal_mulai)->isPast(); @endphp
+                                                            @if (!$sudahMulai)
+                                                                <li>
+                                                                    <button class="dropdown-item"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#editSertifikasiModal"
+                                                                        data-id="{{ $sertif->id }}"
+                                                                        data-judul="{{ $sertif->judul_sertifikasi }}"
+                                                                        data-deskripsi="{{ $sertif->deskripsi }}"
+                                                                        data-mulai="{{ $sertif->tanggal_mulai }}"
+                                                                        data-selesai="{{ $sertif->tanggal_selesai }}"
+                                                                        data-kota="{{ $sertif->kota }}"
+                                                                        data-tempat="{{ $sertif->tempat }}"
+                                                                        data-biaya="{{ $sertif->biaya }}"
+                                                                        data-rekening="{{ $sertif->nomor_rekening }}"
+                                                                        data-foto="{{ asset('storage/' . $sertif->foto_sertifikasi) }}"
+                                                                        onclick="openEditModal(this)">
+                                                                        <i class="bi bi-pencil me-2"></i> Edit
+                                                                    </button>
+                                                                </li>
+                                                            @endif
+                                                            <li>
+                                                                <form id="deleteForm-{{ $sertif->id }}"
+                                                                    action="{{ route('mitra.sertifikasi.destroy', $sertif->id) }}"
+                                                                    method="POST" class="d-none">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                </form>
+                                                                <button type="button"
+                                                                    class="dropdown-item text-danger"
+                                                                    onclick="confirmDelete('{{ $sertif->id }}')">
+                                                                    <i class="bi bi-trash me-2"></i> Hapus
+                                                                </button>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @empty
-                                    <p class="text-muted">Belum ada sertifikasi yang Anda buat.</p>
-                                @endforelse
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted py-4">Belum ada
+                                                    sertifikasi yang Anda buat.</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             </div>
+
+
+
+                            <nav>
+                                <ul class="pagination mb-0">
+                                    {{-- Previous Page Link --}}
+                                    @if ($sertifikasiMitraSendiri->onFirstPage())
+                                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                    @else
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $sertifikasiMitraSendiri->previousPageUrl() }}"
+                                                rel="prev">&laquo;</a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Pagination Elements --}}
+                                    @foreach ($sertifikasiMitraSendiri->getUrlRange(1, $sertifikasiMitraSendiri->lastPage()) as $page => $url)
+                                        @if ($page == $sertifikasiMitraSendiri->currentPage())
+                                            <li class="page-item active"><span
+                                                    class="page-link">{{ $page }}</span>
+                                            </li>
+                                        @elseif (
+                                            $page == 1 ||
+                                                $page == $sertifikasiMitraSendiri->lastPage() ||
+                                                abs($page - $sertifikasiMitraSendiri->currentPage()) <= 1)
+                                            <li class="page-item"><a class="page-link"
+                                                    href="{{ $url }}">{{ $page }}</a></li>
+                                        @elseif ($page == 2 || $page == $sertifikasiMitraSendiri->lastPage() - 1)
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Next Page Link --}}
+                                    @if ($sertifikasiMitraSendiri->hasMorePages())
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $sertifikasiMitraSendiri->nextPageUrl() }}"
+                                                rel="next">&raquo;</a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                    @endif
+                                </ul>
+                            </nav>
 
                             <hr class="my-5">
                             <h5 class="mb-4 fw-bold">Sertifikasi Mitra Lain</h5>
@@ -671,7 +779,7 @@
                                                     </li>
                                                     <li>
                                                         <i class="bi bi-cash-stack"></i>
-                                                        {{ $sertif->biaya == 0 ? 'Gratis' : 'Rp' . number_format($sertif->biaya, 0, ',', '.') }}
+                                                        {{ $sertif->biaya == 0 ? 'Gratis' : 'Rp ' . number_format((float) str_replace('.', '', $sertif->biaya), 0, ',', '.') }}
                                                     </li>
                                                 </ul>
                                             </div>
@@ -681,6 +789,7 @@
                                     <p class="text-muted">Belum ada sertifikasi dari mitra lain.</p>
                                 @endforelse
                             </div>
+
 
                             <!-- Modal Form Tambah Sertifikasi -->
                             <div class="modal fade" id="sertifikasiModal" tabindex="-1"
@@ -775,8 +884,17 @@
                                                         <div class="mb-3" id="biayaGroup">
                                                             <label for="biaya" class="form-label">Biaya Sertifikasi
                                                                 (Rp)</label>
-                                                            <input type="number" class="form-control" id="biaya"
-                                                                name="biaya" placeholder="Contoh: 250000" required>
+                                                            <input type="string" class="form-control" id="biaya"
+                                                                name="biaya" placeholder="Contoh: 250000"
+                                                                oninput="formatRupiah(this)" required>
+                                                        </div>
+                                                        <div class="mb-3" id="rekeningGroup"
+                                                            style="display: none;">
+                                                            <label for="nomor_rekening" class="form-label">Nomor
+                                                                Rekening</label>
+                                                            <input type="text" class="form-control"
+                                                                id="nomor_rekening" name="nomor_rekening"
+                                                                placeholder="Contoh: 1234567890 a.n PT Sertifikasi BCA">
                                                         </div>
                                                         <div class="mb-3">
                                                             <label for="foto_sertifikasi" class="form-label">Upload
@@ -875,8 +993,14 @@
 
                                                         <div class="form-group mb-3" id="edit_biaya_wrapper">
                                                             <label class="form-label">Biaya (Rp)</label>
-                                                            <input type="number" class="form-control edit-input"
-                                                                id="edit_biaya" name="biaya">
+                                                            <input type="string" class="form-control edit-input"
+                                                                id="edit_biaya" name="biaya"
+                                                                oninput="formatRupiah(this)">
+                                                        </div>
+                                                        <div class="form-group mb-3" id="edit_rekening_wrapper">
+                                                            <label class="form-label">Nomor Rekening</label>
+                                                            <input type="text" class="form-control edit-input"
+                                                                name="nomor_rekening" id="edit_nomor_rekening">
                                                         </div>
 
                                                         <div class="form-group">
@@ -903,91 +1027,154 @@
                             </div>
 
                             <!-- Modal Detail Sertifikasi -->
-                            <div class="modal fade" id="detailModal" tabindex="-1"
-                                aria-labelledby="detailModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                                    <div class="modal-content detail-modal-content shadow-lg rounded-4">
-                                        <div class="modal-header border-0 pb-0">
-                                            <h5 class="modal-title fw-bold text-primary-emphasis"
-                                                id="detailModalLabel">
-                                                <i class="bi bi-info-circle me-2"></i> Detail Sertifikasi
-                                            </h5>
-                                        </div>
+                            @foreach ($sertifikasiMitraSendiri as $s)
+                                <div class="modal fade" id="detailModal{{ $s->id }}" tabindex="-1"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                                        <div class="modal-content shadow-lg rounded-4">
+                                            <div class="modal-header bg-primary text-white">
+                                                <h5 class="modal-title">Detail Sertifikasi</h5>
+                                            </div>
 
-                                        <div class="modal-body pt-2">
-                                            <div class="row gy-4">
-                                                <!-- Left: Detail Sertifikasi -->
-                                                <div class="col-md-6">
-                                                    <img id="detailFoto" src=""
-                                                        class="img-fluid rounded shadow-sm mb-3 w-100"
-                                                        alt="Foto Sertifikasi"
-                                                        style="max-height: 240px; object-fit: cover;">
-                                                    <h4 id="detailJudul" class="fw-semibold mb-2"></h4>
-                                                    <p id="detailDeskripsi" class="text-muted"></p>
-                                                    <ul class="list-unstyled text-sm">
-                                                        <li class="mb-1"><i
-                                                                class="bi bi-calendar-event me-2 text-secondary"></i><strong>Tanggal:</strong>
-                                                            <span id="detailTanggal"></span>
-                                                        </li>
-                                                        <li class="mb-1"><i
-                                                                class="bi bi-geo-alt me-2 text-secondary"></i><strong>Lokasi:</strong>
-                                                            <span id="detailKota"></span>
-                                                        </li>
-                                                        <li class="mb-1"><i
-                                                                class="bi bi-building me-2 text-secondary"></i><strong>Tempat:</strong>
-                                                            <span id="detailTempat"></span>
-                                                        </li>
-                                                        <li class="mb-1"><i
-                                                                class="bi bi-cash-stack me-2 text-secondary"></i><strong>Biaya:</strong>
-                                                            <span id="detailBiaya"></span>
-                                                        </li>
+                                            <div class="modal-body px-4 py-4">
+                                                <div class="row g-4">
+                                                    {{-- Kolom Kiri: Detail Sertifikasi --}}
+                                                    <div class="col-lg-6">
+                                                        @if ($s->foto_sertifikasi)
+                                                            <div class="mb-3">
+                                                                <img src="{{ asset('storage/' . $s->foto_sertifikasi) }}"
+                                                                    alt="Foto Sertifikasi"
+                                                                    class="img-fluid rounded-3 shadow-sm border w-100"
+                                                                    style="max-height: 280px; object-fit: cover;">
+                                                            </div>
+                                                        @endif
 
-                                                    </ul>
-                                                </div>
+                                                        <h4 class="fw-bold mb-2">{{ $s->judul_sertifikasi }}</h4>
 
-                                                <!-- Right: Daftar Peserta -->
-                                                <div class="col-md-6">
-                                                    <div
-                                                        class="d-flex justify-content-between align-items-center mb-2">
-                                                        <h5 class="fw-semibold mb-0">Daftar Peserta</h5>
-                                                        <button id="btnDownloadPeserta"
-                                                            class="btn btn-sm btn-outline-success d-flex align-items-center">
-                                                            <i class="bi bi-download me-1"></i> CSV
-                                                        </button>
+                                                        {{-- Scrollable Deskripsi --}}
+                                                        <div class="mb-3">
+                                                            <div style="max-height: 180px; overflow-y: auto;">
+                                                                <p class="mb-0" style="white-space: pre-line;">
+                                                                    {!! nl2br(e($s->deskripsi)) !!}
+                                                                </p>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <p class="text-muted small mb-3">Berikut adalah peserta yang
-                                                        terdaftar untuk sertifikasi ini.
-                                                    </p>
 
-                                                    <div class="table-responsive">
-                                                        <table
-                                                            class="table table-sm table-hover table-striped align-middle mb-0">
-                                                            <thead class="table-light text-center">
-                                                                <tr>
-                                                                    <th scope="col">No</th>
-                                                                    <th scope="col">Nama</th>
-                                                                    <th scope="col">Email</th>
-                                                                    <th scope="col">Telepon</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody id="pesertaTableBody" class="small text-center">
-                                                                <!-- Diisi melalui JavaScript -->
-                                                            </tbody>
-                                                        </table>
+                                                    {{-- Kolom Kanan: Daftar Peserta --}}
+                                                    <div class="col-lg-6">
+                                                        <div class="mb-2"><strong>📍 Lokasi:</strong>
+                                                            {{ $s->tempat }}, {{ $s->kota }}</div>
+                                                        <div class="mb-2"><strong>📅 Tanggal:</strong>
+                                                            {{ $s->tanggal_mulai }} s/d {{ $s->tanggal_selesai }}
+                                                        </div>
+                                                        <div class="mb-2">
+                                                            <strong>📌 Status:</strong>
+                                                            <span
+                                                                class="badge bg-{{ $s->status == 'Aktif' ? 'success' : 'secondary' }}">
+                                                                {{ $s->status }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="mb-2">
+                                                            <strong>💳 Harga Sertifikasi:</strong>
+                                                            @php
+                                                                $rawBiaya = str_replace('.', '', $s->biaya);
+                                                                $cleanBiaya = is_numeric($rawBiaya)
+                                                                    ? (int) $rawBiaya
+                                                                    : 0;
+                                                            @endphp
+                                                            {{ $cleanBiaya > 0 ? 'Rp ' . number_format($cleanBiaya, 0, ',', '.') : 'Gratis' }}
+                                                        </div>
+
+                                                        <div
+                                                            class="d-flex justify-content-between align-items-center mb-3 mt-5">
+                                                            <h5 class="fw-semibold mb-0">👥 Peserta Terdaftar</h5>
+                                                            <button
+                                                                class="btn btn-sm btn-outline-success d-flex align-items-center btnDownloadPeserta"
+                                                                data-id="{{ $s->id }}">
+                                                                <i class="bi bi-download me-1"></i> Download Peserta
+                                                            </button>
+                                                        </div>
+
+                                                        @if ($s->daftarSertifikasis && $s->daftarSertifikasis->count())
+                                                            <div class="table-responsive border rounded-3"
+                                                                style="max-height: 350px; overflow: auto;">
+                                                                <table
+                                                                    class="table table-sm table-bordered align-middle mb-0 small text-nowrap">
+                                                                    <thead class="table-light sticky-top">
+                                                                        <tr class="text-center">
+                                                                            <th>No</th>
+                                                                            <th>Nama</th>
+                                                                            <th>Email</th>
+                                                                            <th>No HP</th>
+                                                                            <th>Bukti TF</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach ($s->daftarSertifikasis as $peserta)
+                                                                            <tr class="text-center">
+                                                                                <td>{{ $loop->iteration }}</td>
+                                                                                <td class="text-truncate"
+                                                                                    style="max-width: 120px;">
+                                                                                    {{ $peserta->nama_lengkap }}</td>
+                                                                                <td class="text-truncate"
+                                                                                    style="max-width: 150px;">
+                                                                                    {{ $peserta->email }}</td>
+                                                                                <td>{{ $peserta->no_hp }}</td>
+                                                                                <td class="text-center">
+                                                                                    @if ($peserta->bukti_transfer)
+                                                                                        <img src="{{ asset($peserta->bukti_transfer) }}"
+                                                                                            alt="Bukti Transfer"
+                                                                                            class="img-thumbnail"
+                                                                                            style="max-height: 50px; cursor: pointer;"
+                                                                                            data-bs-toggle="modal"
+                                                                                            data-bs-target="#imageModal"
+                                                                                            data-image="{{ asset($peserta->bukti_transfer) }}"
+                                                                                            data-close-parent="#detailModal{{ $s->id }}"
+                                                                                            onclick="this.classList.add('was-open')">
+                                                                                    @else
+                                                                                        <span class="text-muted">Tidak
+                                                                                            ada</span>
+                                                                                    @endif
+                                                                                </td>
+                                                                            </tr>
+                                                                        @endforeach
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        @else
+                                                            <p class="text-muted mt-2">Belum ada peserta yang
+                                                                mendaftar.</p>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="modal-footer border-top-0 pt-3">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                                <i class="bi bi-x-circle me-1"></i> Tutup
-                                            </button>
+                                            <div class="modal-footer justify-content-end bg-light py-3">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Tutup</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <!-- Modal Preview Gambar -->
+                            <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content border-0 shadow">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Pratinjau Bukti Transfer</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Tutup"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <img id="modalImagePreview" src="" alt="Preview"
+                                                class="img-fluid rounded shadow" style="max-height: 600px;">
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
 
                         </div>
                     </div>
@@ -1140,43 +1327,63 @@
         </script>
 
         <script>
-            function showDetailModal(foto, judul, deskripsi, tanggal, kota, tempat, biaya, sertifikasiId) {
-                document.getElementById('detailFoto').src = foto;
-                document.getElementById('detailJudul').textContent = judul;
-                document.getElementById('detailDeskripsi').textContent = deskripsi;
-                document.getElementById('detailTanggal').textContent = tanggal;
-                document.getElementById('detailKota').textContent = kota;
-                document.getElementById('detailTempat').textContent = tempat;
-                document.getElementById('detailBiaya').textContent = biaya;
+            document.addEventListener('DOMContentLoaded', function() {
+                const downloadButtons = document.querySelectorAll('.btnDownloadPeserta');
 
-
-                // Ambil dan tampilkan data peserta
-                fetch(`/sertifikasi/${sertifikasiId}/peserta`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const tableBody = document.getElementById('pesertaTableBody');
-                        tableBody.innerHTML = ''; // Clear existing data
-
-                        data.forEach((peserta, index) => {
-                            tableBody.innerHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${peserta.nama_lengkap}</td>
-                        <td>${peserta.email}</td>
-                        <td>${peserta.no_hp}</td>
-                    </tr>
-                `;
-                        });
+                downloadButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const sertifikasiId = this.getAttribute('data-id');
+                        window.location.href =
+                            `/public/mitra/sertifikasi/${sertifikasiId}/peserta/export`;
                     });
+                });
+            });
+        </script>
 
-                const modal = new bootstrap.Modal(document.getElementById('detailModal'));
-                modal.show();
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+                const modalImage = document.getElementById('modalImagePreview');
 
-                // Tambah event listener tombol download (diperbarui setiap modal dibuka)
-                document.getElementById('btnDownloadPeserta').onclick = function() {
-                    window.location.href = `/public/mitra/sertifikasi/${sertifikasiId}/peserta/export`;
-                };
-            }
+                // Tangani klik semua gambar dengan target imageModal
+                document.querySelectorAll('[data-bs-target="#imageModal"]').forEach(img => {
+                    img.addEventListener('click', function() {
+                        const imageUrl = img.getAttribute('data-image');
+                        const parentSelector = img.getAttribute('data-close-parent');
+                        modalImage.src = imageUrl;
+
+                        // Sembunyikan modal induk jika ada
+                        if (parentSelector) {
+                            const parentModalEl = document.querySelector(parentSelector);
+                            if (parentModalEl) {
+                                const parentInstance = bootstrap.Modal.getInstance(parentModalEl);
+                                if (parentInstance) {
+                                    parentInstance.hide();
+                                    setTimeout(() => {
+                                        imageModal.show();
+                                    }, 300);
+                                }
+                            }
+                        } else {
+                            imageModal.show();
+                        }
+                    });
+                });
+
+                // Tampilkan kembali modal sebelumnya setelah image modal ditutup
+                document.getElementById('imageModal').addEventListener('hidden.bs.modal', function() {
+                    const openedFrom = document.querySelector('[data-close-parent].was-open');
+                    if (openedFrom) {
+                        const selector = openedFrom.getAttribute('data-close-parent');
+                        const modalEl = document.querySelector(selector);
+                        if (modalEl) {
+                            const instance = bootstrap.Modal.getOrCreateInstance(modalEl);
+                            instance.show();
+                        }
+                        openedFrom.classList.remove('was-open');
+                    }
+                });
+            });
         </script>
 
         <script>
@@ -1189,7 +1396,10 @@
                 const kota = button.getAttribute('data-kota');
                 const tempat = button.getAttribute('data-tempat');
                 const biaya = button.getAttribute('data-biaya');
+                const nomor_rekening = button.getAttribute('data-rekening');
                 const foto = button.getAttribute('data-foto');
+
+                toggleBiayaField();
 
                 document.getElementById('edit_judul_sertifikasi').value = judul;
                 document.getElementById('edit_deskripsi').value = deskripsi;
@@ -1198,6 +1408,7 @@
                 document.getElementById('edit_kota').value = kota;
                 document.getElementById('edit_tempat').value = tempat;
                 document.getElementById('edit_biaya').value = biaya;
+                document.getElementById('edit_nomor_rekening').value = nomor_rekening;
                 document.getElementById('preview_foto_edit').src = foto;
 
                 // Set form action URL
@@ -1219,34 +1430,49 @@
             });
 
             document.getElementById('editSertifikasiModal').addEventListener('show.bs.modal', () => {
-                toggleBiaya('edit_status', 'edit_biaya');
+                toggleBiayaField();
             });
 
+            function formatRupiah(input) {
+                let value = input.value.replace(/\D/g, '');
+                input.value = new Intl.NumberFormat('id-ID').format(value);
+            }
+
+            function formatRupiah(input) {
+                let value = input.value.replace(/\D/g, ''); // Hapus semua karakter non-digit
+                let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambah titik setiap 3 digit dari belakang
+                input.value = formatted;
+            }
+
             function toggleBiayaField() {
-                const status = document.getElementById('edit_status').value;
+                const statusSelect = document.getElementById('edit_status');
                 const biayaWrapper = document.getElementById('edit_biaya_wrapper');
+                const rekeningWrapper = document.getElementById('edit_rekening_wrapper');
                 const biayaInput = document.getElementById('edit_biaya');
 
-                if (status === 'Gratis') {
+                if (statusSelect.value === 'Gratis') {
                     biayaWrapper.style.display = 'none';
+                    rekeningWrapper.style.display = 'none';
                     biayaInput.value = 0;
                 } else {
                     biayaWrapper.style.display = 'block';
+                    rekeningWrapper.style.display = 'block';
                 }
             }
 
             function toggleBiaya() {
-
                 const status = document.getElementById('status').value;
                 const biayaWrapper = document.getElementById('biayaGroup');
+                const rekeningWrapper = document.getElementById('rekeningGroup');
                 const biayaInput = document.getElementById('biaya');
-
 
                 if (status === 'Gratis') {
                     biayaWrapper.style.display = 'none';
+                    rekeningWrapper.style.display = 'none';
                     biayaInput.value = 0;
                 } else {
                     biayaWrapper.style.display = 'block';
+                    rekeningWrapper.style.display = 'block';
                 }
             }
 
