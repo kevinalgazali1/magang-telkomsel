@@ -449,7 +449,8 @@
                             class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
                             <i class="bi bi-arrow-clockwise me-1"></i> Reset
                         </a>
-                        <a href="#" class="btn btn-success rounded-pill px-4 shadow-sm">
+                        <a href="{{ route('admin.pelatihan.export', request()->query()) }}"
+                            class="btn btn-success rounded-pill px-4 shadow-sm">
                             <i class="bi bi-file-earmark-excel me-1"></i> Excel
                         </a>
                         <button type="button" class="btn btn-outline-primary rounded-pill px-4 shadow-sm"
@@ -497,18 +498,18 @@
                                 </td>
                                 <td class="text-center">{{ $p->kota }}</td>
                                 <td class="text-center">{{ $p->daftarPelatihan->count() }}</td>
-                                    <td class="text-center">{{ $p->jumlah_asal_sekolah }}</td>
-                                    <td class="text-center">{{ $p->jumlah_jurusan }}</td>
-                                    <td class="text-center">{{ $p->jumlah_bekerja_dan_usaha }}</td>
-                                    <td class="text-center">{{ $p->jumlah_tidak_bekerja }}</td>
-                                    <td class="text-center">{{ $p->jumlah_kuliah }}</td>
+                                <td class="text-center">{{ $p->jumlah_asal_sekolah }}</td>
+                                <td class="text-center">{{ $p->jumlah_jurusan }}</td>
+                                <td class="text-center">{{ $p->jumlah_bekerja_dan_usaha }}</td>
+                                <td class="text-center">{{ $p->jumlah_tidak_bekerja }}</td>
+                                <td class="text-center">{{ $p->jumlah_kuliah }}</td>
                                 <td class="text-center">
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
                                             data-bs-toggle="dropdown" aria-expanded="false">
                                             Aksi
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
+                                        <ul class="dropdown-menu dropdown-menu-end" data-bs-auto-close="outside">
                                             <li>
                                                 <button class="dropdown-item" data-bs-toggle="modal"
                                                     data-bs-target="#lihat{{ $p->id }}">
@@ -591,8 +592,10 @@
                                                         <h5 class="fw-semibold mb-0">👥 Peserta Terdaftar</h5>
 
                                                         {{-- Tombol Download Peserta --}}
-                                                        <button
-                                                            class="btn btn-sm btn-outline-success">Download</button>
+                                                        <button data-id="{{ $p->id }}"
+                                                            class="btn btn-sm btn-outline-success d-flex align-items-center btnDownloadPeserta">
+                                                            <i class="bi bi-download me-1"></i> Download Peserta
+                                                        </button>
                                                     </div>
 
                                                     @if ($p->daftarPelatihans && $p->daftarPelatihans->count())
@@ -649,7 +652,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
                             {{-- Modal Edit --}}
                             <div class="modal fade" id="edit{{ $p->id }}" tabindex="-1"
@@ -720,11 +722,12 @@
                                                         <div class="form-group mb-3">
                                                             <label class="form-label">Status Pelatihan</label>
                                                             <select class="form-select edit-input" name="status"
-                                                                onchange="toggleEditBiaya({{ $p->id }})"
-                                                                required id="edit_status{{ $p->id }}">
+                                                                onchange="toggleBiayaField({{ $p->id }})"
+                                                                required>
                                                                 <option value="Berbayar"
                                                                     {{ $p->status == 'Berbayar' ? 'selected' : '' }}>
-                                                                    Berbayar</option>
+                                                                    Berbayar
+                                                                </option>
                                                                 <option value="Gratis"
                                                                     {{ $p->status == 'Gratis' ? 'selected' : '' }}>
                                                                     Gratis</option>
@@ -732,12 +735,19 @@
                                                         </div>
 
                                                         <div class="form-group mb-3"
-                                                            id="edit_biaya_wrapper{{ $p->id }}"
-                                                            style="{{ $p->status == 'Gratis' ? 'display:none;' : '' }}">
+                                                            id="edit_biaya_wrapper{{ $p->id }}">
                                                             <label class="form-label">Biaya (Rp)</label>
+                                                            <input type="string" class="form-control edit-input"
+                                                                name="biaya" oninput="formatRupiah(this)"
+                                                                value="{{ $p->biaya }}">
+                                                        </div>
+
+                                                        <div class="form-group mb-3"
+                                                            id="edit_rekening_wrapper{{ $p->id }}">
+                                                            <label class="form-label">Nomor Rekening</label>
                                                             <input type="text" class="form-control edit-input"
-                                                                name="biaya" value="{{ $p->biaya }}"
-                                                                oninput="formatRupiah(this)">
+                                                                name="nomor_rekening"
+                                                                value="{{ $p->nomor_rekening }}">
                                                         </div>
 
                                                         <div class="form-group">
@@ -754,7 +764,8 @@
                                             <div class="modal-footer border-top-0">
                                                 <button type="button" class="btn btn-light"
                                                     data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-primary">Perbarui</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    onclick="confirmEdit()">Perbarui</button>
                                             </div>
                                         </form>
                                     </div>
@@ -1019,6 +1030,21 @@
                 }
             });
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const downloadButtons = document.querySelectorAll('.btnDownloadPeserta');
+
+            downloadButtons.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const pelatihanId = this.getAttribute('data-id');
+                    if (pelatihanId) {
+                        window.location.href =
+                            `/public/admin/pelatihan/${pelatihanId}/peserta/export`;
+                    }
+                });
+            });
+        });
     </script>
     <script>
         function confirmLogout() {

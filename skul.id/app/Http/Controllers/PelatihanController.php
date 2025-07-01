@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Pelatihan;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\PelatihanExport;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\PesertaPelatihanExport;
 use App\Http\Requests\PelatihanStoreRequest;
 
 class PelatihanController extends Controller
@@ -119,5 +123,18 @@ class PelatihanController extends Controller
         }
         $pelatihan->delete();
         return redirect()->back()->with('success', 'Pelatihan berhasil dihapus.');
+    }
+
+    public function exportPesertaExcel($id)
+    {
+        $pelatihan = Pelatihan::findOrFail($id);
+        $filename = 'daftar_peserta_' . Str::slug($pelatihan->nama_pelatihan) . '.xlsx';
+
+        return Excel::download(new PesertaPelatihanExport($id), $filename);
+    }
+
+    public function exportPelatihan(Request $request)
+    {
+        return Excel::download(new PelatihanExport($request), 'data_pelatihan.xlsx');
     }
 }

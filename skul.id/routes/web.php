@@ -122,6 +122,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/store-pelatihan', [PelatihanController::class, 'store'])->name('admin.pelatihan.store');
     Route::put('/admin/update-pelatihan/{id}', [PelatihanController::class, 'update'])->name('admin.pelatihan.update');
     Route::delete('/admin/delete-pelatihan/{id}', [PelatihanController::class, 'destroy'])->name('admin.pelatihan.destroy');
+    Route::get('/admin/pelatihan/{id}/peserta/export', [PelatihanController::class, 'exportPesertaExcel']);
     Route::get('/admin/users/alumni', [AdminController::class, 'users'])->name('admin.usersalumni');
     Route::match(['get', 'post'], '/admin/users/mitra', [AdminController::class, 'usersMitra'])->name('admin.usersmitra');
     Route::delete('/admin/users/mitra/{id}', [AdminController::class, 'deleteMitra'])->name('admin.usersmitra.destroy');
@@ -129,6 +130,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('admin/users/admin/store', [RegisteredUserController::class, 'storeAdminByAdmin'])->name('admin.usersadmin.store');
     Route::get('/export-alumni', [UserController::class, 'exportAlumniCsv'])->name('export.alumni.csv');
     Route::get('/admin/sertifikasi/export', [SertifikasiController::class, 'exportSertifikasi'])->name('admin.sertifikasi.export');
+    Route::get('/admin/pelatihan/export', [PelatihanController::class, 'exportPelatihan'])->name('admin.pelatihan.export');
 });
 
 /**
