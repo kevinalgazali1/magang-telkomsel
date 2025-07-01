@@ -360,57 +360,93 @@
                 </div>
             </div>
 
-            <form method="GET" action="" class="row g-2 mb-2 mx-4 gap-1 mt-2 align-items-end">
-                <div class="col-md-3">
-                    <label class="form-label fw-semibold small text-muted">Judul Sertifikasi</label>
-                    <input type="text" class="form-control" name="judul" placeholder="Judul Sertifikasi"
-                        value="{{ request('judul') }}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label fw-semibold small text-muted">Kota</label>
-                    <input type="text" class="form-control" name="kota" placeholder="Kota"
-                        value="{{ request('kota') }}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label fw-semibold small text-muted">Tahun Mulai</label>
-                    <input type="number" class="form-control" name="tahun_mulai" placeholder="Tahun Mulai"
-                        value="{{ request('tahun_mulai') }}">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label fw-semibold small text-muted">Status Selesai</label>
-                    <select class="form-select" name="status_selesai">
-                        <option value="">Semua</option>
-                        <option value="selesai" {{ request('status_selesai') == 'selesai' ? 'selected' : '' }}>Selesai
-                        </option>
-                        <option value="belum" {{ request('status_selesai') == 'belum' ? 'selected' : '' }}>Belum
-                            Selesai</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label fw-semibold small text-muted">Status</label>
-                    <select class="form-select" name="status">
-                        <option value="">Semua Status</option>
-                        <option value="Gratis" {{ request('status') == 'Gratis' ? 'selected' : '' }}>Gratis</option>
-                        <option value="Berbayar" {{ request('status') == 'Berbayar' ? 'selected' : '' }}>Berbayar
-                        </option>
-                    </select>
-                </div>
-                <div class="col-md-12 d-flex justify-content-end gap-2">
-                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
-                        <i class="bi bi-search me-1"></i> Cari
-                    </button>
-                    <a href="{{ route('admin.sertifikasi') }}"
-                        class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
-                        <i class="bi bi-arrow-clockwise me-1"></i> Reset
-                    </a>
-                    <a href="{{ route('admin.sertifikasi.export', request()->query()) }}"
-                        class="btn btn-outline-success rounded-pill px-4 shadow-sm">
-                        <i class="bi bi-file-earmark-excel me-1"></i> Excel
-                    </a>
-                    <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm" data-bs-toggle="modal"
-                        data-bs-target="#modalTambah">
-                        <i class="bi bi-plus-circle me-1"></i> Tambah
-                    </button>
+            <form method="GET" action="" class="mb-4 px-4">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small text-muted">Nama Mitra</label>
+                        <input type="text" class="form-control" name="mitra" placeholder="Nama Mitra"
+                            value="{{ request('mitra') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold small text-muted">Judul Sertifikasi</label>
+                        <input type="text" class="form-control" name="judul" placeholder="Judul Sertifikasi"
+                            value="{{ request('judul') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Kota</label>
+                        <input type="text" class="form-control" name="kota" placeholder="Kota"
+                            value="{{ request('kota') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Bulan Mulai</label>
+                        <select name="bulan_mulai" class="form-select">
+                            <option value="" disabled {{ request('bulan_mulai') ? '' : 'selected' }}>Pilih Bulan
+                            </option>
+                            @foreach ([
+        '01' => 'Januari',
+        '02' => 'Februari',
+        '03' => 'Maret',
+        '04' => 'April',
+        '05' => 'Mei',
+        '06' => 'Juni',
+        '07' => 'Juli',
+        '08' => 'Agustus',
+        '09' => 'September',
+        '10' => 'Oktober',
+        '11' => 'November',
+        '12' => 'Desember',
+    ] as $val => $label)
+                                <option value="{{ $val }}"
+                                    {{ request('bulan_mulai') == $val ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Tahun Mulai</label>
+                        <input type="number" class="form-control" name="tahun_mulai" placeholder="Tahun Mulai"
+                            value="{{ request('tahun_mulai') }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Status Selesai</label>
+                        <select class="form-select" name="status_selesai">
+                            <option value="">Semua</option>
+                            <option value="selesai" {{ request('status_selesai') == 'selesai' ? 'selected' : '' }}>
+                                Selesai
+                            </option>
+                            <option value="belum" {{ request('status_selesai') == 'belum' ? 'selected' : '' }}>Belum
+                                Selesai</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Status</label>
+                        <select class="form-select" name="status">
+                            <option value="">Semua Status</option>
+                            <option value="Gratis" {{ request('status') == 'Gratis' ? 'selected' : '' }}>Gratis
+                            </option>
+                            <option value="Berbayar" {{ request('status') == 'Berbayar' ? 'selected' : '' }}>Berbayar
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col d-flex justify-content-end gap-2 align-items-end">
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                            <i class="bi bi-search me-1"></i> Terapkan
+                        </button>
+                        <a href="{{ route('admin.sertifikasi') }}"
+                            class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                        </a>
+                        <a href="{{ route('admin.sertifikasi.export', request()->query()) }}"
+                            class="btn btn-outline-success rounded-pill px-4 shadow-sm">
+                            <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                        </a>
+                        <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm"
+                            data-bs-toggle="modal" data-bs-target="#modalTambah">
+                            <i class="bi bi-plus-circle me-1"></i> Tambah
+                        </button>
+                    </div>
                 </div>
             </form>
 
@@ -1024,7 +1060,6 @@
         }
     </script>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
@@ -1070,9 +1105,6 @@
             });
         });
     </script>
-
-
-
 
     <script>
         function confirmLogout() {

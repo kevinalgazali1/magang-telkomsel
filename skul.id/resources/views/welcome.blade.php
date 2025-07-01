@@ -350,11 +350,11 @@
 
                 <!-- Kontak -->
                 <div class="col-md-4 mb-4">
-                    <!-- <h6 class="fw-bold text-uppercase mb-3">Kontak</h6>
-                            <ul class="list-unstyled small">
-                                <li><i class="bi bi-envelope-fill me-2"></i>mitraskulid@gmail.com</li>
-                                <li><i class="bi bi-telephone-fill me-2"></i>+62 851-7959-2408</li>
-                            </ul> -->
+                    <h6 class="fw-bold text-uppercase mb-3">Kontak</h6>
+                    <ul class="list-unstyled small">
+                        <li><i class="bi bi-envelope-fill me-2"></i>mitraskulid@gmail.com</li>
+                        <li><i class="bi bi-telephone-fill me-2"></i>+62 851-7959-2408</li>
+                    </ul>
                 </div>
 
                 <!-- Partner -->
@@ -367,8 +367,6 @@
                 </div>
                 <div class="text-center text-dark small mt-4">
                     © 2025 mitraskul.Id. All rights reserved.
-                    <br>
-                    <span>Dikunjungi sebanyak: {{ number_format($total_visits) }} kali</span>
                 </div>
             </div>
 

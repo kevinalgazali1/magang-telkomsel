@@ -21,9 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('*', function ($view) {
-            $visit = SiteVisit::first();
-            View::share('total_visits', $visit ? $visit->count : 0);
-        });
+        
     }
 }

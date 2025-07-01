@@ -31,6 +31,7 @@ class PelatihanStoreRequest extends FormRequest
             'kota' => 'required',
             'status' => 'required|in:Gratis,Berbayar',
             'foto_pelatihan' => 'required|image|mimes:jpeg,png,jpg|max:10048',
+            'nomor_rekening' => 'nullable',
         ];
     }
 }

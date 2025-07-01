@@ -12,6 +12,7 @@ use App\Models\Sertifikasi;
 use App\Models\MitraProfile;
 use Illuminate\Http\Request;
 use App\Models\DaftarSertifikasi;
+use App\Models\DaftarPelatihan;
 use App\Models\AlumniSiswaProfile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -50,24 +51,32 @@ class AdminController extends Controller
         $query = Sertifikasi::with(['user.mitraProfile', 'daftarSertifikasis.user'])
             ->withCount('daftarSertifikasis')
             ->with([
+                'user.mitraProfile',
                 'daftarSertifikasis.user',
                 'daftarSertifikasis' => function ($q) {
-                $q->select(
-                    'id',
-                    'user_id',
-                    'sertifikasi_id',
-                    'email',
-                    'no_hp',
-                    'nama_lengkap',
-                    'asal_sekolah',
-                    'jurusan',
-                    'jenis_kelamin',
-                    'tanggal_lahir',
-                    'status_saat_ini',
-                    'bukti_transfer'
-                );
-            }])
+                    $q->select(
+                        'id',
+                        'user_id',
+                        'sertifikasi_id',
+                        'email',
+                        'no_hp',
+                        'nama_lengkap',
+                        'asal_sekolah',
+                        'jurusan',
+                        'jenis_kelamin',
+                        'tanggal_lahir',
+                        'status_saat_ini',
+                        'bukti_transfer'
+                    );
+                }
+            ])
             ->orderBy('created_at', 'desc');
+
+        if ($request->filled('mitra')) {
+            $query->whereHas('user.mitraProfile', function ($q) use ($request) {
+                $q->where('nama_instansi', 'like', '%' . $request->mitra . '%');
+            });
+        }
 
         if ($request->filled('judul')) {
             $query->where('judul_sertifikasi', 'like', '%' . $request->judul . '%');
@@ -79,6 +88,10 @@ class AdminController extends Controller
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
+        }
+
+        if ($request->filled('bulan_mulai')) {
+            $query->whereMonth('tanggal_mulai', $request->bulan_mulai);
         }
 
         if ($request->filled('tahun_mulai')) {
@@ -93,7 +106,7 @@ class AdminController extends Controller
             }
         }
 
-        $sertifikasis = $query->paginate(5)->through(function ($s) {
+        $sertifikasis = $query->paginate(10)->through(function ($s) {
             $pesertas = collect($s->daftarSertifikasis);
             $s->jumlah_asal_sekolah = collect($s->daftarSertifikasis)->pluck('asal_sekolah')->unique()->count();
             $s->jumlah_jurusan = collect($s->daftarSertifikasis)->pluck('jurusan')->unique()->count();
@@ -363,14 +376,32 @@ class AdminController extends Controller
         }
 
         // === QUERY with FILTER ===
-        $pelatihansQuery = Pelatihan::with('user.mitraProfile');
+        $pelatihansQuery = Pelatihan::with(['user.mitraProfile', 'daftarPelatihan.user'])
+            ->withCount('daftarPelatihan')
+            ->with([
+                'user.mitraProfile',
+                'daftarPelatihan.user',
+                'daftarPelatihan' => function ($q) {
+                    $q->select(
+                        'id',
+                        'user_id',
+                        'pelatihan_id',
+                        'email',
+                        'no_hp',
+                        'nama_lengkap',
+                        'asal_sekolah',
+                        'jurusan',
+                        'jenis_kelamin',
+                        'tanggal_lahir',
+                        'status_saat_ini',
+                        'bukti_transfer'
+                    );
+                }
+            ])
+            ->orderBy('created_at', 'desc');
 
         if ($request->filled('search')) {
             $pelatihansQuery->where('nama_pelatihan', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->filled('status')) {
-            $pelatihansQuery->where('status', $request->status);
         }
 
         if ($request->filled('mitra')) {
@@ -383,31 +414,57 @@ class AdminController extends Controller
             $pelatihansQuery->where('kota', 'like', '%' . $request->kota . '%');
         }
 
-        if ($request->filled('tanggal_mulai')) {
-            $pelatihansQuery->whereDate('tanggal_mulai', '>=', $request->tanggal_mulai);
+        if ($request->filled('status')) {
+            $pelatihansQuery->where('status', $request->status);
         }
 
-        if ($request->filled('tanggal_selesai')) {
-            $pelatihansQuery->whereDate('tanggal_mulai', '<=', $request->tanggal_selesai);
+        if ($request->filled('bulan_mulai')) {
+            $pelatihansQuery->whereMonth('tanggal_mulai', $request->bulan_mulai);
+        }
+
+        if ($request->filled('tahun_mulai')) {
+            $pelatihansQuery->whereYear('tanggal_mulai', $request->tahun_mulai);
+        }
+
+        if ($request->filled('status_selesai')) {
+            if ($request->status_selesai == 'selesai') {
+                $pelatihansQuery->whereDate('tanggal_selesai', '<', Carbon::today());
+            } elseif ($request->status_selesai == 'belum') {
+                $pelatihansQuery->whereDate('tanggal_selesai', '>=', Carbon::today());
+            }
         }
 
 
         // === PAGINATION 10 PER HALAMAN ===
-        $pelatihans = $pelatihansQuery->latest()->paginate(10)->withQueryString();
+        $pelatihans = $pelatihansQuery->paginate(10)->through(function ($p) {
+            $pesertas = collect($p->daftarPelatihan);
+            $p->jumlah_asal_sekolah = collect($p->daftarPelatihan)->pluck('asal_sekolah')->unique()->count();
+            $p->jumlah_jurusan = collect($p->daftarPelatihan)->pluck('jurusan')->unique()->count();
+            $p->jumlah_kuliah = $pesertas->where('status_saat_ini', 'Kuliah')->count();
+            $p->jumlah_bekerja_dan_usaha = $pesertas->whereIn('status_saat_ini', ['Bekerja', 'Wirausaha'])->count();
+            $p->jumlah_tidak_bekerja = $pesertas->where('status_saat_ini', 'Tidak Bekerja')->count();
+            return $p;
+        });
 
         // === METRICS ===
         $totalPelatihan = Pelatihan::count();
         $totalUser = User::count();
-        $userTerdaftar = Pelatihan::distinct('user_id')->count('user_id');
-        $persentaseUserTerdaftar = $totalUser > 0 ? round(($userTerdaftar / $totalUser) * 100, 2) : 0;
+        $pelatihanTerdaftar = DaftarPelatihan::distinct('pelatihan_id')->count('pelatihan_id');
+
+        // Hitung persentase sertifikasi yang telah diikuti oleh alumni
+        $persentasePelatihanTerdaftar = $totalPelatihan > 0
+            ? round(($pelatihanTerdaftar / $totalPelatihan) * 100, 2)
+            : 0;
         $totalPelatihanSelesai = Pelatihan::whereDate('tanggal_selesai', '<', now())->count();
 
         return view('admin.pelatihan', [
             'title' => 'Pelatihan',
             'pelatihans' => $pelatihans,
             'totalPelatihan' => $totalPelatihan,
-            'persentaseUserTerdaftar' => $persentaseUserTerdaftar,
-            'totalPelatihanSelesai' => $totalPelatihanSelesai,
+            'totalUser' => $totalUser,
+            'pelatihanTerdaftar' => $pelatihanTerdaftar,
+            'persentasePelatihanTerdaftar' => $persentasePelatihanTerdaftar,
+            'totalPelatihanSelesai' => $totalPelatihanSelesai
         ]);
     }
 

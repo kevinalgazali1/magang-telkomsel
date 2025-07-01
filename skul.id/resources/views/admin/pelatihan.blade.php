@@ -334,7 +334,7 @@
                                 </div>
                                 <div>
                                     <h6 class="text-muted mb-1">Pengguna Terdaftar</h6>
-                                    <h3 class="mb-0 fw-bold">{{ $persentaseUserTerdaftar ?? 0 }}%</h3>
+                                    <h3 class="mb-0 fw-bold">{{ $persentasePelatihanTerdaftar ?? 0 }}%</h3>
                                 </div>
                             </div>
                         </div>
@@ -359,46 +359,89 @@
 
             <form method="GET" action="" class="mb-4 px-4">
                 <div class="row g-3 mb-3">
+
+                    {{-- Nama Pelatihan --}}
                     <div class="col-md-3">
-                        <label class="form-label fw-medium text-secondary small mb-1">Cari Nama Pelatihan</label>
+                        <label class="form-label fw-semibold small text-muted">Cari Nama Pelatihan</label>
                         <input type="text" class="form-control rounded-3 shadow-sm border border-light-subtle"
                             name="search" value="{{ request('search') }}" placeholder="Nama Pelatihan">
                     </div>
+
+                    {{-- Nama Mitra --}}
                     <div class="col-md-3">
-                        <label class="form-label fw-medium text-secondary small mb-1">Nama Mitra</label>
+                        <label class="form-label fw-semibold small text-muted">Nama Mitra</label>
                         <input type="text" class="form-control rounded-3 shadow-sm border border-light-subtle"
                             name="mitra" value="{{ request('mitra') }}" placeholder="Nama Mitra">
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-medium text-secondary small mb-1">Kota</label>
+
+                    {{-- Kota --}}
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Kota</label>
                         <input type="text" class="form-control rounded-3 shadow-sm border border-light-subtle"
                             name="kota" value="{{ request('kota') }}" placeholder="Kota">
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label fw-medium text-secondary small mb-1">Status</label>
-                        <select class="form-select rounded-3 shadow-sm border border-light-subtle" name="status">
-                            <option value="">Semua</option>
-                            <option value="Berbayar" {{ request('status') == 'Berbayar' ? 'selected' : '' }}>Berbayar
+
+                    {{-- Bulan Mulai --}}
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Bulan Mulai</label>
+                        <select name="bulan_mulai" class="form-select">
+                            <option value="" disabled {{ request('bulan_mulai') ? '' : 'selected' }}>Pilih Bulan
                             </option>
+                            @foreach ([
+        '01' => 'Januari',
+        '02' => 'Februari',
+        '03' => 'Maret',
+        '04' => 'April',
+        '05' => 'Mei',
+        '06' => 'Juni',
+        '07' => 'Juli',
+        '08' => 'Agustus',
+        '09' => 'September',
+        '10' => 'Oktober',
+        '11' => 'November',
+        '12' => 'Desember',
+    ] as $val => $label)
+                                <option value="{{ $val }}"
+                                    {{ request('bulan_mulai') == $val ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Tahun Mulai --}}
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Tahun Mulai</label>
+                        <input type="number" class="form-control" name="tahun_mulai" placeholder="Tahun Mulai"
+                            value="{{ request('tahun_mulai') }}">
+                    </div>
+
+                    {{-- Status Selesai --}}
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Status Selesai</label>
+                        <select class="form-select" name="status_selesai">
+                            <option value="">Semua</option>
+                            <option value="selesai" {{ request('status_selesai') == 'selesai' ? 'selected' : '' }}>
+                                Selesai</option>
+                            <option value="belum" {{ request('status_selesai') == 'belum' ? 'selected' : '' }}>Belum
+                                Selesai</option>
+                        </select>
+                    </div>
+
+                    {{-- Status --}}
+                    <div class="col-md-2">
+                        <label class="form-label fw-semibold small text-muted">Status</label>
+                        <select class="form-select" name="status">
+                            <option value="">Semua Status</option>
                             <option value="Gratis" {{ request('status') == 'Gratis' ? 'selected' : '' }}>Gratis
+                            </option>
+                            <option value="Berbayar" {{ request('status') == 'Berbayar' ? 'selected' : '' }}>Berbayar
                             </option>
                         </select>
                     </div>
-                </div>
 
-                <div class="row g-3 align-items-end mb-3">
-                    <div class="col-md-7">
-                        <label class="form-label fw-medium text-secondary small mb-1">Rentang Tanggal Mulai</label>
-                        <div class="input-group shadow-sm rounded-3 border border-light-subtle overflow-hidden">
-                            <input type="date" class="form-control border-0" name="tanggal_mulai"
-                                value="{{ request('tanggal_mulai') }}">
-                            <span class="input-group-text bg-body-tertiary border-0 text-secondary small">s/d</span>
-                            <input type="date" class="form-control border-0" name="tanggal_selesai"
-                                value="{{ request('tanggal_selesai') }}">
-                        </div>
-                    </div>
-
-                    <div class="col-md-5 text-end d-flex justify-content-end gap-2">
+                    {{-- Tombol --}}
+                    <div class="col d-flex justify-content-end gap-2 align-items-end">
                         <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
                             <i class="bi bi-search me-1"></i> Terapkan
                         </button>
@@ -407,19 +450,17 @@
                             <i class="bi bi-arrow-clockwise me-1"></i> Reset
                         </a>
                         <a href="#" class="btn btn-success rounded-pill px-4 shadow-sm">
-                            <i class="bi bi-download me-1"></i> CSV
+                            <i class="bi bi-file-earmark-excel me-1"></i> Excel
                         </a>
                         <button type="button" class="btn btn-outline-primary rounded-pill px-4 shadow-sm"
                             data-bs-toggle="modal" data-bs-target="#modalTambah">
                             <i class="bi bi-plus-circle me-1"></i> Tambah
                         </button>
                     </div>
+
                 </div>
             </form>
 
-            @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
 
             <div class="table-responsive pelatihan-table-wrapper">
                 <div id="tableLoading" class="d-none text-center py-5">
@@ -434,37 +475,33 @@
                             <th>No</th>
                             <th>Mitra</th>
                             <th>Nama Pelatihan</th>
-                            <th>Tempat</th>
-                            <th>Tanggal</th>
                             <th>Kota</th>
-                            <th>Status</th>
+                            <th>Peserta</th>
+                            <th>Sekolah</th>
+                            <th>Jurusan</th>
+                            <th>Bekerja</th>
+                            <th>Tidak Bekerja</th>
+                            <th>Kuliah</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($pelatihans as $i => $p)
-                            <tr>
+                            <tr class="text-center">
                                 <td class="text-center">{{ $i + 1 }}</td>
                                 <td>
                                     <div class="fw-semibold">{{ $p->user->mitraProfile->nama_instansi ?? '-' }}</div>
-                                    <div class="text-muted small">{{ $p->user->email ?? '-' }}</div>
                                 </td>
                                 <td class="pelatihan-name">
                                     <div class="fw-semibold">{{ $p->nama_pelatihan }}</div>
-                                    <div class="text-muted small">{{ Str::limit($p->deskripsi, 40) }}</div>
-                                </td>
-                                <td class="text-center">{{ $p->tempat_pelatihan }}</td>
-                                <td class="text-center">
-                                    {{ \Carbon\Carbon::parse($p->tanggal_mulai)->format('d M') }} -
-                                    {{ \Carbon\Carbon::parse($p->tanggal_selesai)->format('d M Y') }}
                                 </td>
                                 <td class="text-center">{{ $p->kota }}</td>
-                                <td class="text-center pelatihan-status">
-                                    <span
-                                        class="badge-soft {{ $p->status == 'Gratis' ? 'badge-aktif' : 'badge-nonaktif' }}">
-                                        {{ $p->status }}
-                                    </span>
-                                </td>
+                                <td class="text-center">{{ $p->daftarPelatihan->count() }}</td>
+                                    <td class="text-center">{{ $p->jumlah_asal_sekolah }}</td>
+                                    <td class="text-center">{{ $p->jumlah_jurusan }}</td>
+                                    <td class="text-center">{{ $p->jumlah_bekerja_dan_usaha }}</td>
+                                    <td class="text-center">{{ $p->jumlah_tidak_bekerja }}</td>
+                                    <td class="text-center">{{ $p->jumlah_kuliah }}</td>
                                 <td class="text-center">
                                     <div class="dropdown">
                                         <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
@@ -799,8 +836,8 @@
                     </div>
                     <!-- Form -->
                     <div class="col-md-7 bg-white">
-                        <form action="{{ route('admin.pelatihan') }}" method="POST" enctype="multipart/form-data"
-                            class="p-4" id="tambahPelatihanAdminForm">
+                        <form action="{{ route('admin.pelatihan.store') }}" method="POST"
+                            enctype="multipart/form-data" class="p-4" id="tambahForm">
                             @csrf
                             <div class="modal-header border-0 pb-0">
                                 <h5 class="modal-title fw-bold" id="modalTambahPelatihanLabel">
@@ -848,17 +885,24 @@
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="status" class="form-label">Status Pelatihan</label>
+                                    <label for="status" class="form-label">Status
+                                        Sertifikasi</label>
                                     <select class="form-select" id="status" name="status" required
-                                        onchange="toggleBiayaPelatihanAdmin()">
+                                        onchange="toggleBiaya()">
                                         <option value="Berbayar">Berbayar</option>
                                         <option value="Gratis" selected>Gratis</option>
                                     </select>
                                 </div>
-                                <div class="mb-3" id="biayaPelatihanAdminGroup">
-                                    <label for="biaya" class="form-label">Biaya Pelatihan (Rp)</label>
-                                    <input type="number" class="form-control" id="biaya" name="biaya"
-                                        placeholder="Contoh: 100000">
+                                <div class="mb-3" id="biayaGroup">
+                                    <label for="biaya" class="form-label">Biaya Sertifikasi
+                                        (Rp)</label>
+                                    <input type="string" class="form-control" id="biaya" name="biaya"
+                                        placeholder="Contoh: 250000" oninput="formatRupiah(this)" required>
+                                </div>
+                                <div class="mb-3" id="rekeningGroup" style="display: none;">
+                                    <label for="nomor_rekening" class="form-label">Nomor Rekening</label>
+                                    <input type="text" class="form-control" id="nomor_rekening"
+                                        name="nomor_rekening" placeholder="Contoh: 1234567890 a.n PT Pelatihan BCA">
                                 </div>
                                 <div class="mb-3">
                                     <label for="foto_pelatihan" class="form-label">Upload Foto Pelatihan</label>
@@ -869,7 +913,8 @@
                             <div class="modal-footer border-0 pt-0">
                                 <button type="button" class="btn btn-outline-secondary"
                                     data-bs-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Simpan Pelatihan</button>
+                                <button type="button" class="btn btn-primary" onclick="confirmTambah()">Simpan
+                                    Pelatihan</button>
                             </div>
                         </form>
                     </div>
@@ -883,6 +928,98 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('message'))
+            Swal.fire({
+                icon: '{{ session('alert-type') == 'warning' ? 'warning' : 'info' }}',
+                title: '{{ ucfirst(session('alert-type') ?? 'Info') }}',
+                text: '{{ session('message') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Hapus Sertifikasi?',
+                text: "Data sertifikasi yang dihapus tidak dapat dikembalikan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Buat form dinamis & submit
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{{ route('admin.sertifikasi') }}";
+
+                    form.innerHTML = `
+                          @csrf
+                          <input type="hidden" name="action" value="delete">
+                          <input type="hidden" name="id" value="${id}">
+                        `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+
+        function confirmTambah() {
+            Swal.fire({
+                title: 'Simpan Sertifikasi?',
+                text: "Pastikan semua informasi sudah lengkap dan benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Simpan',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('tambahForm').submit();
+                }
+            });
+        }
+
+        function confirmEdit() {
+            Swal.fire({
+                title: 'Perbarui Sertifikasi?',
+                text: "Pastikan semua data sudah benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, perbarui!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('editForm').submit();
+                }
+            });
+        }
+    </script>
     <script>
         function confirmLogout() {
             event.preventDefault();
@@ -990,13 +1127,6 @@
             });
         }
 
-        function toggleBiayaPelatihanAdmin() {
-            const status = document.getElementById('status').value;
-            const biayaGroup = document.getElementById('biayaPelatihanAdminGroup');
-            biayaGroup.style.display = (status === 'Berbayar') ? 'block' : 'none';
-        }
-        window.addEventListener('DOMContentLoaded', toggleBiayaPelatihanAdmin);
-
         document.addEventListener("DOMContentLoaded", function() {
             const filterForm = document.querySelector('form[method="GET"]');
             const tableWrapper = document.querySelector('.pelatihan-table-wrapper');
@@ -1009,6 +1139,84 @@
                     tableLoading.classList.add('show');
                 }, 300);
             });
+        });
+    </script>
+    <script>
+        function formatRupiah(input) {
+            let value = input.value.replace(/\D/g, '');
+            input.value = new Intl.NumberFormat('id-ID').format(value);
+        }
+
+        function formatRupiah(input) {
+            let value = input.value.replace(/\D/g, ''); // Hapus semua karakter non-digit
+            let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambah titik setiap 3 digit dari belakang
+            input.value = formatted;
+        }
+
+        function toggleBiayaField(id) {
+            const statusSelect = document.querySelector(`[name="status"][onchange*="${id}"]`);
+            const biayaWrapper = document.getElementById(`edit_biaya_wrapper${id}`);
+            const rekeningWrapper = document.getElementById(`edit_rekening_wrapper${id}`);
+            const biayaInput = biayaWrapper?.querySelector('input[name="biaya"]');
+
+            if (statusSelect) {
+                if (statusSelect.value === 'Gratis') {
+                    if (biayaWrapper) biayaWrapper.style.display = 'none';
+                    if (rekeningWrapper) rekeningWrapper.style.display = 'none';
+                    if (biayaInput) biayaInput.value = 0;
+                } else {
+                    if (biayaWrapper) biayaWrapper.style.display = 'block';
+                    if (rekeningWrapper) rekeningWrapper.style.display = 'block';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            @foreach ($pelatihans as $p)
+                toggleBiayaField({{ $p->id }});
+            @endforeach
+        });
+
+        function toggleBiaya() {
+            const status = document.getElementById('status').value;
+            const biayaWrapper = document.getElementById('biayaGroup');
+            const rekeningWrapper = document.getElementById('rekeningGroup');
+            const biayaInput = document.getElementById('biaya');
+
+            if (status === 'Gratis') {
+                biayaWrapper.style.display = 'none';
+                rekeningWrapper.style.display = 'none';
+                biayaInput.value = 0;
+            } else {
+                biayaWrapper.style.display = 'block';
+                rekeningWrapper.style.display = 'block';
+            }
+        }
+
+        // Panggil saat halaman selesai dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleBiaya();
+        });
+
+        const tanggalMulai = document.getElementById('tanggal_mulai');
+        const tanggalSelesai = document.getElementById('tanggal_selesai');
+
+        // Batasi tanggal mulai minimal hari ini
+        const today = new Date().toISOString().split('T')[0];
+        tanggalMulai.setAttribute('min', today);
+
+        // Saat tanggal mulai berubah
+        tanggalMulai.addEventListener('change', function() {
+            tanggalSelesai.value = ''; // kosongkan dulu agar tidak tertinggal nilai lama
+            tanggalSelesai.setAttribute('min', this.value); // tanggal selesai minimal = tanggal mulai
+        });
+
+        // Opsional: validasi tambahan saat submit (jika dibutuhkan)
+        document.querySelector('form')?.addEventListener('submit', function(e) {
+            if (tanggalSelesai.value < tanggalMulai.value) {
+                alert('Tanggal selesai tidak boleh sebelum tanggal mulai.');
+                e.preventDefault();
+            }
         });
     </script>
 </body>
