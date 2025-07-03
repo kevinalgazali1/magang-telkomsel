@@ -17,12 +17,55 @@ class PelatihanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = User::with('mitraProfile')->find(Auth::id());
-        $pelatihanMitraSendiri = Pelatihan::where('user_id', $user->id)->get();
-        $pelatihanMitraLain = Pelatihan::where('user_id', '!=', $user->id)->get();
-        return view('mitra.pelatihan', compact('pelatihanMitraSendiri', 'pelatihanMitraLain', 'user'));
+
+        $query = Pelatihan::with(['daftarPelatihan.user'])
+            ->withCount('daftarPelatihan')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc');
+
+        // Filter pencarian
+        if ($request->filled('judul')) {
+            $query->where('nama_pelatihan', 'like', '%' . $request->judul . '%');
+        }
+
+        if ($request->filled('kota')) {
+            $query->where('kota', 'like', '%' . $request->kota . '%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('tahun_mulai')) {
+            $query->whereYear('tanggal_mulai', $request->tahun_mulai);
+        }
+
+        $pelatihanMitraSendiri = $query->paginate(5)->withQueryString()->through(function ($s) {
+            $pesertas = collect($s->daftarPelatihan);
+
+            $s->jumlah_asal_sekolah = $pesertas->pluck('asal_sekolah')->unique()->count();
+            $s->jumlah_jurusan = $pesertas->pluck('jurusan')->unique()->count();
+            $s->jumlah_kuliah = $pesertas->where('status_saat_ini', 'Kuliah')->count();
+            $s->jumlah_bekerja_dan_usaha = $pesertas->whereIn('status_saat_ini', ['Bekerja', 'Wirausaha'])->count();
+            $s->jumlah_tidak_bekerja = $pesertas->where('status_saat_ini', 'Tidak Bekerja')->count();
+
+            return $s;
+        });
+
+        // Ambil sertifikasi mitra lain (tanpa pagination)
+        $pelatihanMitraLain = Pelatihan::where('user_id', '!=', $user->id)
+            ->latest()
+            ->limit(6)
+            ->get();
+
+        return view('mitra.pelatihan', compact(
+            'pelatihanMitraSendiri',
+            'pelatihanMitraLain',
+            'user'
+        ));
     }
 
     /**

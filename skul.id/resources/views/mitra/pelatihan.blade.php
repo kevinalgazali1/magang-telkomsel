@@ -594,97 +594,208 @@
                                 </div>
                             </div>
 
-                            <!-- Tombol Tambah -->
-                            <button class="btn btn-primary mb-4" data-bs-toggle="modal"
-                                data-bs-target="#pelatihanModal">+ Tambah Pelatihan</button>
-
-                            <hr class="container my-5">
+                            <hr class="container my-3">
                             <!-- Pelatihan Anda -->
                             <h5 class="mb-4 fw-bold">Pelatihan Anda</h5>
-                            <div class="sertif-container">
-                                <div class="row row-cols-1 row-cols-md-3 g-4">
-                                    @forelse($pelatihanMitraSendiri as $pelatihan)
-                                        <div class="col">
-                                            <div class="card h-100 border-0 shadow-sm">
-                                                <img src="{{ asset('storage/' . $pelatihan->foto_pelatihan) }}"
-                                                    class="card-img-top object-fit-cover"
-                                                    alt="Foto Pelatihan {{ $pelatihan->nama_pelatihan }}"
-                                                    style="height: 200px; object-fit: cover;">
-                                                <div class="card-body d-flex flex-column">
-                                                    <h6 class="fw-semibold mb-1">{{ $pelatihan->nama_pelatihan }}</h6>
-                                                    <ul class="list-unstyled text-muted small mb-3">
-                                                        <li><i class="bi bi-calendar-event"></i>
-                                                            {{ \Carbon\Carbon::parse($pelatihan->tanggal_mulai)->format('d M Y') }}
-                                                            -
-                                                            {{ \Carbon\Carbon::parse($pelatihan->tanggal_selesai)->format('d M Y') }}
-                                                        </li>
-                                                        <li><i class="bi bi-geo-alt"></i> {{ $pelatihan->kota }},
-                                                            {{ $pelatihan->tempat_pelatihan }}
-                                                        </li>
-                                                        <li><i class="bi bi-cash-stack"></i>
-                                                            {{ $pelatihan->biaya == 0 ? 'Gratis' : 'Rp' . number_format((int) $pelatihan->biaya, 0, ',', '.') }}
-                                                        </li>
-                                                    </ul>
-                                                    <div
-                                                        class="mt-auto d-flex justify-content-between align-items-center">
-                                                        <button
-                                                            class="btn btn-sm btn-outline-primary rounded-pill px-3"
-                                                            onclick="showDetailPelatihanModal(
-  '{{ asset('storage/' . $pelatihan->foto_pelatihan) }}',
-  '{{ $pelatihan->nama_pelatihan }}',
-  `{{ $pelatihan->deskripsi }}`,
-  '{{ \Carbon\Carbon::parse($pelatihan->tanggal_mulai)->format('d M Y') }} - {{ \Carbon\Carbon::parse($pelatihan->tanggal_selesai)->format('d M Y') }}',
-  '{{ $pelatihan->kota }}',
-  '{{ $pelatihan->tempat_pelatihan }}',
-  '{{ $pelatihan->biaya == 0 ? 'Gratis' : 'Rp' . number_format((int) $pelatihan->biaya, 0, ',', '.') }}',
-  {{ $pelatihan->id }}
-)">
-                                                            Detail
-                                                        </button>
 
-
-
-
-                                                        <div class="d-flex gap-2">
-                                                            <button
-                                                                class="btn btn-sm btn-outline-warning rounded-circle btn-icon"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#editPelatihanModal"
-                                                                data-id="{{ $pelatihan->id }}"
-                                                                data-nama_pelatihan="{{ $pelatihan->nama_pelatihan }}"
-                                                                data-deskripsi="{{ $pelatihan->deskripsi }}"
-                                                                data-mulai="{{ $pelatihan->tanggal_mulai }}"
-                                                                data-selesai="{{ $pelatihan->tanggal_selesai }}"
-                                                                data-kota="{{ $pelatihan->kota }}"
-                                                                data-tempat_pelatihan="{{ $pelatihan->tempat_pelatihan }}"
-                                                                data-status="{{ $pelatihan->status }}"
-                                                                data-biaya="{{ $pelatihan->biaya }}"
-                                                                data-foto="{{ asset('storage/' . $pelatihan->foto_pelatihan) }}"
-                                                                onclick="openEditModal(this)">
-                                                                <i class="bi bi-pencil-fill"></i>
-                                                            </button>
-                                                            <form id="deleteForm-{{ $pelatihan->id }}"
-                                                                action="{{ route('mitra.pelatihan.destroy', $pelatihan->id) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="button" {{-- ubah dari submit ke button --}}
-                                                                    onclick="confirmDelete({{ $pelatihan->id }})"
-                                                                    class="btn btn-sm btn-outline-danger rounded-circle btn-icon">
-                                                                    <i class="bi bi-trash-fill"></i>
-                                                                </button>
-                                                            </form>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @empty
-                                        <p class="text-muted">Belum ada pelatihan yang Anda buat.</p>
-                                    @endforelse
+                            <form method="GET" action="" class="row g-2 mb-4 mx-4 gap-1 mt-2 align-items-end">
+                                <div class="col-md-3">
+                                    <label class="form-label fw-semibold small text-muted">Nama Pelatihan</label>
+                                    <input type="text" class="form-control" name="judul"
+                                        placeholder="Nama Pelatihan" value="{{ request('judul') }}">
                                 </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold small text-muted">Kota</label>
+                                    <input type="text" class="form-control" name="kota" placeholder="Kota"
+                                        value="{{ request('kota') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold small text-muted">Tahun Mulai</label>
+                                    <input type="number" class="form-control" name="tahun_mulai"
+                                        placeholder="Tahun Mulai" value="{{ request('tahun_mulai') }}">
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold small text-muted">Status Selesai</label>
+                                    <select class="form-select" name="status_selesai">
+                                        <option value="">Semua</option>
+                                        <option value="selesai"
+                                            {{ request('status_selesai') == 'selesai' ? 'selected' : '' }}>Selesai
+                                        </option>
+                                        <option value="belum"
+                                            {{ request('status_selesai') == 'belum' ? 'selected' : '' }}>Belum
+                                            Selesai</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="form-label fw-semibold small text-muted">Status</label>
+                                    <select class="form-select" name="status">
+                                        <option value="">Semua Status</option>
+                                        <option value="Gratis" {{ request('status') == 'Gratis' ? 'selected' : '' }}>
+                                            Gratis</option>
+                                        <option value="Berbayar"
+                                            {{ request('status') == 'Berbayar' ? 'selected' : '' }}>Berbayar
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12 d-flex justify-content-end gap-2">
+                                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                                        <i class="bi bi-search me-1"></i> Cari
+                                    </button>
+                                    <a href="{{ route('mitra.pelatihan') }}"
+                                        class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
+                                        <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                                    </a>
+                                    <a href="{{ route('mitra.pelatihan.export', request()->query()) }}"
+                                        class="btn btn-outline-success rounded-pill px-4 shadow-sm">
+                                        <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                                    </a>
+                                    <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm"
+                                        data-bs-toggle="modal" data-bs-target="#pelatihanModal">
+                                        <i class="bi bi-plus-circle me-1"></i> Tambah
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- Pelatihan Card Grid -->
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="table-light text-center text-uppercase small">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Foto</th>
+                                            <th>Nama Pelatihan</th>
+                                            <th>Kota</th>
+                                            <th>Peserta</th>
+                                            <th>Sekolah</th>
+                                            <th>Jurusan</th>
+                                            <th>Bekerja</th>
+                                            <th>Tidak Bekerja</th>
+                                            <th>Kuliah</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($pelatihanMitraSendiri as $index => $pelatihan)
+                                            <tr>
+                                                <td class="text-center">{{ $index + 1 }}</td>
+                                                <td class="text-center">
+                                                    <img src="{{ asset('storage/' . $pelatihan->foto_pelatihan) }}"
+                                                        alt="{{ $pelatihan->nama_pelatihan }}" width="100"
+                                                        style="object-fit: cover; height: 70px;">
+                                                </td>
+                                                <td class="text-center">{{ $pelatihan->nama_pelatihan }}</td>
+                                                <td class="text-center">{{ $pelatihan->kota }}</td>
+                                                <td class="text-center">{{ $pelatihan->daftarPelatihan->count() }}
+                                                </td>
+                                                <td class="text-center">{{ $pelatihan->jumlah_asal_sekolah }}</td>
+                                                <td class="text-center">{{ $pelatihan->jumlah_jurusan }}</td>
+                                                <td class="text-center">{{ $pelatihan->jumlah_bekerja_dan_usaha }}
+                                                </td>
+                                                <td class="text-center">{{ $pelatihan->jumlah_tidak_bekerja }}</td>
+                                                <td class="text-center">{{ $pelatihan->jumlah_kuliah }}</td>
+                                                <td class="text-center">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-sm btn-primary dropdown-toggle"
+                                                            type="button" data-bs-toggle="dropdown"
+                                                            aria-expanded="false">
+                                                            Aksi
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li>
+                                                                <button class="dropdown-item" data-bs-toggle="modal"
+                                                                    data-bs-target="#detailModal{{ $pelatihan->id }}">
+                                                                    <i class="bi bi-eye me-2"></i> Lihat
+                                                                </button>
+                                                            </li>
+                                                            @php $sudahMulai = \Carbon\Carbon::parse($pelatihan->tanggal_mulai)->isPast(); @endphp
+                                                            @if (!$sudahMulai)
+                                                                <li>
+                                                                    <button class="dropdown-item"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#editPelatihanModal"
+                                                                        data-id="{{ $pelatihan->id }}"
+                                                                        data-judul="{{ $pelatihan->nama_pelatihan }}"
+                                                                        data-deskripsi="{{ $pelatihan->deskripsi }}"
+                                                                        data-mulai="{{ $pelatihan->tanggal_mulai }}"
+                                                                        data-selesai="{{ $pelatihan->tanggal_selesai }}"
+                                                                        data-kota="{{ $pelatihan->kota }}"
+                                                                        data-tempat_pelatihan="{{ $pelatihan->tempat_pelatihan }}"
+                                                                        data-status="{{ $pelatihan->status }}"
+                                                                        data-biaya="{{ $pelatihan->biaya }}"
+                                                                        data-rekening="{{ $pelatihan->nomor_rekening }}"
+                                                                        data-foto="{{ asset('storage/' . $pelatihan->foto_pelatihan) }}"
+                                                                        onclick="openEditModal(this)">
+                                                                        <i class="bi bi-pencil me-2"></i> Edit
+                                                                    </button>
+                                                                </li>
+                                                            @endif
+                                                            <li>
+                                                                <form id="deleteForm-{{ $pelatihan->id }}"
+                                                                    action="{{ route('mitra.sertifikasi.destroy', $pelatihan->id) }}"
+                                                                    method="POST" class="d-none">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                </form>
+                                                                <button type="button"
+                                                                    class="dropdown-item text-danger"
+                                                                    onclick="confirmDelete('{{ $pelatihan->id }}')">
+                                                                    <i class="bi bi-trash me-2"></i> Hapus
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="7" class="text-center text-muted py-4">Belum ada
+                                                    sertifikasi yang Anda buat.</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             </div>
+
+                            <nav>
+                                <ul class="pagination mb-0">
+                                    {{-- Previous Page Link --}}
+                                    @if ($pelatihanMitraSendiri->onFirstPage())
+                                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                    @else
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $pelatihanikasiMitraSendiri->previousPageUrl() }}"
+                                                rel="prev">&laquo;</a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Pagination Elements --}}
+                                    @foreach ($pelatihanMitraSendiri->getUrlRange(1, $pelatihanMitraSendiri->lastPage()) as $page => $url)
+                                        @if ($page == $pelatihanMitraSendiri->currentPage())
+                                            <li class="page-item active"><span
+                                                    class="page-link">{{ $page }}</span>
+                                            </li>
+                                        @elseif (
+                                            $page == 1 ||
+                                                $page == $pelatihanMitraSendiri->lastPage() ||
+                                                abs($page - $pelatihanMitraSendiri->currentPage()) <= 1)
+                                            <li class="page-item"><a class="page-link"
+                                                    href="{{ $url }}">{{ $page }}</a></li>
+                                        @elseif ($page == 2 || $page == $pelatihanMitraSendiri->lastPage() - 1)
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Next Page Link --}}
+                                    @if ($pelatihanMitraSendiri->hasMorePages())
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $pelatihanMitraSendiri->nextPageUrl() }}"
+                                                rel="next">&raquo;</a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                    @endif
+                                </ul>
+                            </nav>
 
                             <!-- Separator -->
                             <hr class="container my-5">
@@ -727,82 +838,149 @@
                     </div>
 
                     <!-- Modal Detail Pelatihan -->
-                    <div class="modal fade" id="detailPelatihanModal" tabindex="-1"
-                        aria-labelledby="detailPelatihanModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                            <div class="modal-content detail-modal-content shadow-lg rounded-4">
-                                <div class="modal-header border-0 pb-0">
-                                    <h5 class="modal-title fw-bold text-primary-emphasis"
-                                        id="detailPelatihanModalLabel">
-                                        <i class="bi bi-info-circle me-2"></i> Detail Pelatihan
-                                    </h5>
-                                </div>
+                    @foreach ($pelatihanMitraSendiri as $pelatihan)
+                        <div class="modal fade" id="detailModal{{ $pelatihan->id }}" tabindex="-1"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content shadow-lg rounded-4">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title">Detail Pelatihan</h5>
+                                    </div>
 
-                                <div class="modal-body pt-2">
-                                    <div class="row gy-4">
-                                        <!-- Left: Detail Pelatihan -->
-                                        <div class="col-md-6">
-                                            <img id="pelatihanFoto" src=""
-                                                class="img-fluid rounded shadow-sm mb-3 w-100" alt="Foto Pelatihan"
-                                                style="max-height: 240px; object-fit: cover;">
-                                            <h4 id="pelatihanJudul" class="fw-semibold mb-2"></h4>
-                                            <p id="pelatihanDeskripsi" class="text-muted"></p>
-                                            <ul class="list-unstyled text-sm">
-                                                <li class="mb-1"><i
-                                                        class="bi bi-calendar-event me-2 text-secondary"></i><strong>Tanggal:</strong>
-                                                    <span id="pelatihanTanggal"></span>
-                                                </li>
-                                                <li class="mb-1"><i
-                                                        class="bi bi-geo-alt me-2 text-secondary"></i><strong>Lokasi:</strong>
-                                                    <span id="pelatihanKota"></span>
-                                                </li>
-                                                <li class="mb-1"><i
-                                                        class="bi bi-building me-2 text-secondary"></i><strong>Tempat:</strong>
-                                                    <span id="pelatihanTempat"></span>
-                                                </li>
-                                                <li class="mb-1"><i
-                                                        class="bi bi-cash-stack me-2 text-secondary"></i><strong>Biaya:</strong>
-                                                    <span id="pelatihanBiaya"></span>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                    <div class="modal-body px-4 py-4">
+                                        <div class="row g-4">
+                                            {{-- Kolom Kiri: Detail Pelatihan --}}
+                                            <div class="col-lg-6">
+                                                @if ($pelatihan->foto_pelatihan)
+                                                    <div class="mb-3">
+                                                        <img src="{{ asset('storage/' . $pelatihan->foto_pelatihan) }}"
+                                                            alt="Foto Pelatihan"
+                                                            class="img-fluid rounded-3 shadow-sm border w-100"
+                                                            style="max-height: 280px; object-fit: cover;">
+                                                    </div>
+                                                @endif
 
-                                        <!-- Right: Daftar Peserta -->
-                                        <div class="col-md-6">
-                                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <h5 class="fw-semibold mb-0">Daftar Peserta</h5>
-                                                <button id="btnDownloadPesertaPelatihan"
-                                                    class="btn btn-sm btn-outline-success d-flex align-items-center">
-                                                    <i class="bi bi-download me-1"></i> CSV
-                                                </button>
+                                                <h4 class="fw-bold mb-2">{{ $pelatihan->nama_pelatihan }}</h4>
+
+                                                {{-- Scrollable Deskripsi --}}
+                                                <div class="mb-3">
+                                                    <div style="max-height: 180px; overflow-y: auto;">
+                                                        <p class="mb-0" style="white-space: pre-line;">
+                                                            {!! nl2br(e($pelatihan->deskripsi)) !!}
+                                                        </p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <p class="text-muted small mb-3">Berikut adalah peserta yang terdaftar
-                                                untuk pelatihan ini.</p>
 
-                                            <div class="table-responsive">
-                                                <table
-                                                    class="table table-sm table-hover table-striped align-middle mb-0">
-                                                    <thead class="table-light text-center">
-                                                        <tr>
-                                                            <th scope="col">No</th>
-                                                            <th scope="col">Nama</th>
-                                                            <th scope="col">Email</th>
-                                                            <th scope="col">Telepon</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="pesertaPelatihanTableBody" class="small text-center">
-                                                        <!-- Diisi melalui JavaScript -->
-                                                    </tbody>
-                                                </table>
+                                            {{-- Kolom Kanan: Daftar Peserta --}}
+                                            <div class="col-lg-6">
+                                                <div class="mb-2"><strong>📍 Lokasi:</strong>
+                                                    {{ $pelatihan->tempat }}, {{ $pelatihan->kota }}</div>
+                                                <div class="mb-2"><strong>📅 Tanggal:</strong>
+                                                    {{ $pelatihan->tanggal_mulai }} s/d
+                                                    {{ $pelatihan->tanggal_selesai }}
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>📌 Status:</strong>
+                                                    <span
+                                                        class="badge bg-{{ $pelatihan->status == 'Aktif' ? 'success' : 'secondary' }}">
+                                                        {{ $pelatihan->status }}
+                                                    </span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>💳 Harga Pelatihan:</strong>
+                                                    @php
+                                                        $rawBiaya = str_replace('.', '', $pelatihan->biaya);
+                                                        $cleanBiaya = is_numeric($rawBiaya) ? (int) $rawBiaya : 0;
+                                                    @endphp
+                                                    {{ $cleanBiaya > 0 ? 'Rp ' . number_format($cleanBiaya, 0, ',', '.') : 'Gratis' }}
+                                                </div>
+
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center mb-3 mt-5">
+                                                    <h5 class="fw-semibold mb-0">👥 Peserta Terdaftar</h5>
+                                                    <button
+                                                        class="btn btn-sm btn-outline-success d-flex align-items-center btnDownloadPeserta"
+                                                        data-id="{{ $pelatihan->id }}">
+                                                        <i class="bi bi-download me-1"></i> Download Peserta
+                                                    </button>
+                                                </div>
+
+                                                @if ($pelatihan->daftarPelatihan && $pelatihan->daftarPelatihan->count())
+                                                    <div class="table-responsive border rounded-3"
+                                                        style="max-height: 350px; overflow: auto;">
+                                                        <table
+                                                            class="table table-sm table-bordered align-middle mb-0 small text-nowrap">
+                                                            <thead class="table-light sticky-top">
+                                                                <tr class="text-center">
+                                                                    <th>No</th>
+                                                                    <th>Nama</th>
+                                                                    <th>Email</th>
+                                                                    <th>No HP</th>
+                                                                    <th>Bukti TF</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($pelatihan->daftarPelatihan as $peserta)
+                                                                    <tr class="text-center">
+                                                                        <td>{{ $loop->iteration }}</td>
+                                                                        <td class="text-truncate"
+                                                                            style="max-width: 120px;">
+                                                                            {{ $peserta->nama_lengkap }}</td>
+                                                                        <td class="text-truncate"
+                                                                            style="max-width: 150px;">
+                                                                            {{ $peserta->email }}</td>
+                                                                        <td>{{ $peserta->no_hp }}</td>
+                                                                        <td class="text-center">
+                                                                            @if ($peserta->bukti_transfer)
+                                                                                <img src="{{ asset($peserta->bukti_transfer) }}"
+                                                                                    alt="Bukti Transfer"
+                                                                                    class="img-thumbnail"
+                                                                                    style="max-height: 50px; cursor: pointer;"
+                                                                                    data-bs-toggle="modal"
+                                                                                    data-bs-target="#imageModal"
+                                                                                    data-image="{{ asset($peserta->bukti_transfer) }}"
+                                                                                    data-close-parent="#detailModal{{ $pelatihan->id }}"
+                                                                                    onclick="this.classList.add('was-open')">
+                                                                            @else
+                                                                                <span class="text-muted">Tidak
+                                                                                    ada</span>
+                                                                            @endif
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                @else
+                                                    <p class="text-muted mt-2">Belum ada peserta yang
+                                                        mendaftar.</p>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="modal-footer border-top-0 pt-3">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                        <i class="bi bi-x-circle me-1"></i> Tutup
-                                    </button>
+                                    <div class="modal-footer justify-content-end bg-light py-3">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Tutup</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+
+                    <!-- Modal Preview Gambar -->
+                    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content border-0 shadow">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Pratinjau Bukti Transfer</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Tutup"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img id="modalImagePreview" src="" alt="Preview"
+                                        class="img-fluid rounded shadow" style="max-height: 600px;">
                                 </div>
                             </div>
                         </div>
@@ -885,18 +1063,27 @@
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="status" class="form-label">Status Pelatihan</label>
+                                                    <label for="status" class="form-label">Status
+                                                        Pelatihan</label>
                                                     <select class="form-select" id="status" name="status"
-                                                        required onchange="toggleBiayaPelatihan()">
+                                                        required onchange="toggleBiaya()">
                                                         <option value="Berbayar">Berbayar</option>
                                                         <option value="Gratis" selected>Gratis</option>
                                                     </select>
                                                 </div>
-                                                <div class="mb-3" id="biayaPelatihanGroup">
+                                                <div class="mb-3" id="biayaGroup">
                                                     <label for="biaya" class="form-label">Biaya Pelatihan
                                                         (Rp)</label>
-                                                    <input type="number" class="form-control" id="biaya"
-                                                        name="biaya" placeholder="Contoh: 150000">
+                                                    <input type="string" class="form-control" id="biaya"
+                                                        name="biaya" placeholder="Contoh: 250000"
+                                                        oninput="formatRupiah(this)" required>
+                                                </div>
+                                                <div class="mb-3" id="rekeningGroup" style="display: none;">
+                                                    <label for="nomor_rekening" class="form-label">Nomor
+                                                        Rekening</label>
+                                                    <input type="text" class="form-control" id="nomor_rekening"
+                                                        name="nomor_rekening"
+                                                        placeholder="Contoh: 1234567890 a.n PT Pelatihan BCA">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label for="foto_pelatihan" class="form-label">Upload Foto
@@ -924,7 +1111,8 @@
                         aria-labelledby="editPelatihanModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-xl modal-dialog-scrollable">
                             <div class="modal-content edit-modal-content">
-                                <form id="editForm" method="POST" enctype="multipart/form-data" action="{{ url('/mitra/update-pelatihan/' . $pelatihan->id) }}">
+                                <form id="editForm" method="POST" enctype="multipart/form-data"
+                                    action="{{ url('/mitra/update-pelatihan/' . $pelatihan->id) }}">
                                     @csrf
                                     @method('PUT')
                                     <div class="modal-header border-0">
@@ -982,7 +1170,7 @@
                                                 <div class="form-group mb-3">
                                                     <label class="form-label">Status Pelatihan</label>
                                                     <select class="form-select edit-input" id="edit_status"
-                                                        name="status" onchange="toggleBiayaField(this)" required>
+                                                        name="status" required onchange="toggleBiayaField()">
                                                         <option value="Berbayar">Berbayar</option>
                                                         <option value="Gratis">Gratis</option>
                                                     </select>
@@ -990,8 +1178,13 @@
 
                                                 <div class="form-group mb-3" id="edit_biaya_wrapper">
                                                     <label class="form-label">Biaya (Rp)</label>
-                                                    <input type="text" class="form-control edit-input"
+                                                    <input type="string" class="form-control edit-input"
                                                         id="edit_biaya" name="biaya" oninput="formatRupiah(this)">
+                                                </div>
+                                                <div class="form-group mb-3" id="edit_rekening_wrapper">
+                                                    <label class="form-label">Nomor Rekening</label>
+                                                    <input type="text" class="form-control edit-input"
+                                                        name="nomor_rekening" id="edit_nomor_rekening">
                                                 </div>
 
                                                 <div class="form-group">
@@ -1166,6 +1359,64 @@
                 }
             </script>
             <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const downloadButtons = document.querySelectorAll('.btnDownloadPeserta');
+
+                    downloadButtons.forEach(button => {
+                        button.addEventListener('click', function() {
+                            const sertifikasiId = this.getAttribute('data-id');
+                            window.location.href =
+                                `/public/mitra/pelatihan/${sertifikasiId}/peserta/export`;
+                        });
+                    });
+                });
+            </script>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+                    const modalImage = document.getElementById('modalImagePreview');
+
+                    // Tangani klik semua gambar dengan target imageModal
+                    document.querySelectorAll('[data-bs-target="#imageModal"]').forEach(img => {
+                        img.addEventListener('click', function() {
+                            const imageUrl = img.getAttribute('data-image');
+                            const parentSelector = img.getAttribute('data-close-parent');
+                            modalImage.src = imageUrl;
+
+                            // Sembunyikan modal induk jika ada
+                            if (parentSelector) {
+                                const parentModalEl = document.querySelector(parentSelector);
+                                if (parentModalEl) {
+                                    const parentInstance = bootstrap.Modal.getInstance(parentModalEl);
+                                    if (parentInstance) {
+                                        parentInstance.hide();
+                                        setTimeout(() => {
+                                            imageModal.show();
+                                        }, 300);
+                                    }
+                                }
+                            } else {
+                                imageModal.show();
+                            }
+                        });
+                    });
+
+                    // Tampilkan kembali modal sebelumnya setelah image modal ditutup
+                    document.getElementById('imageModal').addEventListener('hidden.bs.modal', function() {
+                        const openedFrom = document.querySelector('[data-close-parent].was-open');
+                        if (openedFrom) {
+                            const selector = openedFrom.getAttribute('data-close-parent');
+                            const modalEl = document.querySelector(selector);
+                            if (modalEl) {
+                                const instance = bootstrap.Modal.getOrCreateInstance(modalEl);
+                                instance.show();
+                            }
+                            openedFrom.classList.remove('was-open');
+                        }
+                    });
+                });
+            </script>
+            <script>
                 function openEditModal(button) {
                     const id = button.getAttribute('data-id');
                     const nama_pelatihan = button.getAttribute('data-nama_pelatihan');
@@ -1176,6 +1427,7 @@
                     const tempat = button.getAttribute('data-tempat_pelatihan');
                     const status = button.getAttribute('data-status');
                     const biaya = button.getAttribute('data-biaya');
+                    const nomor_rekening = button.getAttribute('data-rekening');
                     const foto = button.getAttribute('data-foto');
 
                     // Set input values
@@ -1188,6 +1440,7 @@
                     document.getElementById('edit_tempat_pelatihan').value = tempat;
                     document.getElementById('edit_status').value = status;
                     document.getElementById('edit_biaya').value = biaya ? biaya : '';
+                    document.getElementById('edit_nomor_rekening').value = nomor_rekening;
                     document.getElementById('preview_foto_edit').src = foto;
 
                     // Tampilkan/sembunyikan field biaya berdasarkan status
@@ -1198,21 +1451,30 @@
                 }
 
                 function formatRupiah(input) {
+                    let value = input.value.replace(/\D/g, '');
+                    input.value = new Intl.NumberFormat('id-ID').format(value);
+                }
+
+                function formatRupiah(input) {
                     let value = input.value.replace(/\D/g, ''); // Hapus semua karakter non-digit
                     let formatted = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Tambah titik setiap 3 digit dari belakang
                     input.value = formatted;
                 }
 
 
-                function toggleBiayaPelatihan() {
+                function toggleBiaya() {
                     const status = document.getElementById('status').value;
-                    const biayaGroup = document.getElementById('biayaPelatihanGroup');
-                    if (status === 'Berbayar') {
-                        biayaGroup.style.display = 'block';
-                        document.getElementById('biaya').setAttribute('required', 'required');
+                    const biayaWrapper = document.getElementById('biayaGroup');
+                    const rekeningWrapper = document.getElementById('rekeningGroup');
+                    const biayaInput = document.getElementById('biaya');
+
+                    if (status === 'Gratis') {
+                        biayaWrapper.style.display = 'none';
+                        rekeningWrapper.style.display = 'none';
+                        biayaInput.value = 0;
                     } else {
-                        biayaGroup.style.display = 'none';
-                        document.getElementById('biaya').removeAttribute('required');
+                        biayaWrapper.style.display = 'block';
+                        rekeningWrapper.style.display = 'block';
                     }
                 }
 
@@ -1259,13 +1521,19 @@
                     modal.show();
                 }
 
-                function toggleBiayaField(select) {
-                    const wrapper = document.getElementById('edit_biaya_wrapper');
-                    if (select.value === 'Gratis') {
-                        wrapper.style.display = 'none';
-                        document.getElementById('edit_biaya').value = '';
+                function toggleBiayaField() {
+                    const statusSelect = document.getElementById('edit_status');
+                    const biayaWrapper = document.getElementById('edit_biaya_wrapper');
+                    const rekeningWrapper = document.getElementById('edit_rekening_wrapper');
+                    const biayaInput = document.getElementById('edit_biaya');
+
+                    if (statusSelect.value === 'Gratis') {
+                        biayaWrapper.style.display = 'none';
+                        rekeningWrapper.style.display = 'none';
+                        biayaInput.value = 0;
                     } else {
-                        wrapper.style.display = 'block';
+                        biayaWrapper.style.display = 'block';
+                        rekeningWrapper.style.display = 'block';
                     }
                 }
 

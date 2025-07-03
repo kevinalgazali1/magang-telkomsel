@@ -709,8 +709,6 @@
                                 </table>
                             </div>
 
-
-
                             <nav>
                                 <ul class="pagination mb-0">
                                     {{-- Previous Page Link --}}

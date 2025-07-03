@@ -65,10 +65,12 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
         Route::post('/mitra/store-pelatihan', [PelatihanController::class, 'store'])->name('mitra.pelatihan.store');
         Route::put('/mitra/update-pelatihan/{id}', [PelatihanController::class, 'update'])->name('mitra.pelatihan.update');
         Route::delete('/mitra/delete-pelatihan/{id}', [PelatihanController::class, 'destroy'])->name('mitra.pelatihan.destroy');
+        Route::get('/mitra/pelatihan/{id}/peserta/export', [PelatihanController::class, 'exportPesertaExcel']);
         Route::get('/mitra/profile', [MitraController::class, 'profile'])->name('mitra.profile');
         Route::put('/mitra/update-profile', [MitraController::class, 'updateProfile'])->name('mitra.updateProfile');
         Route::put('/mitra/account/update', [UserController::class, 'updateAccount'])->name('mitra.account.update');
         Route::get('/mitra/sertifikasi/export', [SertifikasiController::class, 'exportSertifikasi'])->name('mitra.sertifikasi.export');
+        Route::get('/mitra/pelatihan/export', [PelatihanController::class, 'exportPelatihan'])->name('mitra.pelatihan.export');
     });
 });
 

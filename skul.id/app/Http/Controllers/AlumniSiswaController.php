@@ -112,7 +112,7 @@ class AlumniSiswaController extends Controller
             'kota' => 'required|string',
             'npsn' => 'required|string',
             'email' => 'required|email|unique:users,email,' . Auth::id(),
-            'foto_profil' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // validasi file
+            'foto_profil' => 'nullable|image|mimes:jpg,jpeg,png|max:10048', // validasi file
         ]);
 
         // Simpan/update profil
@@ -252,7 +252,7 @@ class AlumniSiswaController extends Controller
         $searchStatus = $request->input('status');
 
         $sertifikasi = Sertifikasi::query()
-    ->whereDate('tanggal_mulai', '>', Carbon::today());
+            ->whereDate('tanggal_mulai', '>', Carbon::today());
 
         if ($searchNama) {
             $sertifikasi->where('judul_sertifikasi', 'like', '%' . $searchNama . '%');
@@ -317,6 +317,9 @@ class AlumniSiswaController extends Controller
 
         $pelatihan = Pelatihan::query();
 
+        // Filter hanya pelatihan yang belum dimulai
+        $pelatihan->whereDate('tanggal_mulai', '>', Carbon::today());
+
         if ($searchNama) {
             $pelatihan->where('nama_pelatihan', 'like', '%' . $searchNama . '%');
         }
@@ -329,11 +332,21 @@ class AlumniSiswaController extends Controller
             $pelatihan->where('status', $searchStatus);
         }
 
-        $pelatihan = $pelatihan->latest()->get();
+        $pelatihan = $pelatihan->latest()->paginate(12)->withQueryString();
 
         $totalPelatihan = Pelatihan::count();
         $pelatihanSelesai = Pelatihan::whereDate('tanggal_selesai', '<=', Carbon::today())->count();
-        return view('alumni-siswa.pelatihan', compact('user', 'pelatihan', 'totalAlumni', 'totalPelatihan', 'pelatihanSelesai', 'searchNama', 'searchKota', 'searchStatus'));
+
+        return view('alumni-siswa.pelatihan', compact(
+            'user',
+            'pelatihan',
+            'totalAlumni',
+            'totalPelatihan',
+            'pelatihanSelesai',
+            'searchNama',
+            'searchKota',
+            'searchStatus'
+        ));
     }
 
     public function ikatan()
