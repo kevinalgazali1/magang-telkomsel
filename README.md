@@ -68,6 +68,6 @@
 - Menggunakan middleware profile_complete untuk memastikan user melengkapi profil sebelum akses dashboard.
 
 ## 📬 Kontak
-Pengembang: Kevin Al Gazali
-Email: [gazalikevin06@gmail.com]
-Website: https://mitraskul.id
+- Pengembang: Kevin Al Gazali
+- Email: [gazalikevin06@gmail.com]
+- Website: https://mitraskul.id
