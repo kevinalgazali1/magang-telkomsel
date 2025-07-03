@@ -2,207 +2,207 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>mitraskul.id</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>mitraskul.id</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 
-  <style>
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: "Poppins", sans-serif;
-      background-color: #fff;
-      color: #252f35;
-      font-size: 16px;
-    }
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background-color: #fff;
+            color: #252f35;
+            font-size: 16px;
+        }
 
-    .full-page-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      padding: 40px;
-      position: relative;
-    }
+        .full-page-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 40px;
+            position: relative;
+        }
 
-    .btn-back {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 999;
-    }
+        .btn-back {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 999;
+        }
 
-    .logo-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 40px;
-    }
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
 
-    .logo-wrapper img {
-      height: 50px;
-    }
+        .logo-wrapper img {
+            height: 50px;
+        }
 
-    .inner-content {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 100px;
-      flex-wrap: wrap;
-      width: 100%;
-      max-width: 1000px;
-    }
+        .inner-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 100px;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 1000px;
+        }
 
-    .icon-besar {
-      flex: 1;
-      min-width: 300px;
-      text-align: center;
-    }
+        .icon-besar {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
 
-    .icon-besar img {
-      max-width: 100%;
-      height: auto;
-    }
+        .icon-besar img {
+            max-width: 100%;
+            height: auto;
+        }
 
-    .login-form {
-      flex: 1;
-      min-width: 300px;
-    }
+        .login-form {
+            flex: 1;
+            min-width: 300px;
+        }
 
-    h1 {
-      font-weight: 600;
-      font-size: 36px;
-      margin-bottom: 15px;
-    }
+        h1 {
+            font-weight: 600;
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
 
-    p {
-      font-size: 18px;
-    }
+        p {
+            font-size: 18px;
+        }
 
-    .form-control {
-      background-color: #f1f8f7;
-      border: none;
-      padding-left: 55px;
-      height: 70px;
-      font-size: 18px;
-    }
+        .form-control {
+            background-color: #f1f8f7;
+            border: none;
+            padding-left: 55px;
+            height: 70px;
+            font-size: 18px;
+        }
 
-    .form-control:focus {
-      box-shadow: none;
-    }
+        .form-control:focus {
+            box-shadow: none;
+        }
 
-    .input-group-text {
-      background: none;
-      border: none;
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #999;
-      font-size: 22px;
-      z-index: 2;
-    }
+        .input-group-text {
+            background: none;
+            border: none;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 22px;
+            z-index: 2;
+        }
 
-    .form-check-input {
-      width: 20px;
-      height: 20px;
-      margin-top: 5px;
-    }
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin-top: 5px;
+        }
 
-    .form-check-label {
-      font-size: 16px;
-    }
+        .form-check-label {
+            font-size: 16px;
+        }
 
-    .form-check a {
-      text-decoration: underline;
-      font-weight: 500;
-    }
+        .form-check a {
+            text-decoration: underline;
+            font-weight: 500;
+        }
 
-    .form-check-input:checked {
-      background-color: #ff3c6a;
-      border-color: #ff3c6a;
-    }
+        .form-check-input:checked {
+            background-color: #ff3c6a;
+            border-color: #ff3c6a;
+        }
 
-    .login-btn {
-      background: #00ffe1;
-      color: white;
-      font-weight: 600;
-      font-size: 20px;
-      height: 70px;
-    }
+        .login-btn {
+            background: #00ffe1;
+            color: white;
+            font-weight: 600;
+            font-size: 20px;
+            height: 70px;
+        }
 
-    .login-btn:hover {
-      background-color: #00FFE1 !important;
-      color: white !important;
-      box-shadow: none !important;
-      opacity: 1 !important;
-      transform: none !important;
-    }
+        .login-btn:hover {
+            background-color: #00FFE1 !important;
+            color: white !important;
+            box-shadow: none !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
 
-    .text-danger {
-      font-size: 14px;
-    }
+        .text-danger {
+            font-size: 14px;
+        }
 
-    .alert {
-      font-size: 16px;
-    }
+        .alert {
+            font-size: 16px;
+        }
 
-    @media (max-width: 768px) {
-      .inner-content {
-        flex-direction: column;
-        text-align: center;
-      }
+        @media (max-width: 768px) {
+            .inner-content {
+                flex-direction: column;
+                text-align: center;
+            }
 
-      .icon-besar img {
-        width: 300px;
-      }
+            .icon-besar img {
+                width: 300px;
+            }
 
-      h1 {
-        font-size: 30px;
-      }
+            h1 {
+                font-size: 30px;
+            }
 
-      p,
-      .form-check-label {
-        font-size: 16px;
-      }
+            p,
+            .form-check-label {
+                font-size: 16px;
+            }
 
-      .form-control,
-      .login-btn {
-        font-size: 16px;
-        height: 60px;
-      }
+            .form-control,
+            .login-btn {
+                font-size: 16px;
+                height: 60px;
+            }
 
-      .full-page-container {
-        padding: 20px;
-      }
+            .full-page-container {
+                padding: 20px;
+            }
 
-      .logo-wrapper {
-        justify-content: center;
-        padding: 0 20px;
-        margin-bottom: 30px;
-      }
+            .logo-wrapper {
+                justify-content: center;
+                padding: 0 20px;
+                margin-bottom: 30px;
+            }
 
-      .btn-back {
-        top: 15px;
-        left: 15px;
-      }
+            .btn-back {
+                top: 15px;
+                left: 15px;
+            }
 
-      button {
-        margin-bottom: 80px;
-      }
+            button {
+                margin-bottom: 80px;
+            }
 
-      .log-logo {
-        margin-top: 150px;
-      }
-    }
-  </style>
+            .log-logo {
+                margin-top: 150px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -211,22 +211,6 @@
     </a>
 
     <div class="full-page-container">
-        @if ($errors->any())
-            <div class="alert alert-danger" id="error-message">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        @if (session('login_error'))
-            <div class="alert alert-danger">
-                {{ session('login_error') }}
-            </div>
-        @endif
-
         <div class="inner-content">
             <div class="icon-besar">
                 <img src="{{ url('img/login-mitra.png') }}" alt="Icon Mitra" class="log-logo" />
@@ -280,6 +264,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function togglePassword(id, iconId) {
             const input = document.getElementById(id);
@@ -295,7 +280,7 @@
             }
         }
 
-        document.querySelector("form").addEventListener("submit", function (e) {
+        document.querySelector("form").addEventListener("submit", function(e) {
             const phoneInput = document.querySelector('input[name="identifier"]');
             const phoneError = document.getElementById("phoneError");
             const passwordInput = document.querySelector('input[name="password"]');
@@ -322,7 +307,7 @@
             if (hasError) e.preventDefault();
         });
 
-        window.addEventListener("DOMContentLoaded", function () {
+        window.addEventListener("DOMContentLoaded", function() {
             const alerts = document.querySelectorAll(".alert");
             alerts.forEach(alert => {
                 setTimeout(() => {
@@ -332,6 +317,37 @@
                 }, 3000);
             });
         });
+    </script>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('login_error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                text: {!! json_encode(session('login_error')) !!},
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('message'))
+            Swal.fire({
+                icon: '{{ session('alert-type') == 'warning' ? 'warning' : 'info' }}',
+                title: '{{ ucfirst(session('alert-type') ?? 'Info') }}',
+                text: '{{ session('message') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
     </script>
 </body>
 

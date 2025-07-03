@@ -1007,7 +1007,6 @@
                 </ul>
             </nav>
 
-
             <footer class="footer text-dark"
                 style="background: url('{{ url('img/footer.png') }}') no-repeat center center / cover;">
                 <div class="container-footer">

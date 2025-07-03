@@ -48,7 +48,11 @@ class AuthenticatedSessionController extends Controller
         } catch (ValidationException $e) {
             $loginType = $request->input('login_type');
 
-            if ($loginType === 'mitra') {
+            if ($loginType === 'admin') {
+                return redirect()->route('login.admin')
+                    ->withInput()
+                    ->with('login_error', 'Nomor HP atau Password salah.');
+            } elseif ($loginType === 'mitra') {
                 return redirect()->route('login.mitra')
                     ->withInput()
                     ->with('login_error', 'Nomor HP atau Password salah.');

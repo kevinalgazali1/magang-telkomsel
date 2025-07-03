@@ -246,23 +246,6 @@
     </a>
 
     <div class="full-page-container">
-        <!-- Error Handling -->
-        @if ($errors->any())
-            <div class="alert alert-danger" id="error-message">
-                <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        @if (session('login_error'))
-            <div class="alert alert-danger">
-                {{ session('login_error') }}
-            </div>
-        @endif
-
         <div class="inner-content">
             <!-- Icon -->
             <div class="icon-besar">
@@ -293,8 +276,8 @@
                     <!-- Password -->
                     <div class="mb-3 position-relative">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" placeholder="Password" class="form-control" name="password" minlength="8"
-                            required />
+                        <input type="password" placeholder="Password" class="form-control" name="password"
+                            minlength="8" required />
                         <div class="text-danger mt-1 small" id="passwordError"></div>
                     </div>
 
@@ -316,8 +299,9 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.querySelector("form").addEventListener("submit", function (e) {
+        document.querySelector("form").addEventListener("submit", function(e) {
             const phoneInput = document.querySelector('input[name="identifier"]');
             const passwordInput = document.querySelector('input[name="password"]');
 
@@ -346,7 +330,7 @@
             if (hasError) e.preventDefault();
         });
 
-        window.addEventListener("DOMContentLoaded", function () {
+        window.addEventListener("DOMContentLoaded", function() {
             const alerts = document.querySelectorAll(".alert");
             alerts.forEach(alert => {
                 setTimeout(() => {
@@ -356,6 +340,37 @@
                 }, 3000);
             });
         });
+    </script>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('login_error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                text: {!! json_encode(session('login_error')) !!},
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('message'))
+            Swal.fire({
+                icon: '{{ session('alert-type') == 'warning' ? 'warning' : 'info' }}',
+                title: '{{ ucfirst(session('alert-type') ?? 'Info') }}',
+                text: '{{ session('message') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
     </script>
 </body>
 

@@ -335,7 +335,7 @@ class AlumniSiswaController extends Controller
         $pelatihan = $pelatihan->latest()->paginate(12)->withQueryString();
 
         $totalPelatihan = Pelatihan::count();
-        $pelatihanSelesai = Pelatihan::whereDate('tanggal_selesai', '<=', Carbon::today())->count();
+        $pelatihanSelesai = Pelatihan::whereDate('tanggal_mulai', '<=', Carbon::today())->count();
 
         return view('alumni-siswa.pelatihan', compact(
             'user',
@@ -349,10 +349,26 @@ class AlumniSiswaController extends Controller
         ));
     }
 
-    public function ikatan()
+    public function ikatan(Request $request)
     {
         $user = User::with('alumniSiswaProfile')->find(Auth::id());
-        return view('alumni-siswa.ikatan', compact('user'));
+
+        $alumni = User::where('id', '!=', Auth::id())
+            ->whereHas('alumniSiswaProfile', function ($query) use ($user) {
+                $query->where('asal_sekolah', $user->alumniSiswaProfile->asal_sekolah);
+            })
+            ->with('alumniSiswaProfile');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $alumni->whereHas('alumniSiswaProfile', function ($query) use ($search) {
+                $query->where('nama_lengkap', 'like', '%' . $search . '%');
+            });
+        }
+
+        $alumni = $alumni->paginate(9)->withQueryString();
+
+        return view('alumni-siswa.ikatan', compact('user', 'alumni'));
     }
 
     public function kuliah()

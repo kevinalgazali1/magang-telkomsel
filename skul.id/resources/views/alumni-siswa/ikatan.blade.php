@@ -14,7 +14,8 @@
             font-family: 'Poppins', sans-serif;
             margin: 0;
             background-color: #fff;
-            overflow: hidden;
+            /* overflow: hidden; */
+            height: 100%;
         }
 
         a {
@@ -260,7 +261,7 @@
     </style>
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
     <div class="navbar">
         <div class="col-lg-6 d-flex">
             <div class="col-lg-2">
@@ -338,13 +339,15 @@
             </form>
         </div>
 
-        <div class="content">
+        <div class="content flex-grow-1 d-flex flex-column">
             <div class="container py-4">
                 <h4 class="mb-4">Ikatan Alumni {{ $user->alumniSiswaProfile->asal_sekolah }}</h4>
 
-                <form method="GET" action="{{ route('alumni-siswa.index') }}" class="mb-4">
+                <form method="GET" action="{{ route('alumni-siswa.ikatan') }}" class="mb-4 d-flex gap-2">
                     <input type="text" name="search" class="form-control" placeholder="Cari nama alumni..."
                         value="{{ request('search') }}">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    <a href="{{ route('alumni-siswa.ikatan') }}" class="btn btn-secondary">Reset</a>
                 </form>
 
                 @php
@@ -362,12 +365,24 @@
                 @if ($alumni->count())
                     <div class="row g-4">
                         @foreach ($alumni as $alumniItem)
+                            @php
+                                $profile = $alumniItem->alumniSiswaProfile;
+                            @endphp
                             <div class="col-md-4">
                                 <div class="card shadow-sm h-100">
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $alumniItem->nama_lengkap }}</h5>
-                                        <p class="card-text text-muted">
-                                            {{ $alumniItem->status_saat_ini ?? 'Belum ada status' }}</p>
+                                    <div class="card-body d-flex align-items-center">
+                                        <img src="{{ asset('storage/' . $profile->foto_profil) ?? url('img/default-user.png') }}"
+                                            alt="Foto Profil" class="rounded-circle me-3"
+                                            style="width: 60px; height: 60px; object-fit: cover;">
+                                        <div>
+                                            <h5 class="card-title mb-1">{{ $profile->nama_lengkap }}</h5>
+                                            <p class="mb-0 small text-muted">{{ $profile->jurusan_sekolah ?? '-' }}
+                                            </p>
+                                            <p class="mb-0 small">
+                                                {{ $profile->status_saat_ini ?? 'Belum ada status' }}</p>
+                                            <p class="mb-0 small">
+                                                {{ $alumniItem->no_hp ?? 'Belum ada sekolah' }}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -378,11 +393,42 @@
                         Alumni tidak ditemukan atau belum terdaftar dalam mitraskul.id.
                     </div>
                 @endif
-
             </div>
 
+            <nav>
+                <ul class="pagination mb-0">
+                    {{-- Previous Page Link --}}
+                    @if ($alumni->onFirstPage())
+                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                    @else
+                        <li class="page-item"><a class="page-link" href="{{ $alumni->previousPageUrl() }}"
+                                rel="prev">&laquo;</a>
+                        </li>
+                    @endif
 
-            <footer class="footer text-dark"
+                    {{-- Pagination Elements --}}
+                    @foreach ($alumni->getUrlRange(1, $alumni->lastPage()) as $page => $url)
+                        @if ($page == $alumni->currentPage())
+                            <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
+                        @elseif ($page == 1 || $page == $alumni->lastPage() || abs($page - $alumni->currentPage()) <= 1)
+                            <li class="page-item"><a class="page-link"
+                                    href="{{ $url }}">{{ $page }}</a></li>
+                        @elseif ($page == 2 || $page == $alumni->lastPage() - 1)
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        @endif
+                    @endforeach
+
+                    {{-- Next Page Link --}}
+                    @if ($alumni->hasMorePages())
+                        <li class="page-item"><a class="page-link" href="{{ $alumni->nextPageUrl() }}"
+                                rel="next">&raquo;</a></li>
+                    @else
+                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                    @endif
+                </ul>
+            </nav>
+
+            <footer class="footer text-dark mt-auto"
                 style="background: url('{{ url('img/footer.png') }}') no-repeat center center / cover;">
                 <div class="container-footer">
                     <div class="row align-items-start bg-white bg-opacity-75 rounded-3 p-4 shadow-sm">
@@ -392,18 +438,13 @@
                                 class="mb-3">
                             <p class="small">
                                 mitraskul.Id adalah platform yang menghubungkan alumni dengan sekolah, dunia industri,
-                                dan
-                                peluang karier.
+                                dan peluang karier.
                             </p>
                         </div>
 
                         <!-- Kontak -->
                         <div class="col-md-4 mb-4">
-                            <!-- <h6 class="fw-bold text-uppercase mb-3">Kontak</h6>
-                            <ul class="list-unstyled small">
-                                <li><i class="bi bi-envelope-fill me-2"></i>mitraskulid@gmail.com</li>
-                                <li><i class="bi bi-telephone-fill me-2"></i>+62 851-7959-2408</li>
-                            </ul> -->
+                            <!-- Kosong atau diisi nanti -->
                         </div>
 
                         <!-- Partner -->
@@ -415,11 +456,11 @@
                                 <img src="{{ url('img/pu.png') }}" alt="PUP Makassar" class="partner-footer-logo">
                             </div>
                         </div>
+
                         <div class="text-center text-dark small mt-4">
                             © 2025 mitraskul.Id. All rights reserved.
                         </div>
                     </div>
-
                 </div>
             </footer>
         </div>
