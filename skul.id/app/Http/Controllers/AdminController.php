@@ -234,12 +234,84 @@ class AdminController extends Controller
         return redirect()->route('admin.sertifikasi');
     }
 
-    public function loker()
+    public function loker(Request $request)
     {
-        $lokers = Loker::with('user.mitraProfile')->latest()->get();
-        $title = "Manajemen Loker";
+        $lokersQuery = Loker::with(['user.mitraProfile', 'daftarLoker.user'])
+            ->withCount('daftarLoker')
+            ->with([
+                'user.mitraProfile',
+                'daftarLoker.user',
+                'daftarLoker' => function ($q) {
+                    $q->select(
+                        'id',
+                        'user_id',
+                        'loker_id',
+                        'email',
+                        'no_hp',
+                        'nama_lengkap',
+                        'asal_sekolah',
+                        'jurusan',
+                        'jenis_kelamin',
+                        'tanggal_lahir',
+                        'status_saat_ini',
+                        'cv'
+                    );
+                }
+            ])
+            ->orderBy('created_at', 'desc');
 
-        return view('admin.loker', compact('lokers', 'title'));
+        if ($request->filled('mitra')) {
+            $lokersQuery->whereHas('user.mitraProfile', function ($q) use ($request) {
+                $q->where('nama_instansi', 'like', '%' . $request->mitra . '%');
+            });
+        }
+
+        if ($request->filled('nama_perusahaan')) {
+            $lokersQuery->where('nama_perusahaan', 'like', '%' . $request->nama_perusahaan . '%');
+        }
+
+        if ($request->filled('lokasi')) {
+            $lokersQuery->where('lokasi', 'like', '%' . $request->lokasi . '%');
+        }
+
+        if ($request->filled('tipe')) {
+            $lokersQuery->where('tipe', $request->tipe);
+        }
+
+        if ($request->filled('status')) {
+            $lokersQuery->where('status', $request->status);
+        }
+
+
+        // === PAGINATION 10 PER HALAMAN ===
+        $lokers = $lokersQuery->paginate(10)->through(function ($p) {
+            $pesertas = collect($p->daftarLoker);
+            $p->jumlah_asal_sekolah = collect($p->daftarLoker)->pluck('asal_sekolah')->unique()->count();
+            $p->jumlah_jurusan = collect($p->daftarLoker)->pluck('jurusan')->unique()->count();
+            $p->jumlah_kuliah = $pesertas->where('status_saat_ini', 'Kuliah')->count();
+            $p->jumlah_bekerja_dan_usaha = $pesertas->whereIn('status_saat_ini', ['Bekerja', 'Wirausaha'])->count();
+            $p->jumlah_tidak_bekerja = $pesertas->where('status_saat_ini', 'Tidak Bekerja')->count();
+            return $p;
+        });
+
+        // === METRICS ===
+        $totalLoker = Loker::count();
+        $totalUser = User::count();
+        $lokerTerdaftar = DaftarLoker::distinct('loker_id')->count('loker_id');
+
+        // Hitung persentase sertifikasi yang telah diikuti oleh alumni
+        $persentaseLokerTerdaftar = $totalLoker > 0
+            ? round(($lokerTerdaftar / $totalLoker) * 100, 2)
+            : 0;
+
+        return view('admin.loker', [
+            'title' => 'Loker',
+            'lokers' => $lokers,
+            'totalLoker' => $totalLoker,
+            'totalUser' => $totalUser,
+            'lokerTerdaftar' => $lokerTerdaftar,
+            'persentaseLokerTerdaftar' => $persentaseLokerTerdaftar,
+        ]);
     }
 
     // Menangani aksi store/update/delete

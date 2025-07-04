@@ -26,7 +26,7 @@ class LokerPostRequest extends FormRequest
             'deskripsi' => 'required|string',
             'posisi' => 'required|string|max:255',
             'lokasi' => 'required|string|max:255',
-            'tipe' => 'required|in:freelance,magang,part time,full time',
+            'tipe' => 'required|in:Part Time,Full Time, Remote',
             'pendidikan' => 'required|string|max:255',
             'gaji_min' => 'required|numeric',
             'gaji_max' => 'required|numeric|gte:gaji_min',

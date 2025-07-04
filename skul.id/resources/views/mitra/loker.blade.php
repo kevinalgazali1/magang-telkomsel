@@ -876,10 +876,9 @@
                                                     <label for="tipe" class="form-label">Tipe Pekerjaan</label>
                                                     <select class="form-select" name="tipe" required>
                                                         <option value="">Pilih Tipe</option>
-                                                        <option value="freelance">Freelance</option>
-                                                        <option value="magang">Magang</option>
-                                                        <option value="part time">Part Time</option>
-                                                        <option value="full time">Full Time</option>
+                                                        <option value="Part Time">Part Time</option>
+                                                        <option value="Full Time">Full Time</option>
+                                                        <option value="Remote">Remote</option>
                                                     </select>
                                                 </div>
 

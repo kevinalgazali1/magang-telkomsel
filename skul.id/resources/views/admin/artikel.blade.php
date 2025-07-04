@@ -156,59 +156,6 @@
                     </a>
                 </div>
 
-                <!-- Card Grid -->
-                <div class="row g-4 mb-5">
-                    @foreach ($artikel as $item)
-                        <div class="col-md-4">
-                            <div class="card border-0 shadow-sm rounded-4 h-100">
-                                <img src="{{ asset('storage/' . $item->gambar_artikel) }}"
-                                    class="card-img-top rounded-top-4" alt="Gambar Artikel {{ $item->judul }}">
-                                <div class="card-body">
-                                    <h5 class="fw-semibold mb-2">{{ $item->judul }}</h5>
-                                    <p class="text-muted small">{{ Str::limit(strip_tags($item->isi), 50, '...') }}</p>
-                                    <div class="mt-3 d-flex justify-content-between align-items-center">
-                                        {{-- <small class="text-muted">Penulis: {{ $item->penulis }}</small> --}}
-                                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                            data-bs-target="#artikelModal{{ $item->id }}">
-                                            Baca Selengkapnya
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="artikelModal{{ $item->id }}" tabindex="-1"
-                            aria-labelledby="artikelModalLabel{{ $item->id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <div>
-                                            <h5 class="modal-title" id="artikelModalLabel{{ $item->id }}">
-                                                {{ $item->judul }}</h5>
-                                            {{-- <small class="text-muted">{{ $item->penulis }}</small> --}}
-                                            <small class="text-muted">{{ $item->created_at->format('d M Y') }}</small>
-                                        </div>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <img src="{{ asset('storage/' . $item->gambar_artikel) }}"
-                                            alt="Gambar Artikel {{ $item->judul }}" class="img-fluid mb-3 rounded">
-                                        {!! $item->isi !!}
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary btn-sm"
-                                            data-bs-dismiss="modal">Tutup</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-
-
                 <!-- Tabel Artikel -->
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body">

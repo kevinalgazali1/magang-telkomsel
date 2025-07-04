@@ -117,6 +117,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::delete('/admin/delete-sertifikasi/{id}', [SertifikasiController::class, 'destroy'])->name('admin.sertifikasi.destroy');
     Route::get('/admin/sertifikasi/{id}/peserta/export', [SertifikasiController::class, 'exportPesertaExcel']);
     Route::get('/admin/loker', [AdminController::class, 'loker'])->name('admin.loker');
+    Route::post('/admin/loker', [AdminController::class, 'handleLoker']);
     Route::post('/admin/store-loker', [LokerController::class, 'store'])->name('admin.loker.store');
     Route::put('/admin/update-loker/{id}', [LokerController::class, 'update'])->name('admin.loker.update');
     Route::delete('/admin/delete-loker/{id}', [LokerController::class, 'destroy'])->name('admin.loker.destroy');
