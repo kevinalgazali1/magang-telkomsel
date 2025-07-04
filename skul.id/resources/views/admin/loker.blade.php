@@ -256,7 +256,7 @@
                                 class="btn btn-outline-secondary rounded-pill px-4 shadow-sm">
                                 <i class="bi bi-arrow-clockwise me-1"></i> Reset
                             </a>
-                            <a href="{{ route('admin.pelatihan.export', request()->query()) }}"
+                            <a href="{{ route('admin.loker.export', request()->query()) }}"
                                 class="btn btn-success rounded-pill px-4 shadow-sm">
                                 <i class="bi bi-file-earmark-excel me-1"></i> Excel
                             </a>

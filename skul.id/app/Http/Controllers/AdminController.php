@@ -540,6 +540,86 @@ class AdminController extends Controller
         ]);
     }
 
+    public function handlePelatihan(Request $request)
+    {
+        $action = $request->input('action');
+
+        switch ($action) {
+            case 'store':
+                return $this->storePelatihan($request);
+            case 'update':
+                return $this->updatePelatihan($request);
+            case 'delete':
+                return $this->deletePelatihan($request);
+            default:
+                abort(400, 'Aksi tidak dikenali');
+        }
+    }
+
+    // Tambah loker baru
+    protected function storePelatihan(Request $request)
+    {
+        $data = $request->validate([
+            'nama_perusahaan' => 'required|string',
+            'posisi' => 'required|string',
+            'lokasi' => 'required|string',
+            'tipe' => 'required|string',
+            'pendidikan' => 'required|string',
+            'gaji' => 'nullable|string',
+            'deskripsi' => 'required|string',
+            'gambar' => 'required|image|max:2048',
+        ]);
+
+        $data['gambar'] = $request->file('gambar')->store('loker', 'public');
+        $data['user_id'] = auth()->id(); // atau bisa ditentukan id mitra tertentu
+
+        Loker::create($data);
+
+        return redirect()->route('admin.loker')->with('success', 'Loker berhasil ditambahkan.');
+    }
+
+    // Update loker
+    protected function updatePelatihan(Request $request)
+    {
+        $loker = Loker::findOrFail($request->id);
+
+        $data = $request->validate([
+            'nama_perusahaan' => 'required|string',
+            'posisi' => 'required|string',
+            'lokasi' => 'required|string',
+            'tipe' => 'required|string',
+            'pendidikan' => 'required|string',
+            'gaji' => 'nullable|string',
+            'deskripsi' => 'required|string',
+            'gambar' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama
+            if ($loker->gambar && Storage::disk('public')->exists($loker->gambar)) {
+                Storage::disk('public')->delete($loker->gambar);
+            }
+            $data['gambar'] = $request->file('gambar')->store('loker', 'public');
+        }
+
+        $loker->update($data);
+
+        return redirect()->route('admin.loker')->with('success', 'Loker berhasil diperbarui.');
+    }
+
+    // Hapus loker
+    protected function deletePelatihan(Request $request)
+    {
+        $pelatihan = Pelatihan::findOrFail($request->id);
+
+        if ($pelatihan->foto_pelatihan && Storage::disk('public')->exists($pelatihan->foto_pelatihan)) {
+            Storage::disk('public')->delete($pelatihan->foto_pelatihan);
+        }
+
+        $pelatihan->delete();
+
+        return redirect()->route('admin.pelatihan')->with('success', 'Pelatihan berhasil dihapus.');
+    }
 
     public function users(Request $request)
     {

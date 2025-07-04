@@ -1140,7 +1140,7 @@
                     // Buat form dinamis & submit
                     const form = document.createElement('form');
                     form.method = 'POST';
-                    form.action = "{{ route('admin.sertifikasi') }}";
+                    form.action = "{{ route('admin.pelatihan') }}";
 
                     form.innerHTML = `
                           @csrf

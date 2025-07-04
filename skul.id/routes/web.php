@@ -121,7 +121,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/admin/store-loker', [LokerController::class, 'store'])->name('admin.loker.store');
     Route::put('/admin/update-loker/{id}', [LokerController::class, 'update'])->name('admin.loker.update');
     Route::delete('/admin/delete-loker/{id}', [LokerController::class, 'destroy'])->name('admin.loker.destroy');
+    Route::get('/admin/loker/{id}/peserta/export', [LokerController::class, 'exportPesertaExcel']);
     Route::match(['get', 'post'], '/admin/pelatihan', [AdminController::class, 'pelatihan'])->name('admin.pelatihan');
+    Route::post('/admin/pelatihan', [AdminController::class, 'handlePelatihan']);
     Route::post('/admin/store-pelatihan', [PelatihanController::class, 'store'])->name('admin.pelatihan.store');
     Route::put('/admin/update-pelatihan/{id}', [PelatihanController::class, 'update'])->name('admin.pelatihan.update');
     Route::delete('/admin/delete-pelatihan/{id}', [PelatihanController::class, 'destroy'])->name('admin.pelatihan.destroy');
@@ -134,6 +136,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/export-alumni', [UserController::class, 'exportAlumniCsv'])->name('export.alumni.csv');
     Route::get('/admin/sertifikasi/export', [SertifikasiController::class, 'exportSertifikasi'])->name('admin.sertifikasi.export');
     Route::get('/admin/pelatihan/export', [PelatihanController::class, 'exportPelatihan'])->name('admin.pelatihan.export');
+    Route::get('/admin/loker/export', [LokerController::class, 'exportLoker'])->name('admin.loker.export');
 });
 
 /**

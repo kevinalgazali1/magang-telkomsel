@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Loker;
 use App\Models\DaftarLoker;
+use Illuminate\Support\Str;
+use App\Exports\LokerExport;
 use Illuminate\Http\Request;
+use App\Exports\PesertaLokerExport;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Requests\LokerPostRequest;
 
 class LokerController extends Controller
@@ -141,5 +145,18 @@ class LokerController extends Controller
     {
         $peserta = DaftarLoker::where('loker_id', $id)->get();
         return response()->json($peserta);
+    }
+
+    public function exportPesertaExcel($id)
+    {
+        $loker = Loker::findOrFail($id);
+        $filename = 'daftar_peserta_' . Str::slug($loker->posisi) . '.xlsx';
+
+        return Excel::download(new PesertaLokerExport($id), $filename);
+    }
+
+    public function exportLoker(Request $request)
+    {
+        return Excel::download(new LokerExport($request), 'data_loker.xlsx');
     }
 }
