@@ -134,6 +134,16 @@ class PelatihanController extends Controller
         $pelatihan->tempat_pelatihan = $request->tempat_pelatihan;
         $pelatihan->biaya = $request->biaya;
 
+        if ($request->status === 'Gratis') {
+            $pelatihan->biaya = 0;
+            $pelatihan->nomor_rekening = null;
+        } else {
+            $pelatihan->biaya = $request->biaya;
+            $pelatihan->nomor_rekening = $request->nomor_rekening;
+        }
+
+        $pelatihan->status = $request->status; // pastikan status disimpan juga
+
         if ($request->hasFile('foto_pelatihan')) {
             // 🔥 Hapus file lama jika ada
             $oldPath = public_path('storage/' . $pelatihan->foto_pelatihan);

@@ -282,6 +282,9 @@ class AlumniSiswaController extends Controller
 
         $query = Loker::query();
 
+        // Filter hanya yang status = 'buka'
+        $query->where('status', 'buka');
+
         if ($request->filled('search')) {
             $searchTerm = strtolower($request->search);
 
@@ -290,7 +293,6 @@ class AlumniSiswaController extends Controller
                     ->orWhereRaw('LOWER(nama_perusahaan) LIKE ?', ["%{$searchTerm}%"]);
             });
         }
-
 
         if ($request->filled('tipe')) {
             $query->where('tipe', $request->tipe);
@@ -301,10 +303,11 @@ class AlumniSiswaController extends Controller
         }
 
         $loker = $query->paginate(9)->withQueryString();
-        $lokasiList = Loker::select('lokasi')->distinct()->pluck('lokasi');
+        $lokasiList = Loker::where('status', 'buka')->select('lokasi')->distinct()->pluck('lokasi');
 
         return view('alumni-siswa.loker', compact('user', 'loker', 'lokasiList'));
     }
+
 
     public function pelatihan(Request $request)
     {

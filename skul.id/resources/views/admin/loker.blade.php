@@ -74,6 +74,94 @@
         .card h6 {
             font-weight: 600;
         }
+
+        .pagination {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .pagination .page-item {
+            list-style: none;
+        }
+
+        .pagination .page-link {
+            padding: 0.4rem 0.75rem;
+            border: 1px solid #ddd;
+            color: #0d6efd;
+            background-color: #fff;
+            border-radius: 0.25rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #0d6efd;
+            color: #fff;
+            border-color: #0d6efd;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background-color: #f8f9fa;
+            color: #6c757d;
+            pointer-events: none;
+        }
+
+        .pelatihan-table {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            width: 100%;
+        }
+
+        .pelatihan-table thead {
+            background-color: #f1f3f5;
+        }
+
+        .pelatihan-table thead th {
+            font-weight: 600;
+            color: #343a40;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .pelatihan-table tbody tr {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+            background-color: #fff !important;
+        }
+
+        .pelatihan-table tbody tr:hover {
+            transform: scale(1.02);
+            background-color: #ffffff !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            color: #fff;
+            z-index: 1;
+            position: relative;
+        }
+
+        .pelatihan-table .badge {
+            font-size: 0.7rem;
+            padding: 0.35em 0.5em;
+            border-radius: 0.375rem;
+        }
+
+        .pelatihan-table .btn-group .btn {
+            padding: 0.3rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 0.375rem;
+        }
+
+        .pelatihan-table td,
+        .pelatihan-table th {
+            vertical-align: middle;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .loker-table-wrapper.fade {
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 
@@ -269,7 +357,13 @@
                 </form>
 
 
-                <div class="table-responsive">
+                <div class="table-responsive loker-table-wrapper">
+                    <div id="tableLoading" class="d-none text-center py-5">
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+
                     <table class="table pelatihan-table table-hover align-middle mb-0" id="pelatihanTable">
                         <thead class="table-light text-center text-uppercase small">
                             <tr>
@@ -308,25 +402,40 @@
                                         <div class="dropdown">
                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
                                                 data-bs-toggle="dropdown" aria-expanded="false">
-                                                Aksi
+                                                <i class="bi bi-three-dots-vertical"></i> Aksi
                                             </button>
-                                            <ul class="dropdown-menu dropdown-menu-end" data-bs-auto-close="outside">
+                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm"
+                                                data-bs-auto-close="outside">
                                                 <li>
-                                                    <button class="dropdown-item" data-bs-toggle="modal"
-                                                        data-bs-target="#lihat{{ $l->id }}">
-                                                        <i class="bi bi-eye me-2"></i> Lihat
+                                                    <button class="dropdown-item d-flex align-items-center gap-2"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalLihat{{ $l->id }}">
+                                                        <i class="bi bi-eye text-secondary"></i> Lihat
                                                     </button>
                                                 </li>
                                                 <li>
-                                                    <button class="dropdown-item" data-bs-toggle="modal"
-                                                        data-bs-target="#edit{{ $l->id }}">
-                                                        <i class="bi bi-pencil me-2"></i> Edit
+                                                    <button class="dropdown-item d-flex align-items-center gap-2"
+                                                        data-bs-toggle="modal" data-bs-target="#editLokerModal"
+                                                        onclick="openEditLokerModal({
+                    id: '{{ $l->id }}',
+                    nama_perusahaan: '{{ $l->nama_perusahaan }}',
+                    posisi: '{{ $l->posisi }}',
+                    lokasi: '{{ $l->lokasi }}',
+                    tipe: '{{ $l->tipe }}',
+                    pendidikan: '{{ $l->pendidikan }}',
+                    deskripsi: `{!! $l->deskripsi !!}`,
+                    gaji: '{{ $l->gaji }}',
+                    status: '{{ $l->status }}',
+                    foto: '{{ asset('storage/' . $l->gambar) }}'
+                })">
+                                                        <i class="bi bi-pencil-square text-warning"></i> Edit
                                                     </button>
                                                 </li>
                                                 <li>
-                                                    <button class="dropdown-item text-danger"
+                                                    <button
+                                                        class="dropdown-item text-danger d-flex align-items-center gap-2"
                                                         onclick="confirmDelete('{{ $l->id }}')">
-                                                        <i class="bi bi-trash me-2"></i> Hapus
+                                                        <i class="bi bi-trash3-fill"></i> Hapus
                                                     </button>
                                                 </li>
                                             </ul>
@@ -334,88 +443,134 @@
                                     </td>
                                 </tr>
 
-                                {{-- Modal Lihat --}}
-                                <div class="modal fade" id="modalLihat{{ $l->id }}" tabindex="-1">
-                                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Detail Loker</h5>
-                                                <button class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <h5>{{ $l->posisi }}</h5>
-                                                <p><strong>Perusahaan:</strong> {{ $l->nama_perusahaan }}</p>
-                                                <p><strong>Deskripsi:</strong> {{ $l->deskripsi }}</p>
-                                                <p><strong>Lokasi:</strong> {{ $l->lokasi }}</p>
-                                                <p><strong>Tipe:</strong> {{ $l->tipe }}</p>
-                                                <p><strong>Pendidikan:</strong> {{ $l->pendidikan }}</p>
-                                                <p><strong>Gaji:</strong> {{ $l->gaji }}</p>
-                                                @if ($l->gambar)
-                                                    <img src="{{ asset('storage/' . $l->gambar) }}"
-                                                        class="img-fluid rounded shadow-sm mt-3" alt="Gambar Loker">
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {{-- Modal Edit --}}
-                                <div class="modal fade" id="modalEdit{{ $l->id }}" tabindex="-1">
-                                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <form action="{{ route('admin.loker') }}" method="POST"
-                                                enctype="multipart/form-data">
+                                <!-- Modal Edit (Versi Lebih Rapi dan Ilustratif) -->
+                                <div class="modal fade" id="editLokerModal" tabindex="-1"
+                                    aria-labelledby="editLokerModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content edit-modal-content border-0 shadow-lg">
+                                            <form id="editForm" method="POST" enctype="multipart/form-data"
+                                                action="{{ url('/admin/update-loker/' . $l->id) }}"
+                                                onsubmit="return validateGajiEdit()">
                                                 @csrf
-                                                <input type="hidden" name="action" value="update">
-                                                <input type="hidden" name="id" value="{{ $l->id }}">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Edit Loker</h5>
-                                                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                @method('PUT')
+                                                <input type="hidden" name="id" id="edit_id">
+
+                                                <div class="modal-header bg-primary text-white">
+                                                    <h5 class="modal-title fw-semibold">
+                                                        <i class="bi bi-pencil-square me-2"></i>Edit Lowongan Kerja
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
-                                                <div class="modal-body">
-                                                    <div class="mb-3">
-                                                        <label>Nama Perusahaan</label>
-                                                        <input type="text" name="nama_perusahaan"
-                                                            class="form-control" value="{{ $l->nama_perusahaan }}">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Posisi</label>
-                                                        <input type="text" name="posisi" class="form-control"
-                                                            value="{{ $l->posisi }}">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Lokasi</label>
-                                                        <input type="text" name="lokasi" class="form-control"
-                                                            value="{{ $l->lokasi }}">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Tipe</label>
-                                                        <input type="text" name="tipe" class="form-control"
-                                                            value="{{ $l->tipe }}">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Pendidikan</label>
-                                                        <input type="text" name="pendidikan" class="form-control"
-                                                            value="{{ $l->pendidikan }}">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Gaji</label>
-                                                        <input type="text" name="gaji" class="form-control"
-                                                            oninput="formatRupiah(this)" value="{{ $l->gaji }}">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Deskripsi</label>
-                                                        <textarea name="deskripsi" class="form-control" rows="3">{{ $l->deskripsi }}</textarea>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Ganti Gambar (opsional)</label>
-                                                        <input type="file" name="gambar" class="form-control">
+
+                                                <!-- Tambahkan overflow auto dan tinggi maksimal -->
+                                                <div class="modal-body px-4 pt-4"
+                                                    style="max-height: 75vh; overflow-y: auto;">
+                                                    <div class="row gx-5 gy-4">
+                                                        <!-- Kiri -->
+                                                        <div class="col-lg-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Nama Perusahaan</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="edit_nama_perusahaan" name="nama_perusahaan"
+                                                                    readonly>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Deskripsi</label>
+                                                                <textarea class="form-control" id="edit_deskripsi" name="deskripsi" rows="5" required></textarea>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Pendidikan</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="edit_pendidikan" name="pendidikan" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Upload Gambar
+                                                                    (Opsional)
+                                                                </label>
+                                                                <input type="file" class="form-control"
+                                                                    id="edit_gambar" name="gambar"
+                                                                    accept=".jpg,.jpeg,.png"
+                                                                    onchange="previewImageEdit(this)">
+                                                                <img id="imagePreviewEdit"
+                                                                    class="img-fluid mt-2 rounded d-none border"
+                                                                    style="max-height: 150px;" alt="Preview Gambar">
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Kanan -->
+                                                        <div class="col-lg-6">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Posisi</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="edit_posisi" name="posisi" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Lokasi</label>
+                                                                <input type="text" class="form-control"
+                                                                    id="edit_lokasi" name="lokasi" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Tipe Pekerjaan</label>
+                                                                <select class="form-select" name="tipe"
+                                                                    id="edit_tipe" required>
+                                                                    <option value="Part Time">Part Time</option>
+                                                                    <option value="Full Time">Full Time</option>
+                                                                    <option value="Remote">Remote</option>
+                                                                </select>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Rentang Gaji (Rp)</label>
+                                                                <div class="row gx-2">
+                                                                    <div class="col">
+                                                                        <input type="text" class="form-control"
+                                                                            id="edit_gaji_min_view"
+                                                                            placeholder="Minimum" required
+                                                                            oninput="formatRupiah(this)">
+                                                                        <input type="hidden" name="gaji_min"
+                                                                            id="edit_gaji_min">
+                                                                    </div>
+                                                                    <div class="col">
+                                                                        <input type="text" class="form-control"
+                                                                            id="edit_gaji_max_view"
+                                                                            placeholder="Maksimum" required
+                                                                            oninput="formatRupiah(this)">
+                                                                        <input type="hidden" name="gaji_max"
+                                                                            id="edit_gaji_max">
+                                                                    </div>
+                                                                </div>
+                                                                <small id="gajiErrorEdit"
+                                                                    class="text-danger d-none">Gaji maksimum harus
+                                                                    lebih besar dari minimum.</small>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Status Loker</label>
+                                                                <select class="form-select" name="status"
+                                                                    id="edit_status" required>
+                                                                    <option value="buka">Buka</option>
+                                                                    <option value="tutup">Tutup</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer">
-                                                    <button class="btn btn-success">Update</button>
-                                                    <button class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Tutup</button>
+
+                                                <div class="modal-footer bg-light border-top-0 px-4 py-3">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">
+                                                        <i class="bi bi-x-circle me-1"></i> Batal
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary"
+                                                        onclick="confirmEdit()">
+                                                        <i class="bi bi-save me-1"></i> Perbarui
+                                                    </button>
                                                 </div>
                                             </form>
                                         </div>
@@ -424,41 +579,176 @@
                             @endforeach
                         </tbody>
                     </table>
+
+                    @foreach ($lokers as $l)
+                        <div class="modal fade" id="modalLihat{{ $l->id }}" tabindex="-1"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content shadow-lg rounded-4">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title">Detail Lowongan Kerja</h5>
+                                    </div>
+                                    <div class="modal-body px-4 py-4">
+                                        <div class="row g-4">
+                                            {{-- Kolom Kiri: Detail Loker --}}
+                                            <div class="col-lg-6">
+                                                @if ($l->gambar)
+                                                    <div class="mb-3">
+                                                        <img src="{{ asset('storage/' . $l->gambar) }}"
+                                                            alt="Foto Perusahaan"
+                                                            class="img-fluid rounded-3 shadow-sm border w-100"
+                                                            style="max-height: 280px; object-fit: cover;">
+                                                    </div>
+                                                @endif
+
+                                                <h4 class="fw-bold mb-2">{{ $l->posisi }}</h4>
+
+                                                {{-- Deskripsi Scrollable --}}
+                                                <div class="mb-3">
+                                                    <div style="max-height: 180px; overflow-y: auto;">
+                                                        <p class="mb-0" style="white-space: pre-line;">
+                                                            {!! nl2br(e($l->deskripsi)) !!}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {{-- Kolom Kanan: Daftar Pelamar --}}
+                                            <div class="col-lg-6">
+                                                <div class="mb-2"><strong>🏢 Perusahaan:</strong>
+                                                    {{ $l->nama_perusahaan }}</div>
+                                                <div class="mb-2"><strong>📍 Lokasi:</strong>
+                                                    {{ $l->lokasi }}</div>
+                                                <div class="mb-2"><strong>🧑‍🎓
+                                                        Pendidikan:</strong>
+                                                    {{ $l->pendidikan }}</div>
+                                                <div class="mb-2"><strong>💼 Tipe:</strong>
+                                                    {{ $l->tipe }}</div>
+                                                <div class="mb-2"><strong>💰 Gaji:</strong>
+                                                    {{ $l->gaji }}</div>
+
+                                                <div
+                                                    class="d-flex justify-content-between align-items-center mb-3 mt-5">
+                                                    <h5 class="fw-semibold mb-0">👥 Pelamar
+                                                        Terdaftar</h5>
+                                                    {{-- Tombol Download CV (opsional) --}}
+                                                    <button class="btn btn-sm btn-outline-success btnDownloadPeserta"
+                                                        data-id="{{ $l->id }}">>
+                                                        <i class="bi bi-download me-1"></i> Export Data
+                                                    </button>
+                                                </div>
+
+                                                @if ($l->daftarLoker && $l->daftarLoker->count())
+                                                    <div class="table-responsive border rounded-3"
+                                                        style="max-height: 350px; overflow: auto;">
+                                                        <table
+                                                            class="table table-sm table-bordered align-middle mb-0 small text-nowrap">
+                                                            <thead class="table-light sticky-top">
+                                                                <tr class="text-center">
+                                                                    <th>No</th>
+                                                                    <th>Nama</th>
+                                                                    <th>Email</th>
+                                                                    <th>No HP</th>
+                                                                    <th>CV</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($l->daftarLoker as $pelamar)
+                                                                    <tr class="text-center">
+                                                                        <td>{{ $loop->iteration }}
+                                                                        </td>
+                                                                        <td class="text-truncate"
+                                                                            style="max-width: 120px;">
+                                                                            {{ $pelamar->nama_lengkap }}
+                                                                        </td>
+                                                                        <td class="text-truncate"
+                                                                            style="max-width: 150px;">
+                                                                            {{ $pelamar->email }}
+                                                                        </td>
+                                                                        <td>{{ $pelamar->no_hp }}
+                                                                        </td>
+                                                                        <td>
+                                                                            @if ($pelamar->cv)
+                                                                                <a href="{{ asset('storage/assets/cv/' . $pelamar->cv) }}"
+                                                                                    target="_blank"
+                                                                                    class="btn btn-sm btn-outline-info">
+                                                                                    <i
+                                                                                        class="bi bi-file-earmark-person"></i>
+                                                                                    Lihat CV
+                                                                                </a>
+                                                                            @else
+                                                                                <span class="text-muted">Tidak
+                                                                                    ada</span>
+                                                                            @endif
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                @else
+                                                    <p class="text-muted mt-2">Belum ada pelamar
+                                                        yang
+                                                        mendaftar.</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-end bg-light py-3">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Tutup</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
-            <nav>
-                <ul class="pagination mb-0">
-                    {{-- Previous Page Link --}}
-                    @if ($lokers->onFirstPage())
-                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                    @else
-                        <li class="page-item"><a class="page-link" href="{{ $lokers->previousPageUrl() }}"
-                                rel="prev">&laquo;</a></li>
-                    @endif
+            <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                <div class="small text-muted">
+                    Showing
+                    <strong>{{ $lokers->firstItem() ?? 0 }}</strong>
+                    to
+                    <strong>{{ $lokers->lastItem() ?? 0 }}</strong>
+                    of
+                    <strong>{{ $lokers->total() }}</strong>
+                    entries
+                </div>
 
-                    {{-- Pagination Elements --}}
-                    @foreach ($lokers->getUrlRange(1, $lokers->lastPage()) as $page => $url)
-                        @if ($page == $lokers->currentPage())
-                            <li class="page-item active"><span class="page-link">{{ $page }}</span>
-                            </li>
-                        @elseif ($page == 1 || $page == $lokers->lastPage() || abs($page - $lokers->currentPage()) <= 1)
-                            <li class="page-item"><a class="page-link"
-                                    href="{{ $url }}">{{ $page }}</a></li>
-                        @elseif ($page == 2 || $page == $lokers->lastPage() - 1)
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                <nav>
+                    <ul class="pagination mb-0">
+                        {{-- Previous Page Link --}}
+                        @if ($lokers->onFirstPage())
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        @else
+                            <li class="page-item"><a class="page-link" href="{{ $lokers->previousPageUrl() }}"
+                                    rel="prev">&laquo;</a></li>
                         @endif
-                    @endforeach
 
-                    {{-- Next Page Link --}}
-                    @if ($lokers->hasMorePages())
-                        <li class="page-item"><a class="page-link" href="{{ $lokers->nextPageUrl() }}"
-                                rel="next">&raquo;</a></li>
-                    @else
-                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                    @endif
-                </ul>
-            </nav>
+                        {{-- Pagination Elements --}}
+                        @foreach ($lokers->getUrlRange(1, $lokers->lastPage()) as $page => $url)
+                            @if ($page == $lokers->currentPage())
+                                <li class="page-item active"><span class="page-link">{{ $page }}</span>
+                                </li>
+                            @elseif ($page == 1 || $page == $lokers->lastPage() || abs($page - $lokers->currentPage()) <= 1)
+                                <li class="page-item"><a class="page-link"
+                                        href="{{ $url }}">{{ $page }}</a></li>
+                            @elseif ($page == 2 || $page == $lokers->lastPage() - 1)
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            @endif
+                        @endforeach
+
+                        {{-- Next Page Link --}}
+                        @if ($lokers->hasMorePages())
+                            <li class="page-item"><a class="page-link" href="{{ $lokers->nextPageUrl() }}"
+                                    rel="next">&raquo;</a></li>
+                        @else
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        @endif
+                    </ul>
+                </nav>
+            </div>
 
             {{-- Modal Tambah --}}
             <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLokerLabel"
@@ -632,6 +922,19 @@
                 }
             </script>
             <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const downloadButtons = document.querySelectorAll('.btnDownloadPeserta');
+
+                    downloadButtons.forEach(button => {
+                        button.addEventListener('click', function() {
+                            const lokerId = this.getAttribute('data-id');
+                            window.location.href =
+                                `/public/admin/loker/${lokerId}/peserta/export`;
+                        });
+                    });
+                });
+            </script>
+            <script>
                 @if (session('success'))
                     Swal.fire({
                         icon: 'success',
@@ -706,23 +1009,6 @@
                     });
                 }
 
-                function confirmEdit() {
-                    Swal.fire({
-                        title: 'Perbarui Loker?',
-                        text: "Pastikan semua data sudah benar.",
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonColor: '#0d6efd',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, perbarui!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            document.getElementById('editForm').submit();
-                        }
-                    });
-                }
-
                 function formatRupiah(input) {
                     let value = input.value.replace(/\D/g, '');
                     input.value = new Intl.NumberFormat('id-ID').format(value);
@@ -734,6 +1020,98 @@
                     input.value = formatted;
                 }
             </script>
+            <script>
+                function formatRupiah(input) {
+                    let raw = input.value.replace(/\D/g, '');
+                    input.value = new Intl.NumberFormat('id-ID').format(raw);
+
+                    if (input.id === 'edit_gaji_min_view') {
+                        document.getElementById('edit_gaji_min').value = raw;
+                    } else if (input.id === 'edit_gaji_max_view') {
+                        document.getElementById('edit_gaji_max').value = raw;
+                    }
+                }
+
+                function validateGajiEdit() {
+                    const min = parseInt(document.getElementById('edit_gaji_min').value || '0');
+                    const max = parseInt(document.getElementById('edit_gaji_max').value || '0');
+                    const error = document.getElementById('gajiErrorEdit');
+
+                    if (min > max) {
+                        error.classList.remove('d-none');
+                        return false;
+                    } else {
+                        error.classList.add('d-none');
+                        return true;
+                    }
+                }
+
+                function confirmEdit() {
+                    if (!validateGajiEdit()) return;
+
+                    Swal.fire({
+                        title: 'Perbarui Lowongan?',
+                        text: 'Apakah kamu yakin ingin memperbarui data ini?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Perbarui',
+                        cancelButtonText: 'Batal',
+                        confirmButtonColor: '#0d6efd',
+                        cancelButtonColor: '#6c757d',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('editForm').submit();
+                        }
+                    });
+                }
+
+                function previewImageEdit(input) {
+                    const file = input.files[0];
+                    const preview = document.getElementById('imagePreviewEdit');
+
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            preview.src = e.target.result;
+                            preview.classList.remove('d-none');
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+
+                function openEditLokerModal(data) {
+                    document.getElementById('edit_id').value = data.id;
+                    document.getElementById('edit_nama_perusahaan').value = data.nama_perusahaan;
+                    document.getElementById('edit_posisi').value = data.posisi;
+                    document.getElementById('edit_lokasi').value = data.lokasi;
+                    document.getElementById('edit_tipe').value = data.tipe;
+                    document.getElementById('edit_pendidikan').value = data.pendidikan;
+                    document.getElementById('edit_deskripsi').value = data.deskripsi;
+                    document.getElementById('edit_status').value = data.status;
+
+                    // Parsing gaji jika hanya berupa 1 field string
+                    if (data.gaji) {
+                        let match = data.gaji.match(/Rp\s?([\d.]+)\s?-\s?Rp\s?([\d.]+)/);
+                        if (match) {
+                            let gajiMin = match[1].replace(/\./g, '');
+                            let gajiMax = match[2].replace(/\./g, '');
+
+                            document.getElementById('edit_gaji_min').value = gajiMin;
+                            document.getElementById('edit_gaji_max').value = gajiMax;
+                            document.getElementById('edit_gaji_min_view').value = new Intl.NumberFormat('id-ID').format(gajiMin);
+                            document.getElementById('edit_gaji_max_view').value = new Intl.NumberFormat('id-ID').format(gajiMax);
+                        }
+                    }
+
+                    // Preview gambar
+                    if (data.foto) {
+                        const preview = document.getElementById('imagePreviewEdit');
+                        preview.src = data.foto;
+                        preview.classList.remove('d-none');
+                    }
+                }
+            </script>
+
 </body>
 
 </html>

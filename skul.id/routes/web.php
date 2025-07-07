@@ -60,6 +60,7 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
         Route::post('/mitra/store-loker', [LokerController::class, 'store'])->name('mitra.loker.store');
         Route::put('/mitra/update-loker/{id}', [LokerController::class, 'update'])->name('mitra.loker.update');
         Route::delete('/mitra/delete-loker/{id}', [LokerController::class, 'destroy'])->name('mitra.loker.destroy');
+        Route::get('/mitra/loker/{id}/peserta/export', [LokerController::class, 'exportPesertaExcel']);
         Route::get('/loker/{id}/peserta', [LokerController::class, 'getPeserta']);
         Route::get('/mitra/pelatihan', [PelatihanController::class, 'index'])->name('mitra.pelatihan');
         Route::post('/mitra/store-pelatihan', [PelatihanController::class, 'store'])->name('mitra.pelatihan.store');
@@ -71,6 +72,7 @@ Route::middleware(['auth', 'role:mitra'])->group(function () {
         Route::put('/mitra/account/update', [UserController::class, 'updateAccount'])->name('mitra.account.update');
         Route::get('/mitra/sertifikasi/export', [SertifikasiController::class, 'exportSertifikasi'])->name('mitra.sertifikasi.export');
         Route::get('/mitra/pelatihan/export', [PelatihanController::class, 'exportPelatihan'])->name('mitra.pelatihan.export');
+        Route::get('/mitra/loker/export', [LokerController::class, 'exportLoker'])->name('mitra.loker.export');
     });
 });
 

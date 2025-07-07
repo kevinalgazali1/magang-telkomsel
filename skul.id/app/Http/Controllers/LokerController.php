@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Loker;
 use App\Models\DaftarLoker;
@@ -18,12 +19,55 @@ class LokerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = User::with('mitraProfile')->find(Auth::id());
-        $lokerMitraSendiri = Loker::with('daftarLoker')->where('user_id', $user->id)->get();
-        $lokerMitraLain = Loker::where('user_id', '!=', $user->id)->get();
-        return view('mitra.loker', compact('lokerMitraSendiri', 'lokerMitraLain', 'user'));
+
+        $query = Loker::with(['daftarLoker.user'])
+            ->withCount('daftarLoker')
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc');
+
+        // Filter pencarian
+        if ($request->filled('nama_perusahaan')) {
+            $query->where('nama_perusahaan', 'like', '%' . $request->nama_perusahaan . '%');
+        }
+
+        if ($request->filled('lokasi')) {
+            $query->where('lokasi', 'like', '%' . $request->lokasi . '%');
+        }
+
+        if ($request->filled('tipe')) {
+            $query->where('tipe', $request->tipe);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $lokerMitraSendiri = $query->paginate(5)->withQueryString()->through(function ($s) {
+            $pesertas = collect($s->daftarLoker);
+
+            $s->jumlah_asal_sekolah = $pesertas->pluck('asal_sekolah')->unique()->count();
+            $s->jumlah_jurusan = $pesertas->pluck('jurusan')->unique()->count();
+            $s->jumlah_kuliah = $pesertas->where('status_saat_ini', 'Kuliah')->count();
+            $s->jumlah_bekerja_dan_usaha = $pesertas->whereIn('status_saat_ini', ['Bekerja', 'Wirausaha'])->count();
+            $s->jumlah_tidak_bekerja = $pesertas->where('status_saat_ini', 'Tidak Bekerja')->count();
+
+            return $s;
+        });
+
+        // Ambil loker mitra lain (tanpa pagination)
+        $lokerMitraLain = Loker::where('user_id', '!=', $user->id)
+            ->latest()
+            ->limit(6)
+            ->get();
+
+        return view('mitra.loker', compact(
+            'lokerMitraSendiri',
+            'lokerMitraLain',
+            'user'
+        ));
     }
 
     /**
@@ -102,6 +146,7 @@ class LokerController extends Controller
         $loker->lokasi = $request->lokasi;
         $loker->tipe = $request->tipe;
         $loker->pendidikan = $request->pendidikan;
+        $loker->status = $request->status;
 
         // Format gaji jadi satu string
         $loker->gaji = 'Rp ' . number_format($request->gaji_min, 0, ',', '.') .
@@ -120,7 +165,7 @@ class LokerController extends Controller
             $file->move(public_path('storage/assets/loker'), $file_name);
 
             // 💾 Simpan path baru
-            $loker->gambar = 'assets/sertifikasi/' . $file_name;
+            $loker->gambar = 'assets/loker/' . $file_name;
         }
 
         $loker->save();

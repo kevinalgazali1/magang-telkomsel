@@ -8,16 +8,16 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 
 class PesertaLokerExport implements FromCollection, WithHeadings
 {
-    protected $pelatihan_id;
+    protected $loker_id;
 
-    public function __construct($pelatihan_id)
+    public function __construct($loker_id)
     {
-        $this->pelatihan_id = $pelatihan_id;
+        $this->loker_id = $loker_id;
     }
 
     public function collection()
     {
-        $data = DaftarLoker::where('pelatihan_id', $this->pelatihan_id)->get();
+        $data = DaftarLoker::where('loker_id', $this->loker_id)->get();
 
         return $data->map(function ($item) {
             return [

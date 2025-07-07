@@ -1157,12 +1157,14 @@
             const biayaWrapper = document.getElementById(`edit_biaya_wrapper${id}`);
             const rekeningWrapper = document.getElementById(`edit_rekening_wrapper${id}`);
             const biayaInput = biayaWrapper?.querySelector('input[name="biaya"]');
+            const rekeningInput = rekeningWrapper?.querySelector('input[name="nomor_rekening"]');
 
             if (statusSelect) {
                 if (statusSelect.value === 'Gratis') {
                     if (biayaWrapper) biayaWrapper.style.display = 'none';
                     if (rekeningWrapper) rekeningWrapper.style.display = 'none';
                     if (biayaInput) biayaInput.value = 0;
+                    if (rekeningInput) rekeningInput.value = '';
                 } else {
                     if (biayaWrapper) biayaWrapper.style.display = 'block';
                     if (rekeningWrapper) rekeningWrapper.style.display = 'block';

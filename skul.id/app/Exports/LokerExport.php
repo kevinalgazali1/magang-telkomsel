@@ -56,7 +56,7 @@ class LokerExport implements FromCollection, WithHeadings
                 'Nama Pelatihan' => $p->nama_perusahaan ?? '-',
                 'Lokasi' => $p->lokasi ?? '-',
                 'Posisi' => $p->posisi ?? '-',
-                'Jumlah Peserta' => $p->daftar_sertifikasis_count ?? 0,
+                'Jumlah Peserta' => $p->daftar_loker_count ?? 0,
                 'Jumlah Asal Sekolah' => $pesertas->pluck('asal_sekolah')->unique()->count() ?? 0,
                 'Jumlah Jurusan' => $pesertas->pluck('jurusan')->unique()->count() ?? 0,
                 'Jumlah Bekerja/Wirausaha' => $pesertas->whereIn('status_saat_ini', ['Bekerja', 'Wirausaha'])->count() ?? 0,

@@ -712,26 +712,14 @@
                                                                 <li>
                                                                     <button class="dropdown-item"
                                                                         data-bs-toggle="modal"
-                                                                        data-bs-target="#editPelatihanModal"
-                                                                        data-id="{{ $pelatihan->id }}"
-                                                                        data-judul="{{ $pelatihan->nama_pelatihan }}"
-                                                                        data-deskripsi="{{ $pelatihan->deskripsi }}"
-                                                                        data-mulai="{{ $pelatihan->tanggal_mulai }}"
-                                                                        data-selesai="{{ $pelatihan->tanggal_selesai }}"
-                                                                        data-kota="{{ $pelatihan->kota }}"
-                                                                        data-tempat_pelatihan="{{ $pelatihan->tempat_pelatihan }}"
-                                                                        data-status="{{ $pelatihan->status }}"
-                                                                        data-biaya="{{ $pelatihan->biaya }}"
-                                                                        data-rekening="{{ $pelatihan->nomor_rekening }}"
-                                                                        data-foto="{{ asset('storage/' . $pelatihan->foto_pelatihan) }}"
-                                                                        onclick="openEditModal(this)">
+                                                                        data-bs-target="#edit{{ $pelatihan->id }}">
                                                                         <i class="bi bi-pencil me-2"></i> Edit
                                                                     </button>
                                                                 </li>
                                                             @endif
                                                             <li>
                                                                 <form id="deleteForm-{{ $pelatihan->id }}"
-                                                                    action="{{ route('mitra.sertifikasi.destroy', $pelatihan->id) }}"
+                                                                    action="{{ route('mitra.pelatihan.destroy', $pelatihan->id) }}"
                                                                     method="POST" class="d-none">
                                                                     @csrf
                                                                     @method('DELETE')
@@ -748,7 +736,7 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="7" class="text-center text-muted py-4">Belum ada
+                                                <td colspan="11" class="text-center text-muted py-4">Belum ada
                                                     sertifikasi yang Anda buat.</td>
                                             </tr>
                                         @endforelse
@@ -756,46 +744,54 @@
                                 </table>
                             </div>
 
-                            <nav>
-                                <ul class="pagination mb-0">
-                                    {{-- Previous Page Link --}}
-                                    @if ($pelatihanMitraSendiri->onFirstPage())
-                                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                                    @else
-                                        <li class="page-item"><a class="page-link"
-                                                href="{{ $pelatihanikasiMitraSendiri->previousPageUrl() }}"
-                                                rel="prev">&laquo;</a>
-                                        </li>
-                                    @endif
+                            <div
+                                class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                                <div class="small text-muted">
+                                    Showing
+                                    <strong>{{ $pelatihanMitraSendiri->firstItem() ?? 0 }}</strong>
+                                    to
+                                    <strong>{{ $pelatihanMitraSendiri->lastItem() ?? 0 }}</strong>
+                                    of
+                                    <strong>{{ $pelatihanMitraSendiri->total() }}</strong>
+                                    entries
+                                </div>
 
-                                    {{-- Pagination Elements --}}
-                                    @foreach ($pelatihanMitraSendiri->getUrlRange(1, $pelatihanMitraSendiri->lastPage()) as $page => $url)
-                                        @if ($page == $pelatihanMitraSendiri->currentPage())
-                                            <li class="page-item active"><span
-                                                    class="page-link">{{ $page }}</span>
-                                            </li>
-                                        @elseif (
-                                            $page == 1 ||
-                                                $page == $pelatihanMitraSendiri->lastPage() ||
-                                                abs($page - $pelatihanMitraSendiri->currentPage()) <= 1)
+                                <nav>
+                                    <ul class="pagination mb-0">
+                                        {{-- Previous Page Link --}}
+                                        @if ($pelatihanMitraSendiri->onFirstPage())
+                                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                        @else
                                             <li class="page-item"><a class="page-link"
-                                                    href="{{ $url }}">{{ $page }}</a></li>
-                                        @elseif ($page == 2 || $page == $pelatihanMitraSendiri->lastPage() - 1)
-                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                                    href="{{ $pelatihanMitraSendiri->previousPageUrl() }}"
+                                                    rel="prev">&laquo;</a></li>
                                         @endif
-                                    @endforeach
 
-                                    {{-- Next Page Link --}}
-                                    @if ($pelatihanMitraSendiri->hasMorePages())
-                                        <li class="page-item"><a class="page-link"
-                                                href="{{ $pelatihanMitraSendiri->nextPageUrl() }}"
-                                                rel="next">&raquo;</a>
-                                        </li>
-                                    @else
-                                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                                    @endif
-                                </ul>
-                            </nav>
+                                        {{-- Pagination Elements --}}
+                                        @foreach ($pelatihanMitraSendiri->getUrlRange(1, $pelatihanMitraSendiri->lastPage()) as $page => $url)
+                                            @if ($page == $pelatihanMitraSendiri->currentPage())
+                                                <li class="page-item active"><span
+                                                        class="page-link">{{ $page }}</span>
+                                                </li>
+                                            @elseif ($page == 1 || $page == $pelatihanMitraSendiri->lastPage() || abs($page - $pelatihanMitraSendiri->currentPage()) <= 1)
+                                                <li class="page-item"><a class="page-link"
+                                                        href="{{ $url }}">{{ $page }}</a></li>
+                                            @elseif ($page == 2 || $page == $pelatihanMitraSendiri->lastPage() - 1)
+                                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                            @endif
+                                        @endforeach
+
+                                        {{-- Next Page Link --}}
+                                        @if ($pelatihanMitraSendiri->hasMorePages())
+                                            <li class="page-item"><a class="page-link"
+                                                    href="{{ $pelatihanMitraSendiri->nextPageUrl() }}" rel="next">&raquo;</a>
+                                            </li>
+                                        @else
+                                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                        @endif
+                                    </ul>
+                                </nav>
+                            </div>
 
                             <!-- Separator -->
                             <hr class="container my-5">
@@ -1106,110 +1102,128 @@
                         </div>
                     </div>
 
-                    <!-- Modal Form Edit Pelatihan -->
-                    <div class="modal fade" id="editPelatihanModal" tabindex="-1"
-                        aria-labelledby="editPelatihanModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-                            <div class="modal-content edit-modal-content">
-                                <form id="editForm" method="POST" enctype="multipart/form-data"
-                                    action="{{ url('/mitra/update-pelatihan/' . $pelatihan->id) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="modal-header border-0">
-                                        <h5 class="modal-title fw-semibold text-primary-emphasis">
-                                            <i class="bi bi-pencil-square me-2"></i>Edit Pelatihan
-                                        </h5>
-                                    </div>
+                    {{-- Modal Edit --}}
+                    @foreach ($pelatihanMitraSendiri as $pelatihan)
+                        <div class="modal fade" id="edit{{ $pelatihan->id }}" tabindex="-1"
+                            aria-labelledby="editPelatihanModalLabel{{ $pelatihan->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content edit-modal-content">
+                                    <form id="editForm{{ $pelatihan->id }}"
+                                        action="{{ url('/mitra/update-pelatihan/' . $pelatihan->id) }}"
+                                        method="POST" enctype="multipart/form-data">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="update">
+                                        <input type="hidden" name="id" value="{{ $pelatihan->id }}">
 
-                                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-                                        <div class="row gx-4 gy-3">
-                                            <!-- Left Column -->
-                                            <div class="col-lg-6">
-                                                <input type="hidden" id="edit_id">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Judul Pelatihan</label>
-                                                    <input type="text" class="form-control edit-input"
-                                                        id="edit_nama_pelatihan" name="nama_pelatihan"
-                                                        placeholder="Contoh: Pelatihan Digital Marketing" required>
-                                                </div>
+                                        <div class="modal-header border-0">
+                                            <h5 class="modal-title fw-semibold text-primary-emphasis">
+                                                <i class="bi bi-pencil-square me-2"></i> Edit Pelatihan
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
 
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Deskripsi</label>
-                                                    <textarea class="form-control edit-input" id="edit_deskripsi" name="deskripsi" rows="4"
-                                                        placeholder="Tulis penjelasan pelatihan secara ringkas..." required></textarea>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Tanggal Mulai</label>
-                                                        <input type="date" class="form-control edit-input"
-                                                            id="edit_tanggal_mulai" name="tanggal_mulai" required>
+                                        <div class="modal-body">
+                                            <div class="row gx-4 gy-3">
+                                                <!-- Left Column -->
+                                                <div class="col-lg-6">
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Judul Pelatihan</label>
+                                                        <input type="text" class="form-control edit-input"
+                                                            name="nama_pelatihan"
+                                                            value="{{ $pelatihan->nama_pelatihan }}" required>
                                                     </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Tanggal Selesai</label>
-                                                        <input type="date" class="form-control edit-input"
-                                                            id="edit_tanggal_selesai" name="tanggal_selesai" required>
+
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Deskripsi</label>
+                                                        <textarea class="form-control edit-input" name="deskripsi" rows="4" required>{{ $pelatihan->deskripsi }}</textarea>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Tanggal Mulai</label>
+                                                            <input type="date" class="form-control edit-input"
+                                                                name="tanggal_mulai"
+                                                                value="{{ $pelatihan->tanggal_mulai }}" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Tanggal Selesai</label>
+                                                            <input type="date" class="form-control edit-input"
+                                                                name="tanggal_selesai"
+                                                                value="{{ $pelatihan->tanggal_selesai }}" required>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <!-- Right Column -->
-                                            <div class="col-lg-6">
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Kota</label>
-                                                    <input type="text" class="form-control edit-input"
-                                                        id="edit_kota" name="kota" required>
-                                                </div>
+                                                <!-- Right Column -->
+                                                <div class="col-lg-6">
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Kota</label>
+                                                        <input type="text" class="form-control edit-input"
+                                                            name="kota" value="{{ $pelatihan->kota }}" required>
+                                                    </div>
 
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Tempat</label>
-                                                    <input type="text" class="form-control edit-input"
-                                                        id="edit_tempat_pelatihan" name="tempat_pelatihan" required>
-                                                </div>
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Tempat</label>
+                                                        <input type="text" class="form-control edit-input"
+                                                            name="tempat_pelatihan"
+                                                            value="{{ $pelatihan->tempat_pelatihan }}" required>
+                                                    </div>
 
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Status Pelatihan</label>
-                                                    <select class="form-select edit-input" id="edit_status"
-                                                        name="status" required onchange="toggleBiayaField()">
-                                                        <option value="Berbayar">Berbayar</option>
-                                                        <option value="Gratis">Gratis</option>
-                                                    </select>
-                                                </div>
+                                                    <div class="form-group mb-3">
+                                                        <label class="form-label">Status Pelatihan</label>
+                                                        <select class="form-select edit-input" name="status"
+                                                            onchange="toggleBiayaField({{ $pelatihan->id }})"
+                                                            required>
+                                                            <option value="Berbayar"
+                                                                {{ $pelatihan->status == 'Berbayar' ? 'selected' : '' }}>
+                                                                Berbayar
+                                                            </option>
+                                                            <option value="Gratis"
+                                                                {{ $pelatihan->status == 'Gratis' ? 'selected' : '' }}>
+                                                                Gratis</option>
+                                                        </select>
+                                                    </div>
 
-                                                <div class="form-group mb-3" id="edit_biaya_wrapper">
-                                                    <label class="form-label">Biaya (Rp)</label>
-                                                    <input type="string" class="form-control edit-input"
-                                                        id="edit_biaya" name="biaya" oninput="formatRupiah(this)">
-                                                </div>
-                                                <div class="form-group mb-3" id="edit_rekening_wrapper">
-                                                    <label class="form-label">Nomor Rekening</label>
-                                                    <input type="text" class="form-control edit-input"
-                                                        name="nomor_rekening" id="edit_nomor_rekening">
-                                                </div>
+                                                    <div class="form-group mb-3"
+                                                        id="edit_biaya_wrapper{{ $pelatihan->id }}">
+                                                        <label class="form-label">Biaya (Rp)</label>
+                                                        <input type="string" class="form-control edit-input"
+                                                            name="biaya" oninput="formatRupiah(this)"
+                                                            value="{{ $pelatihan->biaya }}">
+                                                    </div>
 
-                                                <div class="form-group">
-                                                    <label class="form-label">Upload Foto Pelatihan (Opsional)</label>
-                                                    <input type="file" class="form-control edit-input"
-                                                        id="edit_foto_pelatihan" name="foto_pelatihan"
-                                                        accept=".jpg,.jpeg,.png"
-                                                        onchange="previewImage(this, 'preview_foto_edit')">
+                                                    <div class="form-group mb-3"
+                                                        id="edit_rekening_wrapper{{ $pelatihan->id }}">
+                                                        <label class="form-label">Nomor Rekening</label>
+                                                        <input type="text" class="form-control edit-input"
+                                                            name="nomor_rekening"
+                                                            value="{{ $pelatihan->nomor_rekening }}">
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <label class="form-label">Upload Foto Pelatihan
+                                                            (Opsional)
+                                                        </label>
+                                                        <input type="file" class="form-control edit-input"
+                                                            name="foto_pelatihan" accept=".jpg,.jpeg,.png">
+                                                    </div>
                                                 </div>
-                                                <img id="preview_foto_edit" class="img-fluid mt-2 rounded"
-                                                    style="max-height: 200px;">
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="modal-footer border-top-0">
-                                        <button type="button" class="btn btn-light"
-                                            data-bs-dismiss="modal">Batal</button>
-                                        <button type="button" class="btn btn-primary"
-                                            onclick="confirmEditPelatihan()">Perbarui</button>
-                                    </div>
-                                </form>
+                                        <div class="modal-footer border-top-0">
+                                            <button type="button" class="btn btn-light"
+                                                data-bs-dismiss="modal">Batal</button>
+                                            <button type="button" class="btn btn-primary"
+                                                onclick="confirmEditPelatihan({{ $pelatihan->id }})">Perbarui</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endforeach
 
                 </div>
                 <footer class="footer text-dark"
@@ -1323,7 +1337,7 @@
                     });
                 }
 
-                function confirmEditPelatihan() {
+                function confirmEditPelatihan(id) {
                     Swal.fire({
                         title: 'Perbarui Pelatihan?',
                         text: "Pastikan semua data sudah benar.",
@@ -1335,7 +1349,7 @@
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            document.getElementById('editForm').submit();
+                            document.getElementById('editForm' + id).submit();
                         }
                     });
                 }
@@ -1417,39 +1431,6 @@
                 });
             </script>
             <script>
-                function openEditModal(button) {
-                    const id = button.getAttribute('data-id');
-                    const nama_pelatihan = button.getAttribute('data-nama_pelatihan');
-                    const deskripsi = button.getAttribute('data-deskripsi');
-                    const mulai = button.getAttribute('data-mulai');
-                    const selesai = button.getAttribute('data-selesai');
-                    const kota = button.getAttribute('data-kota');
-                    const tempat = button.getAttribute('data-tempat_pelatihan');
-                    const status = button.getAttribute('data-status');
-                    const biaya = button.getAttribute('data-biaya');
-                    const nomor_rekening = button.getAttribute('data-rekening');
-                    const foto = button.getAttribute('data-foto');
-
-                    // Set input values
-                    document.getElementById('edit_id').value = id;
-                    document.getElementById('edit_nama_pelatihan').value = nama_pelatihan;
-                    document.getElementById('edit_deskripsi').value = deskripsi;
-                    document.getElementById('edit_tanggal_mulai').value = mulai;
-                    document.getElementById('edit_tanggal_selesai').value = selesai;
-                    document.getElementById('edit_kota').value = kota;
-                    document.getElementById('edit_tempat_pelatihan').value = tempat;
-                    document.getElementById('edit_status').value = status;
-                    document.getElementById('edit_biaya').value = biaya ? biaya : '';
-                    document.getElementById('edit_nomor_rekening').value = nomor_rekening;
-                    document.getElementById('preview_foto_edit').src = foto;
-
-                    // Tampilkan/sembunyikan field biaya berdasarkan status
-                    toggleBiayaField(document.getElementById('edit_status'));
-
-                    // Set action form
-                    document.getElementById('editForm').action = `/public/mitra/update-pelatihan/${id}`;
-                }
-
                 function formatRupiah(input) {
                     let value = input.value.replace(/\D/g, '');
                     input.value = new Intl.NumberFormat('id-ID').format(value);
@@ -1461,6 +1442,31 @@
                     input.value = formatted;
                 }
 
+                function toggleBiayaField(id) {
+                    const statusSelect = document.querySelector(`[name="status"][onchange*="${id}"]`);
+                    const biayaWrapper = document.getElementById(`edit_biaya_wrapper${id}`);
+                    const rekeningWrapper = document.getElementById(`edit_rekening_wrapper${id}`);
+                    const biayaInput = biayaWrapper?.querySelector('input[name="biaya"]');
+                    const rekeningInput = rekeningWrapper?.querySelector('input[name="nomor_rekening"]');
+
+                    if (statusSelect) {
+                        if (statusSelect.value === 'Gratis') {
+                            if (biayaWrapper) biayaWrapper.style.display = 'none';
+                            if (rekeningWrapper) rekeningWrapper.style.display = 'none';
+                            if (biayaInput) biayaInput.value = 0;
+                            if (rekeningInput) rekeningInput.value = '';
+                        } else {
+                            if (biayaWrapper) biayaWrapper.style.display = 'block';
+                            if (rekeningWrapper) rekeningWrapper.style.display = 'block';
+                        }
+                    }
+                }
+
+                document.addEventListener('DOMContentLoaded', function() {
+                    @foreach ($pelatihanMitraSendiri as $pelatihan)
+                        toggleBiayaField({{ $pelatihan->id }});
+                    @endforeach
+                });
 
                 function toggleBiaya() {
                     const status = document.getElementById('status').value;
@@ -1478,80 +1484,11 @@
                     }
                 }
 
-                // Inisialisasi tampilan awal saat modal dibuka
+                // Panggil saat halaman selesai dimuat
                 document.addEventListener('DOMContentLoaded', function() {
-                    toggleBiayaPelatihan();
+                    toggleBiaya();
                 });
 
-                function showDetailPelatihanModal(foto, judul, deskripsi, tanggal, kota, tempat, biaya, id) {
-                    document.getElementById('pelatihanFoto').src = foto;
-                    document.getElementById('pelatihanJudul').textContent = judul;
-                    document.getElementById('pelatihanDeskripsi').textContent = deskripsi;
-                    document.getElementById('pelatihanTanggal').textContent = tanggal;
-                    document.getElementById('pelatihanKota').textContent = kota;
-                    document.getElementById('pelatihanTempat').textContent = tempat;
-                    document.getElementById('pelatihanBiaya').textContent = biaya;
-
-                    const tbody = document.getElementById('pesertaPelatihanTableBody');
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Memuat data peserta...</td></tr>';
-
-                    fetch(`/pelatihan/${id}/peserta`)
-                        .then(response => response.json())
-                        .then(data => {
-                            tbody.innerHTML = '';
-                            if (data.length === 0) {
-                                tbody.innerHTML =
-                                    '<tr><td colspan="4" class="text-center text-muted">Belum ada peserta.</td></tr>';
-                            } else {
-                                data.forEach((p, i) => {
-                                    tbody.innerHTML += `
-            <tr>
-              <td>${i + 1}</td>
-              <td>${p.nama}</td>
-              <td>${p.email}</td>
-              <td>${p.telepon}</td>
-            </tr>
-          `;
-                                });
-                            }
-                        });
-
-                    // Modal ID untuk pelatihan
-                    const modal = new bootstrap.Modal(document.getElementById('detailPelatihanModal'));
-                    modal.show();
-                }
-
-                function toggleBiayaField() {
-                    const statusSelect = document.getElementById('edit_status');
-                    const biayaWrapper = document.getElementById('edit_biaya_wrapper');
-                    const rekeningWrapper = document.getElementById('edit_rekening_wrapper');
-                    const biayaInput = document.getElementById('edit_biaya');
-
-                    if (statusSelect.value === 'Gratis') {
-                        biayaWrapper.style.display = 'none';
-                        rekeningWrapper.style.display = 'none';
-                        biayaInput.value = 0;
-                    } else {
-                        biayaWrapper.style.display = 'block';
-                        rekeningWrapper.style.display = 'block';
-                    }
-                }
-
-                function formatRupiah(input) {
-                    let value = input.value.replace(/\D/g, '');
-                    input.value = new Intl.NumberFormat('id-ID').format(value);
-                }
-
-                function previewImage(input, targetId) {
-                    const file = input.files[0];
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        document.getElementById(targetId).src = e.target.result;
-                    };
-                    if (file) reader.readAsDataURL(file);
-                }
-            </script>
-            <script>
                 const tanggalMulai = document.getElementById('tanggal_mulai');
                 const tanggalSelesai = document.getElementById('tanggal_selesai');
 

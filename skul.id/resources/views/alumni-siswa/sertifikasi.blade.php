@@ -956,41 +956,54 @@
                             </div>
                         @endif
 
-                        <nav>
-                            <ul class="pagination mb-0">
-                                {{-- Previous Page Link --}}
-                                @if ($sertifikasi->onFirstPage())
-                                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                                @else
-                                    <li class="page-item"><a class="page-link"
-                                            href="{{ $sertifikasi->previousPageUrl() }}" rel="prev">&laquo;</a>
-                                    </li>
-                                @endif
+                        <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                            <div class="small text-muted">
+                                Showing
+                                <strong>{{ $sertifikasi->firstItem() ?? 0 }}</strong>
+                                to
+                                <strong>{{ $sertifikasi->lastItem() ?? 0 }}</strong>
+                                of
+                                <strong>{{ $sertifikasi->total() }}</strong>
+                                entries
+                            </div>
 
-                                {{-- Pagination Elements --}}
-                                @foreach ($sertifikasi->getUrlRange(1, $sertifikasi->lastPage()) as $page => $url)
-                                    @if ($page == $sertifikasi->currentPage())
-                                        <li class="page-item active"><span
-                                                class="page-link">{{ $page }}</span></li>
-                                    @elseif ($page == 1 || $page == $sertifikasi->lastPage() || abs($page - $sertifikasi->currentPage()) <= 1)
+                            <nav>
+                                <ul class="pagination mb-0">
+                                    {{-- Previous Page Link --}}
+                                    @if ($sertifikasi->onFirstPage())
+                                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                    @else
                                         <li class="page-item"><a class="page-link"
-                                                href="{{ $url }}">{{ $page }}</a></li>
-                                    @elseif ($page == 2 || $page == $sertifikasi->lastPage() - 1)
-                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                                href="{{ $sertifikasi->previousPageUrl() }}"
+                                                rel="prev">&laquo;</a></li>
                                     @endif
-                                @endforeach
 
-                                {{-- Next Page Link --}}
-                                @if ($sertifikasi->hasMorePages())
-                                    <li class="page-item"><a class="page-link"
-                                            href="{{ $sertifikasi->nextPageUrl() }}" rel="next">&raquo;</a></li>
-                                @else
-                                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                                @endif
-                            </ul>
-                        </nav>
+                                    {{-- Pagination Elements --}}
+                                    @foreach ($sertifikasi->getUrlRange(1, $sertifikasi->lastPage()) as $page => $url)
+                                        @if ($page == $sertifikasi->currentPage())
+                                            <li class="page-item active"><span
+                                                    class="page-link">{{ $page }}</span>
+                                            </li>
+                                        @elseif ($page == 1 || $page == $sertifikasi->lastPage() || abs($page - $sertifikasi->currentPage()) <= 1)
+                                            <li class="page-item"><a class="page-link"
+                                                    href="{{ $url }}">{{ $page }}</a></li>
+                                        @elseif ($page == 2 || $page == $sertifikasi->lastPage() - 1)
+                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                        @endif
+                                    @endforeach
 
-
+                                    {{-- Next Page Link --}}
+                                    @if ($sertifikasi->hasMorePages())
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $sertifikasi->nextPageUrl() }}"
+                                                rel="next">&raquo;</a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                    @endif
+                                </ul>
+                            </nav>
+                        </div>
 
                     </div>
                 </div>

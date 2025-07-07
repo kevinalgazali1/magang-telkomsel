@@ -658,9 +658,10 @@
                                 aria-labelledby="editPelatihanModalLabel{{ $p->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                                     <div class="modal-content edit-modal-content">
-                                        <form action="{{ route('admin.pelatihan') }}" method="POST"
+                                        <form id="editForm" action="{{ url('/admin/update-pelatihan/' . $p->id) }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
+                                            @method('PUT')
                                             <input type="hidden" name="action" value="update">
                                             <input type="hidden" name="id" value="{{ $p->id }}">
 
@@ -1184,12 +1185,14 @@
             const biayaWrapper = document.getElementById(`edit_biaya_wrapper${id}`);
             const rekeningWrapper = document.getElementById(`edit_rekening_wrapper${id}`);
             const biayaInput = biayaWrapper?.querySelector('input[name="biaya"]');
+            const rekeningInput = rekeningWrapper?.querySelector('input[name="nomor_rekening"]');
 
             if (statusSelect) {
                 if (statusSelect.value === 'Gratis') {
                     if (biayaWrapper) biayaWrapper.style.display = 'none';
                     if (rekeningWrapper) rekeningWrapper.style.display = 'none';
                     if (biayaInput) biayaInput.value = 0;
+                    if (rekeningInput) rekeningInput.value = '';
                 } else {
                     if (biayaWrapper) biayaWrapper.style.display = 'block';
                     if (rekeningWrapper) rekeningWrapper.style.display = 'block';

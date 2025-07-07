@@ -701,8 +701,7 @@
                                                 <i class="bi bi-cash-stack text-primary me-3 fs-4"></i>
                                                 <div>
                                                     <strong class="d-block">Gaji</strong>
-                                                    <span
-                                                        class="text-muted">{{ $item->gaji }}</span>
+                                                    <span class="text-muted">{{ $item->gaji }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -774,6 +773,54 @@
                             </div>
                         </div>
                     @endforeach
+
+                    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                        <div class="small text-muted">
+                            Showing
+                            <strong>{{ $loker->firstItem() ?? 0 }}</strong>
+                            to
+                            <strong>{{ $loker->lastItem() ?? 0 }}</strong>
+                            of
+                            <strong>{{ $loker->total() }}</strong>
+                            entries
+                        </div>
+
+                        <nav>
+                            <ul class="pagination mb-0">
+                                {{-- Previous Page Link --}}
+                                @if ($loker->onFirstPage())
+                                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                @else
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $loker->previousPageUrl() }}"
+                                            rel="prev">&laquo;</a></li>
+                                @endif
+
+                                {{-- Pagination Elements --}}
+                                @foreach ($loker->getUrlRange(1, $loker->lastPage()) as $page => $url)
+                                    @if ($page == $loker->currentPage())
+                                        <li class="page-item active"><span
+                                                class="page-link">{{ $page }}</span>
+                                        </li>
+                                    @elseif ($page == 1 || $page == $loker->lastPage() || abs($page - $loker->currentPage()) <= 1)
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $url }}">{{ $page }}</a></li>
+                                    @elseif ($page == 2 || $page == $loker->lastPage() - 1)
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($loker->hasMorePages())
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $loker->nextPageUrl() }}" rel="next">&raquo;</a>
+                                    </li>
+                                @else
+                                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                @endif
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
             <footer class="footer text-dark"

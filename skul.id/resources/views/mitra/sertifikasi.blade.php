@@ -666,18 +666,7 @@
                                                                 <li>
                                                                     <button class="dropdown-item"
                                                                         data-bs-toggle="modal"
-                                                                        data-bs-target="#editSertifikasiModal"
-                                                                        data-id="{{ $sertif->id }}"
-                                                                        data-judul="{{ $sertif->judul_sertifikasi }}"
-                                                                        data-deskripsi="{{ $sertif->deskripsi }}"
-                                                                        data-mulai="{{ $sertif->tanggal_mulai }}"
-                                                                        data-selesai="{{ $sertif->tanggal_selesai }}"
-                                                                        data-kota="{{ $sertif->kota }}"
-                                                                        data-tempat="{{ $sertif->tempat }}"
-                                                                        data-biaya="{{ $sertif->biaya }}"
-                                                                        data-rekening="{{ $sertif->nomor_rekening }}"
-                                                                        data-foto="{{ asset('storage/' . $sertif->foto_sertifikasi) }}"
-                                                                        onclick="openEditModal(this)">
+                                                                        data-bs-target="#modalEdit{{ $sertif->id }}">
                                                                         <i class="bi bi-pencil me-2"></i> Edit
                                                                     </button>
                                                                 </li>
@@ -709,46 +698,54 @@
                                 </table>
                             </div>
 
-                            <nav>
-                                <ul class="pagination mb-0">
-                                    {{-- Previous Page Link --}}
-                                    @if ($sertifikasiMitraSendiri->onFirstPage())
-                                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                                    @else
-                                        <li class="page-item"><a class="page-link"
-                                                href="{{ $sertifikasiMitraSendiri->previousPageUrl() }}"
-                                                rel="prev">&laquo;</a>
-                                        </li>
-                                    @endif
+                            <div
+                                class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                                <div class="small text-muted">
+                                    Showing
+                                    <strong>{{ $sertifikasiMitraSendiri->firstItem() ?? 0 }}</strong>
+                                    to
+                                    <strong>{{ $sertifikasiMitraSendiri->lastItem() ?? 0 }}</strong>
+                                    of
+                                    <strong>{{ $sertifikasiMitraSendiri->total() }}</strong>
+                                    entries
+                                </div>
 
-                                    {{-- Pagination Elements --}}
-                                    @foreach ($sertifikasiMitraSendiri->getUrlRange(1, $sertifikasiMitraSendiri->lastPage()) as $page => $url)
-                                        @if ($page == $sertifikasiMitraSendiri->currentPage())
-                                            <li class="page-item active"><span
-                                                    class="page-link">{{ $page }}</span>
-                                            </li>
-                                        @elseif (
-                                            $page == 1 ||
-                                                $page == $sertifikasiMitraSendiri->lastPage() ||
-                                                abs($page - $sertifikasiMitraSendiri->currentPage()) <= 1)
+                                <nav>
+                                    <ul class="pagination mb-0">
+                                        {{-- Previous Page Link --}}
+                                        @if ($sertifikasiMitraSendiri->onFirstPage())
+                                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                        @else
                                             <li class="page-item"><a class="page-link"
-                                                    href="{{ $url }}">{{ $page }}</a></li>
-                                        @elseif ($page == 2 || $page == $sertifikasiMitraSendiri->lastPage() - 1)
-                                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                                    href="{{ $sertifikasiMitraSendiri->previousPageUrl() }}"
+                                                    rel="prev">&laquo;</a></li>
                                         @endif
-                                    @endforeach
 
-                                    {{-- Next Page Link --}}
-                                    @if ($sertifikasiMitraSendiri->hasMorePages())
-                                        <li class="page-item"><a class="page-link"
-                                                href="{{ $sertifikasiMitraSendiri->nextPageUrl() }}"
-                                                rel="next">&raquo;</a>
-                                        </li>
-                                    @else
-                                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                                    @endif
-                                </ul>
-                            </nav>
+                                        {{-- Pagination Elements --}}
+                                        @foreach ($sertifikasiMitraSendiri->getUrlRange(1, $sertifikasiMitraSendiri->lastPage()) as $page => $url)
+                                            @if ($page == $sertifikasiMitraSendiri->currentPage())
+                                                <li class="page-item active"><span
+                                                        class="page-link">{{ $page }}</span>
+                                                </li>
+                                            @elseif ($page == 1 || $page == $sertifikasiMitraSendiri->lastPage() || abs($page - $sertifikasiMitraSendiri->currentPage()) <= 1)
+                                                <li class="page-item"><a class="page-link"
+                                                        href="{{ $url }}">{{ $page }}</a></li>
+                                            @elseif ($page == 2 || $page == $sertifikasiMitraSendiri->lastPage() - 1)
+                                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                            @endif
+                                        @endforeach
+
+                                        {{-- Next Page Link --}}
+                                        @if ($sertifikasiMitraSendiri->hasMorePages())
+                                            <li class="page-item"><a class="page-link"
+                                                    href="{{ $sertifikasiMitraSendiri->nextPageUrl() }}" rel="next">&raquo;</a>
+                                            </li>
+                                        @else
+                                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                        @endif
+                                    </ul>
+                                </nav>
+                            </div>
 
                             <hr class="my-5">
                             <h5 class="mb-4 fw-bold">Sertifikasi Mitra Lain</h5>
@@ -916,113 +913,131 @@
                                 </div>
                             </div>
 
-                            <!-- Modal Edit Sertifikasi -->
-                            <div class="modal fade" id="editSertifikasiModal" tabindex="-1"
-                                aria-labelledby="editSertifikasiModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-                                    <div class="modal-content edit-modal-content">
-                                        <form id="editForm" method="POST" enctype="multipart/form-data"
-                                            action="{{ url('/mitra/update-sertifikasi/' . $sertif->id) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="modal-header border-0">
-                                                <h5 class="modal-title fw-semibold text-primary-emphasis">
-                                                    <i class="bi bi-pencil-square me-2"></i>Edit Sertifikasi
-                                                </h5>
-                                            </div>
+                            {{-- Loop untuk Modal Edit --}}
+                            @foreach ($sertifikasiMitraSendiri as $sertif)
+                                <div class="modal fade" id="modalEdit{{ $sertif->id }}" tabindex="-1"
+                                    aria-labelledby="modalEditLabel{{ $sertif->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                                        <div class="modal-content edit-modal-content">
+                                            <form id="editForm{{ $sertif->id }}" method="POST"
+                                                action="{{ url('/mitra/update-sertifikasi/' . $sertif->id) }}"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                @method('PUT')
+                                                <input type="hidden" name="action" value="update">
+                                                <input type="hidden" name="id" value="{{ $sertif->id }}">
 
-                                            <div class="modal-body">
-                                                <div class="row gx-4 gy-3">
-                                                    <!-- Left Section -->
-                                                    <div class="col-lg-6">
-                                                        <input type="hidden" id="edit_id">
-                                                        <div class="form-group mb-3">
-                                                            <label class="form-label">Judul Sertifikasi</label>
-                                                            <input type="text" class="form-control edit-input"
-                                                                id="edit_judul_sertifikasi" name="judul_sertifikasi"
-                                                                placeholder="Contoh: Sertifikasi UI/UX Designer"
-                                                                required>
+                                                <div class="modal-header border-0">
+                                                    <h5 class="modal-title fw-semibold text-primary-emphasis">
+                                                        <i class="bi bi-pencil-square me-2"></i>Edit Sertifikasi
+                                                    </h5>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <div class="row gx-4 gy-3">
+                                                        <!-- Left Section -->
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label">Judul Sertifikasi</label>
+                                                                <input type="text" class="form-control edit-input"
+                                                                    name="judul_sertifikasi"
+                                                                    value="{{ $sertif->judul_sertifikasi }}" required>
+                                                            </div>
+
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label">Deskripsi</label>
+                                                                <textarea class="form-control edit-input" name="deskripsi" rows="4" required>{{ $sertif->deskripsi }}</textarea>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Tanggal Mulai</label>
+                                                                    <input type="date"
+                                                                        class="form-control edit-input"
+                                                                        name="tanggal_mulai"
+                                                                        value="{{ $sertif->tanggal_mulai }}" required>
+                                                                </div>
+                                                                <div class="col-md-6 mb-3">
+                                                                    <label class="form-label">Tanggal Selesai</label>
+                                                                    <input type="date"
+                                                                        class="form-control edit-input"
+                                                                        name="tanggal_selesai"
+                                                                        value="{{ $sertif->tanggal_selesai }}"
+                                                                        required>
+                                                                </div>
+                                                            </div>
                                                         </div>
 
-                                                        <div class="form-group mb-3">
-                                                            <label class="form-label">Deskripsi</label>
-                                                            <textarea class="form-control edit-input" id="edit_deskripsi" name="deskripsi" rows="4"
-                                                                placeholder="Tulis penjelasan sertifikasi secara ringkas..." required></textarea>
-                                                        </div>
-
-                                                        <div class="row">
-                                                            <div class="col-md-6 mb-3">
-                                                                <label class="form-label">Tanggal Mulai</label>
-                                                                <input type="date" class="form-control edit-input"
-                                                                    id="edit_tanggal_mulai" name="tanggal_mulai"
+                                                        <!-- Right Section -->
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label">Kota</label>
+                                                                <input type="text" class="form-control edit-input"
+                                                                    name="kota" value="{{ $sertif->kota }}"
                                                                     required>
                                                             </div>
-                                                            <div class="col-md-6 mb-3">
-                                                                <label class="form-label">Tanggal Selesai</label>
-                                                                <input type="date" class="form-control edit-input"
-                                                                    id="edit_tanggal_selesai" name="tanggal_selesai"
+
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label">Tempat</label>
+                                                                <input type="text" class="form-control edit-input"
+                                                                    name="tempat" value="{{ $sertif->tempat }}"
                                                                     required>
                                                             </div>
-                                                        </div>
-                                                    </div>
 
-                                                    <!-- Right Section -->
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group mb-3">
-                                                            <label class="form-label">Kota</label>
-                                                            <input type="text" class="form-control edit-input"
-                                                                id="edit_kota" name="kota" required>
-                                                        </div>
+                                                            <div class="form-group mb-3">
+                                                                <label class="form-label">Status Sertifikasi</label>
+                                                                <select class="form-select edit-input" name="status"
+                                                                    onchange="toggleBiayaField({{ $sertif->id }})"
+                                                                    required>
+                                                                    <option value="Berbayar"
+                                                                        {{ $sertif->status == 'Berbayar' ? 'selected' : '' }}>
+                                                                        Berbayar
+                                                                    </option>
+                                                                    <option value="Gratis"
+                                                                        {{ $sertif->status == 'Gratis' ? 'selected' : '' }}>
+                                                                        Gratis</option>
+                                                                </select>
+                                                            </div>
 
-                                                        <div class="form-group mb-3">
-                                                            <label class="form-label">Tempat</label>
-                                                            <input type="text" class="form-control edit-input"
-                                                                id="edit_tempat" name="tempat" required>
-                                                        </div>
+                                                            <div class="form-group mb-3"
+                                                                id="edit_biaya_wrapper{{ $sertif->id }}">
+                                                                <label class="form-label">Biaya (Rp)</label>
+                                                                <input type="string" class="form-control edit-input"
+                                                                    name="biaya" oninput="formatRupiah(this)"
+                                                                    value="{{ $sertif->biaya }}">
+                                                            </div>
 
-                                                        <div class="form-group mb-3">
-                                                            <label class="form-label">Status Sertifikasi</label>
-                                                            <select class="form-select edit-input" id="edit_status"
-                                                                name="status" required onchange="toggleBiayaField()">
-                                                                <option value="Berbayar">Berbayar</option>
-                                                                <option value="Gratis">Gratis</option>
-                                                            </select>
-                                                        </div>
+                                                            <div class="form-group mb-3"
+                                                                id="edit_rekening_wrapper{{ $sertif->id }}">
+                                                                <label class="form-label">Nomor Rekening</label>
+                                                                <input type="text" class="form-control edit-input"
+                                                                    name="nomor_rekening"
+                                                                    value="{{ $sertif->nomor_rekening }}">
+                                                            </div>
 
-                                                        <div class="form-group mb-3" id="edit_biaya_wrapper">
-                                                            <label class="form-label">Biaya (Rp)</label>
-                                                            <input type="string" class="form-control edit-input"
-                                                                id="edit_biaya" name="biaya"
-                                                                oninput="formatRupiah(this)">
-                                                        </div>
-                                                        <div class="form-group mb-3" id="edit_rekening_wrapper">
-                                                            <label class="form-label">Nomor Rekening</label>
-                                                            <input type="text" class="form-control edit-input"
-                                                                name="nomor_rekening" id="edit_nomor_rekening">
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label class="form-label">Upload Foto Sertifikasi
-                                                                (Opsional)</label>
-                                                            <input type="file" class="form-control edit-input"
-                                                                id="edit_foto_sertifikasi" name="foto_sertifikasi"
-                                                                accept=".jpg,.jpeg,.png"
-                                                                onchange="previewImage(this)">
+                                                            <div class="form-group">
+                                                                <label class="form-label">Upload Foto Sertifikasi
+                                                                    (Opsional)
+                                                                </label>
+                                                                <input type="file" class="form-control edit-input"
+                                                                    name="foto_sertifikasi" accept=".jpg,.jpeg,.png"
+                                                                    onchange="previewImage(this, 'preview_foto_{{ $sertif->id }}')">
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            <div class="modal-footer border-top-0">
-                                                <button type="button" class="btn btn-light"
-                                                    data-bs-dismiss="modal">Batal</button>
-                                                <button type="button" class="btn btn-primary"
-                                                    onclick="confirmEdit()">Perbarui</button>
-                                            </div>
-                                        </form>
+                                                <div class="modal-footer border-top-0">
+                                                    <button type="button" class="btn btn-light"
+                                                        data-bs-dismiss="modal">Batal</button>
+                                                    <button type="button" class="btn btn-primary"
+                                                        onclick="confirmEdit({{ $sertif->id }})">Perbarui</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endforeach
 
                             <!-- Modal Detail Sertifikasi -->
                             @foreach ($sertifikasiMitraSendiri as $s)
@@ -1288,7 +1303,7 @@
                 });
             }
 
-            function confirmEdit() {
+            function confirmEdit(id) {
                 Swal.fire({
                     title: 'Perbarui Sertifikasi?',
                     text: "Pastikan semua data sudah benar.",
@@ -1300,7 +1315,7 @@
                     cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        document.getElementById('editForm').submit();
+                        document.getElementById('editForm' + id).submit();
                     }
                 });
             }
@@ -1385,52 +1400,6 @@
         </script>
 
         <script>
-            function openEditModal(button) {
-                const id = button.getAttribute('data-id');
-                const judul = button.getAttribute('data-judul');
-                const deskripsi = button.getAttribute('data-deskripsi');
-                const mulai = button.getAttribute('data-mulai');
-                const selesai = button.getAttribute('data-selesai');
-                const kota = button.getAttribute('data-kota');
-                const tempat = button.getAttribute('data-tempat');
-                const biaya = button.getAttribute('data-biaya');
-                const nomor_rekening = button.getAttribute('data-rekening');
-                const foto = button.getAttribute('data-foto');
-
-                toggleBiayaField();
-
-                document.getElementById('edit_judul_sertifikasi').value = judul;
-                document.getElementById('edit_deskripsi').value = deskripsi;
-                document.getElementById('edit_tanggal_mulai').value = mulai;
-                document.getElementById('edit_tanggal_selesai').value = selesai;
-                document.getElementById('edit_kota').value = kota;
-                document.getElementById('edit_tempat').value = tempat;
-                document.getElementById('edit_biaya').value = biaya;
-                document.getElementById('edit_nomor_rekening').value = nomor_rekening;
-                document.getElementById('preview_foto_edit').src = foto;
-
-                // Set form action URL
-                // document.getElementById('editForm').action = `/public/mitra/update-sertifikasi/${id}`;
-            }
-
-            setTimeout(() => {
-                const alert = document.querySelector('.alert');
-                if (alert) {
-                    alert.classList.remove('show');
-                    alert.classList.add('hide');
-                    setTimeout(() => alert.remove(), 300);
-                }
-            }, 5000); // 5 detik
-
-            // Trigger saat modal dibuka (untuk reset tampilan biaya)
-            document.getElementById('sertifikasiModal').addEventListener('show.bs.modal', () => {
-                toggleBiaya('status', 'biaya');
-            });
-
-            document.getElementById('editSertifikasiModal').addEventListener('show.bs.modal', () => {
-                toggleBiayaField();
-            });
-
             function formatRupiah(input) {
                 let value = input.value.replace(/\D/g, '');
                 input.value = new Intl.NumberFormat('id-ID').format(value);
@@ -1442,21 +1411,31 @@
                 input.value = formatted;
             }
 
-            function toggleBiayaField() {
-                const statusSelect = document.getElementById('edit_status');
-                const biayaWrapper = document.getElementById('edit_biaya_wrapper');
-                const rekeningWrapper = document.getElementById('edit_rekening_wrapper');
-                const biayaInput = document.getElementById('edit_biaya');
+            function toggleBiayaField(id) {
+                const statusSelect = document.querySelector(`[name="status"][onchange*="${id}"]`);
+                const biayaWrapper = document.getElementById(`edit_biaya_wrapper${id}`);
+                const rekeningWrapper = document.getElementById(`edit_rekening_wrapper${id}`);
+                const biayaInput = biayaWrapper?.querySelector('input[name="biaya"]');
+                const rekeningInput = rekeningWrapper?.querySelector('input[name="nomor_rekening"]');
 
-                if (statusSelect.value === 'Gratis') {
-                    biayaWrapper.style.display = 'none';
-                    rekeningWrapper.style.display = 'none';
-                    biayaInput.value = 0;
-                } else {
-                    biayaWrapper.style.display = 'block';
-                    rekeningWrapper.style.display = 'block';
+                if (statusSelect) {
+                    if (statusSelect.value === 'Gratis') {
+                        if (biayaWrapper) biayaWrapper.style.display = 'none';
+                        if (rekeningWrapper) rekeningWrapper.style.display = 'none';
+                        if (biayaInput) biayaInput.value = 0;
+                        if (rekeningInput) rekeningInput.value = '';
+                    } else {
+                        if (biayaWrapper) biayaWrapper.style.display = 'block';
+                        if (rekeningWrapper) rekeningWrapper.style.display = 'block';
+                    }
                 }
             }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                @foreach ($sertifikasiMitraSendiri as $ssertif)
+                    toggleBiayaField({{ $sertif->id }});
+                @endforeach
+            });
 
             function toggleBiaya() {
                 const status = document.getElementById('status').value;
@@ -1474,21 +1453,11 @@
                 }
             }
 
-            function previewImage(input) {
-                const preview = document.getElementById('preview_foto_edit');
-                const file = input.files[0];
+            // Panggil saat halaman selesai dimuat
+            document.addEventListener('DOMContentLoaded', function() {
+                toggleBiaya();
+            });
 
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = e => {
-                        preview.src = e.target.result;
-                        preview.classList.remove('d-none');
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
-        </script>
-        <script>
             const tanggalMulai = document.getElementById('tanggal_mulai');
             const tanggalSelesai = document.getElementById('tanggal_selesai');
 

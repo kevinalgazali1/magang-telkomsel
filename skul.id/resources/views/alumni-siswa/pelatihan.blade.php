@@ -974,38 +974,52 @@
                 </div>
             @endif
 
-            <nav>
-                <ul class="pagination mb-0">
-                    {{-- Previous Page Link --}}
-                    @if ($pelatihan->onFirstPage())
-                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                    @else
-                        <li class="page-item"><a class="page-link" href="{{ $pelatihan->previousPageUrl() }}"
-                                rel="prev">&laquo;</a>
-                        </li>
-                    @endif
+            <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                <div class="small text-muted">
+                    Showing
+                    <strong>{{ $pelatihan->firstItem() ?? 0 }}</strong>
+                    to
+                    <strong>{{ $pelatihan->lastItem() ?? 0 }}</strong>
+                    of
+                    <strong>{{ $pelatihan->total() }}</strong>
+                    entries
+                </div>
 
-                    {{-- Pagination Elements --}}
-                    @foreach ($pelatihan->getUrlRange(1, $pelatihan->lastPage()) as $page => $url)
-                        @if ($page == $pelatihan->currentPage())
-                            <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
-                        @elseif ($page == 1 || $page == $pelatihan->lastPage() || abs($page - $pelatihan->currentPage()) <= 1)
+                <nav>
+                    <ul class="pagination mb-0">
+                        {{-- Previous Page Link --}}
+                        @if ($pelatihan->onFirstPage())
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        @else
                             <li class="page-item"><a class="page-link"
-                                    href="{{ $url }}">{{ $page }}</a></li>
-                        @elseif ($page == 2 || $page == $pelatihan->lastPage() - 1)
-                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    href="{{ $pelatihan->previousPageUrl() }}" rel="prev">&laquo;</a>
+                            </li>
                         @endif
-                    @endforeach
 
-                    {{-- Next Page Link --}}
-                    @if ($pelatihan->hasMorePages())
-                        <li class="page-item"><a class="page-link" href="{{ $pelatihan->nextPageUrl() }}"
-                                rel="next">&raquo;</a></li>
-                    @else
-                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                    @endif
-                </ul>
-            </nav>
+                        {{-- Pagination Elements --}}
+                        @foreach ($pelatihan->getUrlRange(1, $pelatihan->lastPage()) as $page => $url)
+                            @if ($page == $pelatihan->currentPage())
+                                <li class="page-item active"><span class="page-link">{{ $page }}</span>
+                                </li>
+                            @elseif ($page == 1 || $page == $pelatihan->lastPage() || abs($page - $pelatihan->currentPage()) <= 1)
+                                <li class="page-item"><a class="page-link"
+                                        href="{{ $url }}">{{ $page }}</a></li>
+                            @elseif ($page == 2 || $page == $pelatihan->lastPage() - 1)
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            @endif
+                        @endforeach
+
+                        {{-- Next Page Link --}}
+                        @if ($pelatihan->hasMorePages())
+                            <li class="page-item"><a class="page-link"
+                                    href="{{ $pelatihan->nextPageUrl() }}" rel="next">&raquo;</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        @endif
+                    </ul>
+                </nav>
+            </div>
 
             <footer class="footer text-dark"
                 style="background: url('{{ url('img/footer.png') }}') no-repeat center center / cover;">

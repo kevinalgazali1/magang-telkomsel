@@ -142,6 +142,17 @@ class SertifikasiController extends Controller
         $sertif->tempat = $request->tempat;
         $sertif->biaya = $request->biaya;
 
+        // Penyesuaian jika status == 'Gratis'
+        if ($request->status === 'Gratis') {
+            $sertif->biaya = 0;
+            $sertif->nomor_rekening = null;
+        } else {
+            $sertif->biaya = $request->biaya;
+            $sertif->nomor_rekening = $request->nomor_rekening;
+        }
+
+        $sertif->status = $request->status; // pastikan status disimpan juga
+
         if ($request->hasFile('foto_sertifikasi')) {
             // 🔥 Hapus file lama jika ada
             $oldPath = public_path('storage/' . $sertif->foto_sertifikasi);
