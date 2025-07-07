@@ -664,7 +664,7 @@ class AdminController extends Controller
         $totalSekolah = AlumniSiswaProfile::distinct('asal_sekolah')->count('asal_sekolah');
         $totalJurusan = AlumniSiswaProfile::distinct('jurusan_sekolah')->count('jurusan_sekolah');
 
-        return view('admin.usersalumni', [
+        return view('admin.usersAlumni', [
             'title' => 'Data Users Alumni',
             'profiles' => $profiles,
             'totalAlumni' => $totalAlumni,
@@ -715,7 +715,7 @@ class AdminController extends Controller
         }
 
         $profiles = MitraProfile::with('user')->get();
-        return view('admin.usersmitra', ['title' => 'Users Mitra', 'profiles' => $profiles]);
+        return view('admin.usersMitra', ['title' => 'Users Mitra', 'profiles' => $profiles]);
     }
 
     private function storeMitra(Request $request)
