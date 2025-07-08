@@ -40,11 +40,30 @@ class AdminController extends Controller
         ));
     }
 
-    public function artikel()
+    public function artikel(Request $request)
     {
-        $artikel = Artikel::all();
+        $query = Artikel::query();
+
+        // Filter: Nama Penulis
+        if ($request->filled('search')) {
+            $query->where('penulis', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter: Bulan Dibuat
+        if ($request->filled('bulan_dibuat')) {
+            $query->whereMonth('created_at', $request->bulan_dibuat);
+        }
+
+        // Filter: Tahun Dibuat
+        if ($request->filled('tahun_dibuat')) {
+            $query->whereYear('created_at', $request->tahun_dibuat);
+        }
+
+        $artikel = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+
         return view('admin.artikel', compact('artikel'));
     }
+
 
     public function sertifikasi(Request $request)
     {

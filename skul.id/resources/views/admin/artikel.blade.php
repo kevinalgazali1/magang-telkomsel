@@ -75,6 +75,39 @@
         .card h6 {
             font-weight: 600;
         }
+
+        .article-content {
+            line-height: 1.7;
+            font-size: 1rem;
+            text-align: justify;
+            white-space: pre-wrap;
+            /* Tambahkan ini */
+        }
+
+        .modal-article-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-article-content .text-muted small {
+            font-size: 0.9rem;
+        }
+
+        .modal-article-content .article-content {
+            line-height: 1.7;
+            font-size: 1rem;
+            text-align: justify;
+        }
+
+        .modal-article-content img {
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 100%;
+        }
     </style>
 </head>
 
@@ -140,125 +173,445 @@
         <!-- Main Content -->
         <div class="flex-grow-1">
             <!-- Topbar -->
-            <div class="topbar d-flex justify-content-between align-items-center">
+            <div class="topbar d-flex justify-content-between align-items-center bg-primary text-light p-3">
                 <span class="nav-title">{{ $title ?? 'Dashboard' }}</span>
-                <span class="text-muted">Hi, Admin</span>
+                <span class="text-light">Hi, Admin</span>
             </div>
 
             <!-- Page Content -->
             <main class="container-fluid py-5 px-4">
 
-                <!-- Header + Button -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="fw-semibold">Manajemen Artikel</h3>
-                    <a href="#" class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal"
-                        data-bs-target="#tambahArtikelModal">
-                        <i class="bi bi-plus-circle me-2"></i>Tambah Artikel
-                    </a>
-                </div>
+                <form method="GET" action="" class="mb-4 px-4">
+                    <div class="row g-3 mb-3">
 
-                <!-- Tabel Artikel -->
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body">
-                        <h5 class="fw-semibold mb-4">Daftar Lengkap Artikel</h5>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Judul</th>
-                                        <th>Penulis</th>
-                                        <th>Tanggal</th>
-                                        <th class="text-end">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse ($artikel as $index => $item)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $item->judul }}</td>
-                                            <td>{{ $item->penulis }}</td>
-                                            <td>{{ $item->created_at->format('d M Y') }}</td>
-                                            <td class="text-end">
-                                                <a href="#" class="btn btn-sm btn-outline-primary"
-                                                    title="Lihat">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="#" class="btn btn-sm btn-outline-warning"
-                                                    title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button class="btn btn-sm btn-outline-danger"
-                                                    onclick="return confirm('Hapus?')" title="Hapus">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center text-muted">Belum ada artikel yang
-                                                tersedia.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                        {{-- Nama penulis --}}
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold small text-muted">Cari Nama penulis</label>
+                            <input type="text" class="form-control rounded-3 shadow-sm border border-light-subtle"
+                                name="search" value="{{ request('nama_penulis') }}" placeholder="Nama penulis">
+                        </div>
 
+                        {{-- Bulan dibuat --}}
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold small text-muted">Bulan Dibuat</label>
+                            <select name="bulan_dibuat" class="form-select">
+                                <option value="" disabled {{ request('bulan_dibuat') ? '' : 'selected' }}>Pilih
+                                    Bulan
+                                </option>
+                                @foreach ([
+        '01' => 'Januari',
+        '02' => 'Februari',
+        '03' => 'Maret',
+        '04' => 'April',
+        '05' => 'Mei',
+        '06' => 'Juni',
+        '07' => 'Juli',
+        '08' => 'Agustus',
+        '09' => 'September',
+        '10' => 'Oktober',
+        '11' => 'November',
+        '12' => 'Desember',
+    ] as $val => $label)
+                                    <option value="{{ $val }}"
+                                        {{ request('dibuat') == $val ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        {{-- Tahun dibuat --}}
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold small text-muted">Tahun Dibuat</label>
+                            <input type="number" class="form-control" name="tahun_dibuat" placeholder="Tahun dibuat"
+                                value="{{ request('tahun_dibuat') }}">
+                        </div>
+
+                        {{-- Tombol --}}
+                        <div class="col d-flex justify-content-end gap-2 align-items-end">
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                                <i class="bi bi-search me-1"></i> Terapkan
+                            </button>
+                            <a href="{{ route('admin.artikel') }}"
+                                class="btn btn-secondary rounded-pill px-4 shadow-sm">
+                                <i class="bi bi-arrow-clockwise me-1"></i> Reset
+                            </a>
+                            <button type="button" class="btn btn-success rounded-pill px-4 shadow-sm"
+                                data-bs-toggle="modal" data-bs-target="#modalTambah">
+                                <i class="bi bi-plus-circle me-1"></i> Tambah
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+
+                <div class="table-responsive artikel-table-wrapper">
+                    <div id="tableLoadingArtikel" class="d-none text-center py-5">
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
                     </div>
+
+                    <table class="table artikel-table table-hover align-middle mb-0" id="artikelTable">
+                        <thead class="table-light text-center text-uppercase small">
+                            <tr>
+                                <th>No</th>
+                                <th>Judul</th>
+                                <th>Penulis</th>
+                                <th>Tanggal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($artikel as $index => $item)
+                                <tr class="text-center">
+                                    <td>{{ $index + $artikel->firstItem() }}</td>
+                                    <td class="text-start">
+                                        <div class="fw-semibold text-center">
+                                            {{ \Illuminate\Support\Str::words($item->judul, 10, '...') }}</div>
+                                    </td>
+                                    <td>{{ $item->penulis }}</td>
+                                    <td>{{ $item->created_at->format('d M Y') }}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                Aksi
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end" data-bs-auto-close="outside">
+                                                <li>
+                                                    <button class="dropdown-item" data-judul="{{ $item->judul }}"
+                                                        data-penulis="{{ $item->penulis }}"
+                                                        data-tanggal="{{ $item->created_at->format('d M Y') }}"
+                                                        data-isi="{{ htmlentities($item->isi) }}"
+                                                        data-gambar="{{ asset('storage/' . $item->gambar_artikel) }}"
+                                                        onclick="openDetailArtikel(this)">
+                                                        <i class="bi bi-eye me-2"></i> Lihat
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item" data-bs-toggle="modal"
+                                                        data-bs-target="#editArtikelModal{{ $item->id }}">
+                                                        <i class="bi bi-pencil me-2"></i> Edit
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button class="dropdown-item text-danger"
+                                                        onclick="confirmDelete('{{ $item->id }}')">
+                                                        <i class="bi bi-trash me-2"></i> Hapus
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal Edit Artikel -->
+                                <div class="modal fade" id="editArtikelModal{{ $item->id }}" tabindex="-1"
+                                    aria-labelledby="editArtikelModalLabel{{ $item->id }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content rounded-4 border-0 shadow">
+                                            <form id="editForm{{ $item->id }}"
+                                                action="{{ route('admin.artikel.update', $item->id) }}"
+                                                method="POST" enctype="multipart/form-data">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-header bg-primary text-white rounded-top-4">
+                                                    <h5 class="modal-title fw-semibold"
+                                                        id="editArtikelModalLabel{{ $item->id }}">Edit Artikel
+                                                    </h5>
+                                                    <button type="button" class="btn-close btn-close-white"
+                                                        data-bs-dismiss="modal" aria-label="Tutup"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row g-4">
+                                                        <!-- Kolom Kiri -->
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="judul{{ $item->id }}"
+                                                                    class="form-label fw-semibold">Judul
+                                                                    Artikel</label>
+                                                                <input type="text" class="form-control shadow-sm"
+                                                                    id="judul{{ $item->id }}" name="judul"
+                                                                    value="{{ $item->judul }}" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="penulis{{ $item->id }}"
+                                                                    class="form-label fw-semibold">Penulis
+                                                                    Artikel</label>
+                                                                <input type="text" class="form-control shadow-sm"
+                                                                    id="penulis{{ $item->id }}" name="penulis"
+                                                                    value="{{ $item->penulis }}" required>
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="gambar_artikel{{ $item->id }}"
+                                                                    class="form-label fw-semibold">Gambar Artikel
+                                                                    (Opsional)</label>
+                                                                <input class="form-control shadow-sm" type="file"
+                                                                    id="gambar_artikel{{ $item->id }}"
+                                                                    name="gambar_artikel" accept="image/*">
+                                                                @if ($item->gambar_artikel)
+                                                                    <div class="mt-2">
+                                                                        <img src="{{ asset('storage/' . $item->gambar_artikel) }}"
+                                                                            alt="Gambar Lama"
+                                                                            class="img-fluid rounded shadow-sm"
+                                                                            style="max-height: 150px;">
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Kolom Kanan -->
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3 h-100 d-flex flex-column">
+                                                                <label for="isi{{ $item->id }}"
+                                                                    class="form-label fw-semibold">Isi Artikel</label>
+                                                                <textarea class="form-control shadow-sm flex-grow-1" id="isi{{ $item->id }}" name="isi" rows="10"
+                                                                    required>{{ $item->isi }}</textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer bg-light rounded-bottom-4">
+                                                    <button type="button" class="btn btn-secondary rounded-pill px-4"
+                                                        data-bs-dismiss="modal">Batal</button>
+                                                    <button type="button" class="btn btn-primary rounded-pill px-4"
+                                                        onclick="confirmEdit('{{ $item->id }}')">
+                                                        <i class="bi bi-save me-1"></i> Simpan Perubahan
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">Belum ada artikel yang tersedia.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                    <div class="small text-muted">
+                        Showing
+                        <strong>{{ $artikel->firstItem() ?? 0 }}</strong>
+                        to
+                        <strong>{{ $artikel->lastItem() ?? 0 }}</strong>
+                        of
+                        <strong>{{ $artikel->total() }}</strong>
+                        entries
+                    </div>
+
+                    <nav>
+                        <ul class="pagination mb-0">
+                            {{-- Previous Page Link --}}
+                            @if ($artikel->onFirstPage())
+                                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                            @else
+                                <li class="page-item"><a class="page-link" href="{{ $artikel->previousPageUrl() }}"
+                                        rel="prev">&laquo;</a></li>
+                            @endif
+
+                            {{-- Pagination Elements --}}
+                            @foreach ($artikel->getUrlRange(1, $artikel->lastPage()) as $page => $url)
+                                @if ($page == $artikel->currentPage())
+                                    <li class="page-item active"><span class="page-link">{{ $page }}</span>
+                                    </li>
+                                @elseif ($page == 1 || $page == $artikel->lastPage() || abs($page - $artikel->currentPage()) <= 1)
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $url }}">{{ $page }}</a></li>
+                                @elseif ($page == 2 || $page == $artikel->lastPage() - 1)
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                @endif
+                            @endforeach
+
+                            {{-- Next Page Link --}}
+                            @if ($artikel->hasMorePages())
+                                <li class="page-item"><a class="page-link" href="{{ $artikel->nextPageUrl() }}"
+                                        rel="next">&raquo;</a></li>
+                            @else
+                                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                            @endif
+                        </ul>
+                    </nav>
                 </div>
             </main>
         </div>
     </div>
 
 
-    <!-- Modal -->
-    <div class="modal fade" id="tambahArtikelModal" tabindex="-1" aria-labelledby="tambahArtikelModalLabel"
-        aria-hidden="true">
+    <!-- Modal Tambah Artikel -->
+    <div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form action="{{ route('artikel.store') }}" method="POST" enctype="multipart/form-data">
+            <div class="modal-content rounded-4 border-0 shadow">
+                <form id="tambahForm" action="{{ route('admin.artikel.store') }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="tambahArtikelModalLabel">Tambah Artikel</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    <div class="modal-header bg-primary text-white rounded-top-4">
+                        <h5 class="modal-title fw-semibold" id="modalTambahLabel">Tambah Artikel</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Tutup"></button>
                     </div>
                     <div class="modal-body">
 
                         <div class="mb-3">
-                            <label for="judul" class="form-label">Judul Artikel</label>
-                            <input type="text" class="form-control" id="judul" name="judul" required>
+                            <label for="judul" class="form-label fw-semibold">Judul Artikel</label>
+                            <input type="text" class="form-control shadow-sm" id="judul" name="judul"
+                                required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="penulis" class="form-label">Penulis Artikel</label>
-                            <input type="text" class="form-control" id="penulis" name="penulis" required>
+                            <label for="penulis" class="form-label fw-semibold">Penulis Artikel</label>
+                            <input type="text" class="form-control shadow-sm" id="penulis" name="penulis"
+                                required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="isi" class="form-label">Isi Artikel</label>
-                            <textarea class="form-control" id="isi" name="isi" rows="5" required></textarea>
+                            <label for="isi" class="form-label fw-semibold">Isi Artikel</label>
+                            <textarea class="form-control shadow-sm" id="isi" name="isi" rows="6" required></textarea>
                         </div>
 
                         <div class="mb-3">
-                            <label for="gambar_artikel" class="form-label">Gambar Artikel</label>
-                            <input class="form-control" type="file" id="gambar_artikel" name="gambar_artikel"
-                                accept="image/*">
+                            <label for="gambar_artikel" class="form-label fw-semibold">Gambar Artikel</label>
+                            <input class="form-control shadow-sm" type="file" id="gambar_artikel"
+                                name="gambar_artikel" accept="image/*">
                         </div>
 
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan Artikel</button>
+                    <div class="modal-footer bg-light rounded-bottom-4">
+                        <button type="button" class="btn btn-secondary rounded-pill px-4"
+                            data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-primary rounded-pill px-4" onclick="confirmTambah()">
+                            <i class="bi bi-save me-1"></i> Simpan Artikel
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+
+    <!-- Modal Lihat Artikel -->
+    <div class="modal fade" id="lihatArtikelModal" tabindex="-1" aria-labelledby="lihatArtikelModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content border-0 rounded-4 modal-article-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-semibold" id="lihatArtikelModalLabel">Detail Artikel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body px-4 pb-4">
+                    <div id="detailGambar" class="mb-4 text-center">
+                        <img src="" alt="Gambar Artikel" class="img-fluid">
+                    </div>
+                    <h3 id="detailJudul" class="text-center"></h3>
+                    <div class="text-muted mb-4 text-center">
+                        <small>Ditulis oleh <span id="detailPenulis"></span> pada <span
+                                id="detailTanggal"></span></small>
+                    </div>
+                    <div id="detailIsi" class="article-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('message'))
+            Swal.fire({
+                icon: '{{ session('alert-type') == 'warning' ? 'warning' : 'info' }}',
+                title: '{{ ucfirst(session('alert-type') ?? 'Info') }}',
+                text: '{{ session('message') }}',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        @endif
+
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Hapus Artikel?',
+                text: "Data artikel yang dihapus tidak dapat dikembalikan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `/admin/delete-artikel/${id}`;
+                    form.innerHTML = `@csrf`;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        }
+
+
+        function confirmTambah() {
+            Swal.fire({
+                title: 'Simpan Artikel?',
+                text: "Pastikan semua informasi sudah lengkap dan benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Simpan',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('tambahForm').submit();
+                }
+            });
+        }
+
+        function confirmEdit(id) {
+            Swal.fire({
+                title: 'Perbarui Artikel?',
+                text: "Pastikan semua data sudah benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, perbarui!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('editForm' + id).submit();
+                }
+            });
+        }
+    </script>
     <script>
         function confirmLogout() {
             event.preventDefault();
@@ -278,6 +631,31 @@
             });
         }
     </script>
+    <script>
+        function openDetailArtikel(btn) {
+            const judul = btn.getAttribute('data-judul');
+            const penulis = btn.getAttribute('data-penulis');
+            const tanggal = btn.getAttribute('data-tanggal');
+            const isi = btn.getAttribute('data-isi');
+            const gambar = btn.getAttribute('data-gambar');
+
+            document.getElementById('detailJudul').textContent = judul;
+            document.getElementById('detailPenulis').textContent = penulis;
+            document.getElementById('detailTanggal').textContent = tanggal;
+            document.getElementById('detailIsi').innerHTML = decodeHTMLEntities(isi);
+            document.getElementById('detailGambar').querySelector('img').src = gambar;
+
+            const modal = new bootstrap.Modal(document.getElementById('lihatArtikelModal'));
+            modal.show();
+        }
+
+        function decodeHTMLEntities(text) {
+            const textarea = document.createElement('textarea');
+            textarea.innerHTML = text;
+            return textarea.value;
+        }
+    </script>
+
 </body>
 
 </html>

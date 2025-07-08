@@ -11,39 +11,40 @@ class ArtikelController extends Controller
     public function store(Request $request)
     {
         try {
-            if ($request->validate([
+            $request->validate([
                 'judul' => 'required|string|max:255|unique:artikels,judul',
                 'isi' => 'required',
                 'penulis' => 'required|string|max:255',
                 'gambar_artikel' => 'nullable|image|mimes:jpeg,png,jpg|max:10048',
-            ])) {
-                $user_id = $request->user()->id;
+            ]);
 
-                // Proses file gambar jika ada
-                $file_path = null;
-                if ($request->hasFile('gambar_artikel')) {
-                    $file = $request->file('gambar_artikel');
-                    $file_name = $file->hashName(); // nama unik
-                    $file->move(public_path('storage/assets/artikel'), $file_name);
-                    $file_path = 'assets/artikel/' . $file_name;
-                }
+            $user_id = $request->user()->id;
 
-                // Simpan data ke database
-                Artikel::create([
-                    'user_id' => $user_id,
-                    'judul' => $request->judul,
-                    'slug' => Str::slug($request->judul),
-                    'isi' => $request->isi,
-                    'penulis' => $request->penulis,
-                    'gambar_artikel' => $file_path,
-                ]);
+            // Proses file gambar jika ada
+            $file_path = null;
+            if ($request->hasFile('gambar_artikel')) {
+                $file = $request->file('gambar_artikel');
+                $file_name = $file->hashName(); // nama unik
+                $file->move(public_path('storage/assets/artikel'), $file_name);
+                $file_path = 'assets/artikel/' . $file_name;
             }
+
+            // Simpan data ke database
+            Artikel::create([
+                'user_id' => $user_id,
+                'judul' => $request->judul,
+                'slug' => Str::slug($request->judul),
+                'isi' => $request->isi,
+                'penulis' => $request->penulis,
+                'gambar_artikel' => $file_path,
+            ]);
 
             return redirect()->back()->with('success', 'Artikel berhasil ditambahkan.');
         } catch (\Exception $e) {
             return redirect()->back()->with('danger', 'Artikel gagal ditambahkan.');
         }
     }
+
 
     public function update(Request $request, $id)
     {

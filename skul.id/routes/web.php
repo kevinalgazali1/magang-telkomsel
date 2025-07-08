@@ -109,9 +109,9 @@ Route::middleware(['auth', 'role:alumnisiswa'])->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/artikel', [AdminController::class, 'artikel'])->name('admin.artikel');
-    Route::post('/admin/artikel/store', [ArtikelController::class, 'store'])->name('artikel.store');
+    Route::post('/admin/artikel/store', [ArtikelController::class, 'store'])->name('admin.artikel.store');
     Route::put('/admin/artikel/update/{id}', [ArtikelController::class, 'update'])->name('admin.artikel.update');
-    Route::delete('/artikel/{id}', [ArtikelController::class, 'destroy'])->name('admin.artikel.destroy');
+    Route::delete('/admin/delete-artikel/{id}', [ArtikelController::class, 'destroy'])->name('admin.artikel.destroy');
     Route::get('/admin/sertifikasi', [AdminController::class, 'sertifikasi'])->name('admin.sertifikasi');
     Route::post('/admin/sertifikasi', [AdminController::class, 'handleSertifikasi']);
     Route::post('/admin/store-sertifikasi', [SertifikasiController::class, 'store'])->name('admin.sertifikasi.store');
