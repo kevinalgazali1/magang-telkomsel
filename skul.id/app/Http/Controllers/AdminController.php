@@ -676,7 +676,7 @@ class AdminController extends Controller
         }
 
         // Ambil hasil query setelah filter selesai
-        $profiles = $profilesQuery->get();
+        $profiles = $profilesQuery->paginate(10)->withQueryString();
 
         // Statistik
         $totalAlumni = AlumniSiswaProfile::count();
@@ -691,7 +691,6 @@ class AdminController extends Controller
             'totalJurusan' => $totalJurusan,
         ]);
     }
-
 
     // Simpan data baru
     public function usersStore(Request $request)
@@ -720,22 +719,43 @@ class AdminController extends Controller
 
     public function usersMitra(Request $request)
     {
-        if ($request->isMethod('post')) {
-            $action = $request->input('action');
+        // Mulai query dengan Eloquent dan eager loading relasi 'user'
+        $profilesQuery = MitraProfile::with('user');
 
-            switch ($action) {
-                case 'store':
-                    return $this->storeMitra($request);
-                case 'update':
-                    return $this->updateMitra($request);
-                case 'delete':
-                    return $this->deleteMitra($request);
-            }
+        // Filter pencarian (disesuaikan dengan field yang relevan di MitraProfile)
+        if ($request->filled('search')) {
+            $profilesQuery->where('nama_instansi', 'like', '%' . $request->search . '%');
+        }
+        if ($request->filled('kategori')) {
+            $profilesQuery->where('kategori', 'like', '%' . $request->kategori . '%');
+        }
+        if ($request->filled('bidang')) {
+            $profilesQuery->where('bidang_industri', 'like', '%' . $request->bidang . '%');
+        }
+        if ($request->filled('provinsi')) {
+            $profilesQuery->where('provinsi', 'like', '%' . $request->provinsi . '%');
+        }
+        if ($request->filled('kota')) {
+            $profilesQuery->where('kota', 'like', '%' . $request->kota . '%');
         }
 
-        $profiles = MitraProfile::with('user')->get();
-        return view('admin.usersMitra', ['title' => 'Users Mitra', 'profiles' => $profiles]);
+        // Ambil hasil dengan pagination
+        $profiles = $profilesQuery->paginate(10)->withQueryString();
+
+        // Statistik sederhana
+        $totalMitra = MitraProfile::count();
+        $totalBidang = MitraProfile::distinct('bidang_industri')->count('bidang_industri');
+        $totalKota = MitraProfile::distinct('kota')->count('kota');
+
+        return view('admin.usersMitra', [
+            'title' => 'Data Users Mitra',
+            'profiles' => $profiles,
+            'totalMitra' => $totalMitra,
+            'totalBidang' => $totalBidang,
+            'totalKota' => $totalKota,
+        ]);
     }
+
 
     private function storeMitra(Request $request)
     {

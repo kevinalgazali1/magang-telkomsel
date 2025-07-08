@@ -330,13 +330,7 @@
                             </a>
                         </div>
                     </div>
-
                 </form>
-
-
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
 
                 <div class="table-responsive users-table-wrapper">
                     <div id="tableLoadingUsers" class="d-none text-center py-5">
@@ -426,6 +420,52 @@
                         </tbody>
                     </table>
 
+                    <div class="d-flex justify-content-between align-items-center mt-3 flex-wrap gap-2 px-4 mb-5">
+                        <div class="small text-muted">
+                            Showing
+                            <strong>{{ $profiles->firstItem() ?? 0 }}</strong>
+                            to
+                            <strong>{{ $profiles->lastItem() ?? 0 }}</strong>
+                            of
+                            <strong>{{ $profiles->total() }}</strong>
+                            entries
+                        </div>
+
+                        <nav>
+                            <ul class="pagination mb-0">
+                                {{-- Previous Page Link --}}
+                                @if ($profiles->onFirstPage())
+                                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                                @else
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $profiles->previousPageUrl() }}" rel="prev">&laquo;</a>
+                                    </li>
+                                @endif
+
+                                {{-- Pagination Elements --}}
+                                @foreach ($profiles->getUrlRange(1, $profiles->lastPage()) as $page => $url)
+                                    @if ($page == $profiles->currentPage())
+                                        <li class="page-item active"><span
+                                                class="page-link">{{ $page }}</span>
+                                        </li>
+                                    @elseif ($page == 1 || $page == $profiles->lastPage() || abs($page - $profiles->currentPage()) <= 1)
+                                        <li class="page-item"><a class="page-link"
+                                                href="{{ $url }}">{{ $page }}</a></li>
+                                    @elseif ($page == 2 || $page == $profiles->lastPage() - 1)
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    @endif
+                                @endforeach
+
+                                {{-- Next Page Link --}}
+                                @if ($profiles->hasMorePages())
+                                    <li class="page-item"><a class="page-link"
+                                            href="{{ $profiles->nextPageUrl() }}" rel="next">&raquo;</a></li>
+                                @else
+                                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                @endif
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
 
             </div>
@@ -548,58 +588,6 @@
                     </div>
                 </div>
             @endforeach
-            {{-- Modal Tambah --}}
-            <div class="modal fade" id="modalTambah" tabindex="-1">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <form action="{{ route('admin.usersalumni') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="action" value="store">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Tambah User</h5>
-                                <button class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Nama Lengkap</label>
-                                        <input type="text" name="nama_lengkap" class="form-control" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">NIK</label>
-                                        <input type="text" name="nik" class="form-control" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Tahun Kelulusan</label>
-                                        <input type="number" name="tahun_kelulusan" class="form-control">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Asal Sekolah</label>
-                                        <input type="text" name="asal_sekolah" class="form-control">
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Jenis Kelamin</label>
-                                        <select name="jenis_kelamin" class="form-select" required>
-                                            <option value="">-- Pilih --</option>
-                                            <option value="Laki-laki">Laki-laki</option>
-                                            <option value="Perempuan">Perempuan</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Status Saat Ini</label>
-                                        <input type="text" name="status_saat_ini" class="form-control">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button class="btn btn-primary">Simpan</button>
-                                <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
