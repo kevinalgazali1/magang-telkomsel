@@ -162,15 +162,15 @@
         <!-- Main Content -->
         <div class="flex-grow-1">
             <!-- Topbar -->
-            <div class="topbar d-flex justify-content-between align-items-center">
+            <div class="topbar d-flex justify-content-between align-items-center bg-primary text-light p-3">
                 <span class="nav-title">{{ $title ?? 'Dashboard' }}</span>
-                <span class="text-muted">Hi, Admin</span>
+                <span class="text-light">Hi, Admin</span>
             </div>
 
             <!-- Page Content -->
             <main class="container-fluid py-5 px-4">
-                <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#modalTambah">+ Tambah
-                    Admin</button>
+                <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#editAccountModal">Edit
+                    Akun</button>
 
                 <!-- Stat Cards -->
                 <div class="row g-4 mb-5">
@@ -237,6 +237,70 @@
                     @endforelse
                 </div>
             </main>
+            <div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <form method="POST" id="editForm" action="{{ route('admin.account.update') }}">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editAccountModalLabel">Edit Akun</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Tutup"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- No HP -->
+                                <div class="mb-3">
+                                    <label for="no_hp" class="form-label">No. HP</label>
+                                    <input type="text" name="no_hp" id="no_hp"
+                                        value="{{ old('no_hp', $user->no_hp) }}" class="form-control" required>
+                                    @error('no_hp')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email Baru</label>
+                                    <input type="email" name="email" id="email"
+                                        value="{{ old('email', $user->email) }}" class="form-control" required>
+                                    @error('email')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Password Baru -->
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Password Baru</label>
+                                    <input type="password" name="password" id="password" class="form-control"
+                                        autocomplete="new-password" required>
+                                    @error('password')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Konfirmasi Password -->
+                                <div class="mb-3">
+                                    <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                                    <input type="password" name="password_confirmation" id="password_confirmation"
+                                        class="form-control" autocomplete="new-password" required>
+                                    @error('password_confirmation')
+                                        <div class="text-danger small">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-primary" onclick="confirmEditAkun()">Simpan
+                                    Perubahan</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <!-- Modal Tambah -->
             <div class="modal fade" id="modalTambah" tabindex="-1">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -383,6 +447,29 @@
                 }
             });
         }
+
+        function confirmEditAkun() {
+            Swal.fire({
+                title: 'Perbarui Akun?',
+                text: "Pastikan semua data sudah benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, perbarui!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('editForm').submit();
+                }
+            });
+        }
+    </script>
+    <script>
+        @if ($errors->any())
+            var editAccountModal = new bootstrap.Modal(document.getElementById('editAccountModal'));
+            editAccountModal.show();
+        @endif
     </script>
 </body>
 

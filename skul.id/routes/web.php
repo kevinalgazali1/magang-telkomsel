@@ -139,6 +139,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/sertifikasi/export', [SertifikasiController::class, 'exportSertifikasi'])->name('admin.sertifikasi.export');
     Route::get('/admin/pelatihan/export', [PelatihanController::class, 'exportPelatihan'])->name('admin.pelatihan.export');
     Route::get('/admin/loker/export', [LokerController::class, 'exportLoker'])->name('admin.loker.export');
+    Route::put('/admin/account/update', [UserController::class, 'updateAccount'])->name('admin.account.update');
 });
 
 /**

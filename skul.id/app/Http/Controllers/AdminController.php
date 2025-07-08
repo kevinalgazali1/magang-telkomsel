@@ -11,16 +11,18 @@ use App\Models\DaftarLoker;
 use App\Models\Sertifikasi;
 use App\Models\MitraProfile;
 use Illuminate\Http\Request;
-use App\Models\DaftarSertifikasi;
 use App\Models\DaftarPelatihan;
+use App\Models\DaftarSertifikasi;
 use App\Models\AlumniSiswaProfile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
         $totalSertifikasi = Sertifikasi::count();
         $totalPelatihan = Pelatihan::count();
         $totalLoker = Loker::count();
@@ -29,15 +31,17 @@ class AdminController extends Controller
         $jumlahMitra = MitraProfile::count();
         $mitras = MitraProfile::with('user')->latest()->get();
 
-        return view('admin.dashboard', compact(
-            'totalSertifikasi',
-            'totalPelatihan',
-            'totalLoker',
-            'jumlahSekolah',
-            'jumlahPeserta',
-            'jumlahMitra',
-            'mitras'
-        ));
+        return view('admin.dashboard', [
+            'title' => 'Dashboard',
+            'user' => $user,
+            'totalSertifikasi' => $totalSertifikasi,
+            'totalPelatihan' => $totalPelatihan,
+            'totalLoker' => $totalLoker,
+            'jumlahSekolah' => $jumlahSekolah,
+            'jumlahPeserta' => $jumlahPeserta,
+            'jumlahMitra' => $jumlahMitra,
+            'mitras' => $mitras,
+        ]);
     }
 
     public function artikel(Request $request)
@@ -61,7 +65,10 @@ class AdminController extends Controller
 
         $artikel = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
 
-        return view('admin.artikel', compact('artikel'));
+        return view('admin.artikel', [
+            'title' => 'Artikel',
+            'artikel' => $artikel,
+        ]);
     }
 
 
