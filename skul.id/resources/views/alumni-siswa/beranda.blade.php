@@ -355,6 +355,39 @@
             height: 100%;
             ;
         }
+
+        .article-content {
+            line-height: 1.7;
+            font-size: 1rem;
+            text-align: justify;
+            white-space: pre-wrap;
+            /* Tambahkan ini */
+        }
+
+        .modal-article-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-article-content .text-muted small {
+            font-size: 0.9rem;
+        }
+
+        .modal-article-content .article-content {
+            line-height: 1.7;
+            font-size: 1rem;
+            text-align: justify;
+        }
+
+        .modal-article-content img {
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 100%;
+        }
     </style>
 </head>
 
@@ -583,23 +616,63 @@
                             class="text-danger text-decoration-none fw-semibold">Lihat Semua</a>
                     </div>
 
-                    <div class="row g-3 mb-10">
+                    <div class="row g-4 mb-5">
                         @foreach ($artikels as $artikel)
-                            <div class="col-md-6">
-                                <div class="artikel-card">
-                                    <img src="{{ asset('storage/' . $artikel->gambar_artikel) }}" alt="Thumbnail"
-                                        onerror="this.src='https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg'">
-                                    <div class="artikel-content">
-                                        <div class="fw-semibold mb-1">
-                                            {{ $artikel->judul }}
+                            <div class="col-md-6 col-xl-4">
+                                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                                    <img src="{{ asset('storage/' . $artikel->gambar_artikel) }}"
+                                        onerror="this.src='https://my.skul.id/static/media/img_default_artikel_thumb.03a53a33.svg'"
+                                        class="card-img-top" alt="Thumbnail Artikel"
+                                        style="height: 200px; object-fit: cover;">
+
+                                    <div class="card-body d-flex flex-column">
+                                        <h5 class="card-title fw-semibold mb-2" style="min-height: 3rem;">
+                                            {{ \Illuminate\Support\Str::limit($artikel->judul, 50) }}
+                                        </h5>
+                                        <p class="text-muted small mb-3">Oleh {{ $artikel->penulis }}</p>
+
+                                        <div class="mt-auto">
+                                            <button class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                                                onclick="openDetailArtikelFromCard(
+                                '{{ $artikel->judul }}',
+                                '{{ $artikel->penulis }}',
+                                '{{ $artikel->created_at->format('d M Y') }}',
+                                `{!! htmlentities($artikel->isi) !!}`,
+                                '{{ asset('storage/' . $artikel->gambar_artikel) }}'
+                            )">
+                                                <i class="bi bi-eye me-1"></i> Baca
+                                            </button>
                                         </div>
-                                        <div class="text-muted small">Oleh {{ $artikel->penulis }}</div>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
 
+                    <div class="modal fade" id="lihatArtikelModal" tabindex="-1"
+                        aria-labelledby="lihatArtikelModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                            <div class="modal-content border-0 rounded-4 modal-article-content">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-semibold" id="lihatArtikelModalLabel">Detail Artikel
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Tutup"></button>
+                                </div>
+                                <div class="modal-body px-4 pb-4">
+                                    <div id="detailGambar" class="mb-4 text-center">
+                                        <img src="" alt="Gambar Artikel" class="img-fluid rounded shadow-sm">
+                                    </div>
+                                    <h3 id="detailJudul" class="text-center"></h3>
+                                    <div class="text-muted mb-4 text-center">
+                                        <small>Ditulis oleh <span id="detailPenulis"></span> pada <span
+                                                id="detailTanggal"></span></small>
+                                    </div>
+                                    <div id="detailIsi" class="article-content" style="white-space: pre-wrap;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Footer -->
                 </div>
@@ -649,7 +722,25 @@
 
 
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script>
+                function openDetailArtikelFromCard(judul, penulis, tanggal, isi, gambar) {
+                    document.getElementById('detailJudul').textContent = judul;
+                    document.getElementById('detailPenulis').textContent = penulis;
+                    document.getElementById('detailTanggal').textContent = tanggal;
+                    document.getElementById('detailGambar').querySelector('img').src = gambar;
 
-</body>
+                    // Jika isi mengandung tag HTML: pakai innerHTML + decode
+                    // Jika tidak mengandung tag HTML (plain text): cukup pakai textContent atau pre-wrap
+                    document.getElementById('detailIsi').textContent = decodeHTMLEntities(isi);
 
+                    const modal = new bootstrap.Modal(document.getElementById('lihatArtikelModal'));
+                    modal.show();
+                }
+
+                function decodeHTMLEntities(text) {
+                    const textarea = document.createElement('textarea');
+                    textarea.innerHTML = text;
+                    return textarea.value;
+                }
+            </script>
 </html>
