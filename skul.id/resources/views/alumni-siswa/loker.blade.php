@@ -488,8 +488,7 @@
                     class="bi bi-person-fill me-2"></i>Profil</a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
-                <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <a href="#" class="logout" onclick="event.preventDefault(); confirmLogout();">
                     <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
             </form>
         </div>
@@ -525,7 +524,7 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                 @csrf
                 <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    onclick="event.preventDefault(); confirmLogout();">
                     <i class="bi bi-box-arrow-right me-2"></i> Logout
                 </a>
             </form>
@@ -743,7 +742,8 @@
                                         <p class="mb-0 small">Posisi: <strong>{{ $item->posisi }}</strong></p>
                                     </div>
 
-                                    <form action="{{ route('alumni-siswa.loker.store', $item->id) }}" method="POST"
+                                    <form id="formLamaran{{ $item->id }}"
+                                        action="{{ route('alumni-siswa.loker.store', $item->id) }}" method="POST"
                                         enctype="multipart/form-data">
                                         @csrf
 
@@ -751,8 +751,8 @@
                                         <div class="modal-body p-4">
                                             <div class="mb-4">
                                                 <label for="cv{{ $item->id }}"
-                                                    class="form-label fw-semibold">Unggah CV Anda
-                                                    <span class="text-danger">*</span></label>
+                                                    class="form-label fw-semibold">Unggah CV Anda <span
+                                                        class="text-danger">*</span></label>
                                                 <input type="file" name="cv" id="cv{{ $item->id }}"
                                                     class="form-control" accept=".pdf" required>
                                                 <div class="form-text">Hanya format PDF. Maksimal 2MB.</div>
@@ -764,11 +764,14 @@
                                             class="modal-footer bg-light border-0 d-flex justify-content-between px-4 py-3">
                                             <button type="button" class="btn btn-outline-secondary"
                                                 data-bs-dismiss="modal">Batal</button>
-                                            <button type="submit" class="btn btn-primary">
+
+                                            <button type="button" class="btn btn-primary"
+                                                onclick="confirmKirimLamaran('formLamaran{{ $item->id }}')">
                                                 <i class="bi bi-send me-1"></i> Kirim Lamaran
                                             </button>
                                         </div>
                                     </form>
+
 
                                 </div>
                             </div>
@@ -793,8 +796,7 @@
                                     <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
                                 @else
                                     <li class="page-item"><a class="page-link"
-                                            href="{{ $loker->previousPageUrl() }}"
-                                            rel="prev">&laquo;</a></li>
+                                            href="{{ $loker->previousPageUrl() }}" rel="prev">&laquo;</a></li>
                                 @endif
 
                                 {{-- Pagination Elements --}}
@@ -813,8 +815,8 @@
 
                                 {{-- Next Page Link --}}
                                 @if ($loker->hasMorePages())
-                                    <li class="page-item"><a class="page-link"
-                                            href="{{ $loker->nextPageUrl() }}" rel="next">&raquo;</a>
+                                    <li class="page-item"><a class="page-link" href="{{ $loker->nextPageUrl() }}"
+                                            rel="next">&raquo;</a>
                                     </li>
                                 @else
                                     <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
@@ -901,7 +903,47 @@
                 });
             @endif
         </script>
+        <script>
+            function confirmLogout() {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Yakin ingin logout?',
+                    text: "Anda akan keluar dari akun ini.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, logout!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('logout-form').submit();
+                    }
+                });
+            }
 
+            function confirmKirimLamaran(formId) {
+                Swal.fire({
+                    title: 'Kirim Lamaran?',
+                    text: "Pastikan CV sudah benar sebelum dikirim.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0d6efd',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, kirim!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.getElementById(formId);
+                        if (form) {
+                            form.submit();
+                        } else {
+                            console.error('Form tidak ditemukan:', formId);
+                        }
+                    }
+                });
+            }
+        </script>
 </body>
 
 </html>

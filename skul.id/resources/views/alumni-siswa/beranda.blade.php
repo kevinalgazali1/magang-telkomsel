@@ -427,9 +427,7 @@
                     class="bi bi-person-fill me-2"></i>Profil</a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
-                <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
+                <a href="#" class="logout" onclick="event.preventDefault(); confirmLogout();">
             </form>
 
 
@@ -466,7 +464,7 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                 @csrf
                 <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    onclick="confirmLogout(event)">
                     <i class="bi bi-box-arrow-right me-2"></i> Logout
                 </a>
             </form>
@@ -722,6 +720,26 @@
 
 
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <script>
+                function confirmLogout() {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Yakin ingin logout?',
+                        text: "Anda akan keluar dari akun ini.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, logout!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('logout-form').submit();
+                        }
+                    });
+                }
+            </script>
             <script>
                 function openDetailArtikelFromCard(judul, penulis, tanggal, isi, gambar) {
                     document.getElementById('detailJudul').textContent = judul;
@@ -743,4 +761,5 @@
                     return textarea.value;
                 }
             </script>
+
 </html>

@@ -595,8 +595,7 @@
                     class="bi bi-person-fill me-2"></i>Profil</a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
-                <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <a href="#" class="logout" onclick="event.preventDefault(); confirmLogout();">
                     <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
             </form>
         </div>
@@ -632,7 +631,7 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                 @csrf
                 <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    onclick="event.preventDefault(); confirmLogout();">
                     <i class="bi bi-box-arrow-right me-2"></i> Logout
                 </a>
             </form>
@@ -756,33 +755,24 @@
                                                     Detail
                                                 </button>
 
-                                                <form
+                                                <form id="formDaftarGratis{{ $item->id }}"
                                                     action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
-                                                    method="POST" enctype="multipart/form-data">
+                                                    method="POST">
                                                     @csrf
-
                                                     <input type="hidden" name="sertifikasi_id"
                                                         value="{{ $item->id }}">
 
                                                     @if (strtolower($item->status) === 'berbayar')
                                                         <button type="button" class="btn-view"
                                                             data-bs-toggle="modal"
-                                                            data-bs-target="#modalBukti{{ $item->id }}">
-                                                            Daftar
-                                                        </button>
+                                                            data-bs-target="#modalBukti{{ $item->id }}">Daftar</button>
                                                     @else
-                                                        <form
-                                                            action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            <input type="hidden" name="sertifikasi_id"
-                                                                value="{{ $item->id }}">
-                                                            <button type="submit" class="btn-view">Daftar
-                                                                Gratis</button>
-                                                        </form>
+                                                        <button type="button" class="btn-view"
+                                                            onclick="confirmDaftarGratis('formDaftarGratis{{ $item->id }}', event)">
+                                                            Daftar Gratis
+                                                        </button>
                                                     @endif
                                                 </form>
-
                                             </div>
                                         </div>
                                     </div>
@@ -791,7 +781,9 @@
                                     <div class="modal fade" id="modalBukti{{ $item->id }}" tabindex="-1"
                                         aria-labelledby="modalBuktiLabel{{ $item->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
-                                            <form action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
+                                            <form id="formTransfer{{ $item->id }}"
+                                                onsubmit="return confirmTransfer({{ $item->id }})"
+                                                action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
                                                 method="POST" enctype="multipart/form-data">
                                                 @csrf
                                                 <input type="hidden" name="sertifikasi_id"
@@ -916,34 +908,25 @@
                                                             </div>
                                                             <div class="d-grid">
 
-                                                                <form
+                                                                <form id="formDaftarGratis{{ $item->id }}"
                                                                     action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
-                                                                    method="POST" enctype="multipart/form-data">
+                                                                    method="POST">
                                                                     @csrf
-
                                                                     <input type="hidden" name="sertifikasi_id"
                                                                         value="{{ $item->id }}">
 
                                                                     @if (strtolower($item->status) === 'berbayar')
                                                                         <button type="button" class="btn-view"
                                                                             data-bs-toggle="modal"
-                                                                            data-bs-target="#modalBukti{{ $item->id }}">
-                                                                            Daftar
-                                                                        </button>
+                                                                            data-bs-target="#modalBukti{{ $item->id }}">Daftar</button>
                                                                     @else
-                                                                        <form
-                                                                            action="{{ route('alumni-siswa.sertifikasi.store', $item->id) }}"
-                                                                            method="POST">
-                                                                            @csrf
-                                                                            <input type="hidden"
-                                                                                name="sertifikasi_id"
-                                                                                value="{{ $item->id }}">
-                                                                            <button type="submit"
-                                                                                class="btn-view">Daftar
-                                                                                Gratis</button>
-                                                                        </form>
+                                                                        <button type="button" class="btn-view"
+                                                                            onclick="confirmDaftarGratis('formDaftarGratis{{ $item->id }}', event)">
+                                                                            Daftar Gratis
+                                                                        </button>
                                                                     @endif
                                                                 </form>
+
                                                             </div>
                                                         </div>
                                                     </div>
@@ -996,8 +979,7 @@
                                     {{-- Next Page Link --}}
                                     @if ($sertifikasi->hasMorePages())
                                         <li class="page-item"><a class="page-link"
-                                                href="{{ $sertifikasi->nextPageUrl() }}"
-                                                rel="next">&raquo;</a>
+                                                href="{{ $sertifikasi->nextPageUrl() }}" rel="next">&raquo;</a>
                                         </li>
                                     @else
                                         <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
@@ -1084,6 +1066,59 @@
                 showConfirmButton: false
             });
         @endif
+    </script>
+    <script>
+        function confirmLogout() {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Yakin ingin logout?',
+                text: "Anda akan keluar dari akun ini.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, logout!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+
+        function confirmDaftarGratis(formId, event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Yakin ingin daftar?',
+                text: "Setelah mendaftar, kamu tidak bisa membatalkannya.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Ya, daftar',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+
+
+        function confirmTransfer(id) {
+            return Swal.fire({
+                title: 'Konfirmasi Pendaftaran',
+                text: 'Pastikan bukti transfer sudah benar.',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, kirim!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('formTransfer' + id).submit();
+                }
+            }), false; // Mencegah submit default
+        }
     </script>
 
 </body>

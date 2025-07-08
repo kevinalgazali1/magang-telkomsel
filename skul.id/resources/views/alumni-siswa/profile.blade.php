@@ -226,14 +226,12 @@
                     class="bi bi-person-fill me-2"></i>Profil</a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
-                <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <a href="#" class="logout" onclick="event.preventDefault(); confirmLogout();">
                     <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
             </form>
         </div>
     </div>
 
-    <!-- Sidebar + Content -->
     <div class="main-wrapper">
         <div class="sidebar sidebar-main d-flex flex-column p-3" style="width: 250px;">
 
@@ -264,7 +262,7 @@
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                 @csrf
                 <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    onclick="event.preventDefault(); confirmLogout();">
                     <i class="bi bi-box-arrow-right me-2"></i> Logout
                 </a>
             </form>
@@ -561,8 +559,25 @@
                     editAccountModal.show();
                 @endif
             </script>
-
-
+            <script>
+                function confirmLogout() {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Yakin ingin logout?',
+                        text: "Anda akan keluar dari akun ini.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#6c757d',
+                        confirmButtonText: 'Ya, logout!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById('logout-form').submit();
+                        }
+                    });
+                }
+            </script>
 
 </body>
 

@@ -1,3 +1,4 @@
+aa
 <!DOCTYPE html>
 <html lang="id">
 
@@ -693,63 +694,56 @@
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
-            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.index') }}">
-                <i class="bi bi-house-door-fill me-2"></i>Beranda
-            </a>
-            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.sertifikasi') }}">
-                <i class="bi bi-patch-check-fill me-2"></i>Sertifikasi
-            </a>
-            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.loker') }}">
-                <i class="bi bi-briefcase-fill me-2"></i>Loker
-            </a>
-            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.pelatihan') }}">
-                <i class="bi bi-journal-text me-2"></i>Pelatihan
-            </a>
-            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.profile') }}">
-                <i class="bi bi-person-fill me-2"></i>Profil
-            </a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.index') }}"><i
+                    class="bi bi-house-door-fill me-2"></i>Beranda</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.sertifikasi') }}"><i
+                    class="bi bi-patch-check-fill me-2"></i>Sertifikasi</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.loker') }}"><i
+                    class="bi bi-briefcase-fill me-2"></i>Loker</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.pelatihan') }}"><i
+                    class="bi bi-journal-text me-2"></i>Pelatihan</a>
+            <a class="d-block mb-2 text-dark fw-semibold" href="{{ route('alumni-siswa.profile') }}"><i
+                    class="bi bi-person-fill me-2"></i>Profil</a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
-                <a href="#" class="logout text-danger fw-semibold"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="bi bi-box-arrow-right me-2"></i>Logout
-                </a>
+                <a href="#" class="logout" onclick="event.preventDefault(); confirmLogout();">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
             </form>
         </div>
     </div>
 
-    <!-- Main Wrapper -->
-    <div class="main-wrapper d-flex">
-
-        <!-- Sidebar -->
+    <div class="main-wrapper">
         <div class="sidebar sidebar-main d-flex flex-column p-3" style="width: 250px;">
+
+
+            <!-- Navigation Links -->
             <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.index') ? 'active' : 'text-secondary' }}"
                 href="{{ route('alumni-siswa.index') }}">
-                <i class="bi bi-house-door-fill me-2"></i>Beranda
+                <i class="bi bi-house-door-fill me-2"></i> Beranda
             </a>
             <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.sertifikasi') ? 'active' : 'text-secondary' }}"
                 href="{{ route('alumni-siswa.sertifikasi') }}">
-                <i class="bi bi-patch-check-fill me-2"></i>Sertifikasi
+                <i class="bi bi-patch-check-fill me-2"></i> Sertifikasi
             </a>
             <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.loker') ? 'active' : 'text-secondary' }}"
                 href="{{ route('alumni-siswa.loker') }}">
-                <i class="bi bi-briefcase-fill me-2"></i>Loker
+                <i class="bi bi-briefcase-fill me-2"></i> Loker
             </a>
             <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.pelatihan') ? 'active' : 'text-secondary' }}"
                 href="{{ route('alumni-siswa.pelatihan') }}">
-                <i class="bi bi-journal-text me-2"></i>Pelatihan
+                <i class="bi bi-journal-text me-2"></i> Pelatihan
             </a>
             <a class="nav-link d-flex align-items-center mb-4 {{ request()->routeIs('alumni-siswa.profile') ? 'active' : 'text-secondary' }}"
                 href="{{ route('alumni-siswa.profile') }}">
-                <i class="bi bi-person-fill me-2"></i>Profil
+                <i class="bi bi-person-fill me-2"></i> Profil
             </a>
 
             <!-- Logout -->
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                 @csrf
                 <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                    onclick="event.preventDefault(); confirmLogout();">
+                    <i class="bi bi-box-arrow-right me-2"></i> Logout
                 </a>
             </form>
         </div>
@@ -900,29 +894,22 @@
                                                 </div>
                                             </div>
                                             <div class="text-end">
-                                                <form action="{{ route('alumni-siswa.pelatihan.store', $item->id) }}"
-                                                    method="POST" enctype="multipart/form-data">
+                                                <form id="formDaftarGratis{{ $item->id }}"
+                                                    action="{{ route('alumni-siswa.pelatihan.store', $item->id) }}"
+                                                    method="POST">
                                                     @csrf
-
                                                     <input type="hidden" name="pelatihan_id"
                                                         value="{{ $item->id }}">
 
                                                     @if (strtolower($item->status) === 'berbayar')
                                                         <button type="button" class="btn-view"
                                                             data-bs-toggle="modal"
-                                                            data-bs-target="#modalBukti{{ $item->id }}">
-                                                            Daftar
-                                                        </button>
+                                                            data-bs-target="#modalBukti{{ $item->id }}">Daftar</button>
                                                     @else
-                                                        <form
-                                                            action="{{ route('alumni-siswa.pelatihan.store', $item->id) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            <input type="hidden" name="pelatihan_id"
-                                                                value="{{ $item->id }}">
-                                                            <button type="submit" class="btn-view">Daftar
-                                                                Gratis</button>
-                                                        </form>
+                                                        <button type="button" class="btn-view"
+                                                            onclick="confirmDaftarGratis('formDaftarGratis{{ $item->id }}', event)">
+                                                            Daftar Gratis
+                                                        </button>
                                                     @endif
                                                 </form>
                                             </div>
@@ -936,7 +923,9 @@
                         <div class="modal fade" id="modalBukti{{ $item->id }}" tabindex="-1"
                             aria-labelledby="modalBuktiLabel{{ $item->id }}" aria-hidden="true">
                             <div class="modal-dialog">
-                                <form action="{{ route('alumni-siswa.pelatihan.store', $item->id) }}" method="POST"
+                                <form id="formTransfer{{ $item->id }}"
+                                    onsubmit="return confirmTransfer({{ $item->id }})"
+                                    action="{{ route('alumni-siswa.pelatihan.store', $item->id) }}" method="POST"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="sertifikasi_id" value="{{ $item->id }}">
@@ -992,8 +981,8 @@
                         @if ($pelatihan->onFirstPage())
                             <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
                         @else
-                            <li class="page-item"><a class="page-link"
-                                    href="{{ $pelatihan->previousPageUrl() }}" rel="prev">&laquo;</a>
+                            <li class="page-item"><a class="page-link" href="{{ $pelatihan->previousPageUrl() }}"
+                                    rel="prev">&laquo;</a>
                             </li>
                         @endif
 
@@ -1012,8 +1001,8 @@
 
                         {{-- Next Page Link --}}
                         @if ($pelatihan->hasMorePages())
-                            <li class="page-item"><a class="page-link"
-                                    href="{{ $pelatihan->nextPageUrl() }}" rel="next">&raquo;</a>
+                            <li class="page-item"><a class="page-link" href="{{ $pelatihan->nextPageUrl() }}"
+                                    rel="next">&raquo;</a>
                             </li>
                         @else
                             <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
@@ -1102,7 +1091,58 @@
             countUpElements.forEach(el => observer.observe(el));
         });
     </script>
+    <script>
+        function confirmLogout() {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Yakin ingin logout?',
+                text: "Anda akan keluar dari akun ini.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, logout!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
 
+        function confirmDaftarGratis(formId, event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Yakin ingin daftar?',
+                text: "Setelah mendaftar, kamu tidak bisa membatalkannya.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Ya, daftar',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+
+        function confirmTransfer(id) {
+            return Swal.fire({
+                title: 'Konfirmasi Pendaftaran',
+                text: 'Pastikan bukti transfer sudah benar.',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, kirim!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('formTransfer' + id).submit();
+                }
+            }), false; // Mencegah submit default
+        }
+    </script>
     <script>
         @if (session('success'))
             Swal.fire({

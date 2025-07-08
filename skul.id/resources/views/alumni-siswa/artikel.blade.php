@@ -376,28 +376,45 @@
                     class="bi bi-person-fill me-2"></i>Profil</a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST">
                 @csrf
-                <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                <a href="#" class="logout" onclick="event.preventDefault(); confirmLogout();">
+                    <i class="bi bi-box-arrow-right me-2"></i>Logout</a>
             </form>
         </div>
     </div>
 
     <div class="main-wrapper">
-        <div class="sidebar">
-            <a class="text-secondary" href="{{ route('alumni-siswa.index') }}"><i
-                    class="bi bi-house-door-fill me-2"></i>Beranda</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.sertifikasi') }}"><i
-                    class="bi bi-patch-check-fill me-2"></i>Sertifikasi</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.loker') }}"><i
-                    class="bi bi-briefcase-fill me-2"></i>Loker</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.pelatihan') }}"><i
-                    class="bi bi-journal-text me-2"></i>Pelatihan</a>
-            <a class="text-secondary" href="{{ route('alumni-siswa.profile') }}"><i
-                    class="bi bi-person-fill me-2"></i>Profil</a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        <div class="sidebar sidebar-main d-flex flex-column p-3" style="width: 250px;">
+
+
+            <!-- Navigation Links -->
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.index') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.index') }}">
+                <i class="bi bi-house-door-fill me-2"></i> Beranda
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.sertifikasi') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.sertifikasi') }}">
+                <i class="bi bi-patch-check-fill me-2"></i> Sertifikasi
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.loker') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.loker') }}">
+                <i class="bi bi-briefcase-fill me-2"></i> Loker
+            </a>
+            <a class="nav-link d-flex align-items-center mb-2 {{ request()->routeIs('alumni-siswa.pelatihan') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.pelatihan') }}">
+                <i class="bi bi-journal-text me-2"></i> Pelatihan
+            </a>
+            <a class="nav-link d-flex align-items-center mb-4 {{ request()->routeIs('alumni-siswa.profile') ? 'active' : 'text-secondary' }}"
+                href="{{ route('alumni-siswa.profile') }}">
+                <i class="bi bi-person-fill me-2"></i> Profil
+            </a>
+
+            <!-- Logout -->
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-auto">
                 @csrf
-                <a href="#" class="logout"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                <a href="#" class="nav-link d-flex align-items-center text-danger fw-semibold mb-4"
+                    onclick="event.preventDefault(); confirmLogout();">
+                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                </a>
             </form>
         </div>
 
@@ -526,6 +543,26 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmLogout() {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Yakin ingin logout?',
+                text: "Anda akan keluar dari akun ini.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, logout!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        }
+    </script>
     <script>
         function openDetailArtikelFromCard(judul, penulis, tanggal, isi, gambar) {
             document.getElementById('detailJudul').textContent = judul;
